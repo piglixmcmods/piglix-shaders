@@ -1,12 +1,12 @@
 {
   "format_version": 2,
   "header": {
-    "name": "Newb X Pink Atmosphere",
-    "description": "\u00a7dCustom pink-atmosphere edit of Newb X (unofficial)\n\u00a77- Sky, sunlight/moonlight and water tinted pink across all times of day\nv1.0-android\n\u00a73Based on: https://newb-shader.devendrn.com/\n",
-    "uuid": "8f2a1c6e-9b3d-4e7a-b5c8-1a4f6d9e2b70",
+    "name": "PIGLIX CARTOON",
+    "description": "§dCute Pink & §bBaby Blue Cartoon §7Atmosphere with bouncy clouds and sweet water!\n§eEnjoy the cute and soft world!",
+    "uuid": "c4a8af41-24c0-429d-9176-ecf1cde16909",
     "version": [
-      0,
       1,
+      0,
       0
     ],
     "min_engine_version": [
@@ -18,10 +18,10 @@
   "modules": [
     {
       "type": "resources",
-      "uuid": "900f3d8b-37b4-465f-8f56-941687e36c35",
+      "uuid": "d49de77a-d0ac-4e01-90aa-c7fd38fb5d3f",
       "version": [
-        0,
         1,
+        0,
         0
       ]
     }
@@ -70,7 +70,7 @@
   ],
   "metadata": {
     "authors": [
-      "Piglix (based on devendrn's Newb Shader)"
+      "Piglix"
     ],
     "url": "https://newb-shader.devendrn.com/"
   }

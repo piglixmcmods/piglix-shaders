@@ -1,0 +1,50 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Piglix Vibrant Visuals Engine (Low-End Edition)",
+    "uuid": "987d6540-1234-4567-89ab-cdef01234567",
+    "description": "\u00a7dPiglix \u00b7 Vibrant Visuals Engine (Low-End Edition)\n\u00a77Pink Morning Rays \u00b7 Sky Blue Noon \u00b7 Very Orange Sunset \u00b7 Navy Starry Night\n\u00a7eUltra Optimized for Low-End Devices",
+    "version": [
+      1,
+      4,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      16,
+      200
+    ]
+  },
+  "modules": [
+    {
+      "description": "\u00a7dPiglix \u00b7 Vibrant Visuals Engine (Low-End Edition)\n\u00a77Pink Morning Rays \u00b7 Sky Blue Noon \u00b7 Very Orange Sunset \u00b7 Navy Starry Night\n\u00a7eUltra Optimized for Low-End Devices",
+      "type": "resources",
+      "uuid": "123a456b-789c-012d-345e-6789f0123456",
+      "version": [
+        1,
+        4,
+        0
+      ]
+    }
+  ],
+  "subpacks": [
+    {
+      "folder_name": "1",
+      "name": "Type 3 Sky \u00b7 Heightmaps Mode (Ultra Realistic)",
+      "memory_tier": 3
+    },
+    {
+      "folder_name": "2",
+      "name": "Type 3 Sky \u00b7 Normalmaps Mode (Balanced)",
+      "memory_tier": 2
+    },
+    {
+      "folder_name": "3",
+      "name": "Type 3 Sky \u00b7 Standard Mode (Performance)",
+      "memory_tier": 1
+    }
+  ],
+  "capabilities": [
+    "pbr"
+  ]
+}

@@ -30,6 +30,10 @@ def compile_bin():
     fogColor = data.get('fogColor', '#C0BCE6')
     waterColor = data.get('waterColor', '#4287F5')
     lightIntensity = float(data.get('lightIntensity', 1.0))
+    globalSaturation = float(data.get('globalSaturation', 1.0))
+    toneMapFilter = data.get('toneMapFilter', 'ACES (Cinematic)')
+    nightVision = float(data.get('nightVision', 1.0))
+    windSpeed = float(data.get('windSpeed', 1.0))
     waterQuality = data.get('waterQuality', 'Ultra')
     shadowFidelity = data.get('shadowFidelity', 'Soft Shadows')
     cloudType = data.get('cloudType', 'Realistic 3D')
@@ -86,6 +90,16 @@ def compile_bin():
         # Inject Pro Settings
         new_config = "\n// --- PRO SETTINGS OVERRIDES ---\n"
         new_config += f"#undef NL_SUNLIGHT_INTENSITY\n#define NL_SUNLIGHT_INTENSITY {3.2 * lightIntensity:.2f}\n"
+        new_config += f"#undef NL_SATURATION\n#define NL_SATURATION {1.36 * globalSaturation:.2f}\n"
+        
+        if 'Reinhard' in toneMapFilter:
+            new_config += "#undef NL_TONEMAP_TYPE\n#define NL_TONEMAP_TYPE 3\n"
+        else:
+            new_config += "#undef NL_TONEMAP_TYPE\n#define NL_TONEMAP_TYPE 4\n"
+            
+        new_config += f"#undef NL_NIGHT_MOONLIGHT_COL\n#define NL_NIGHT_MOONLIGHT_COL {hex_to_vec3(night, 0.4 * nightVision)}\n"
+        new_config += f"#undef NL_PLANTS_WAVE\n#define NL_PLANTS_WAVE {0.08 * windSpeed:.3f}\n"
+        
         if not wavingFoliage:
             new_config += "#undef NL_PLANTS_WAVE\n"
         if waterQuality == 'Low':

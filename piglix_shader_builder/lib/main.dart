@@ -1,13 +1,18 @@
 import 'dart:ui';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:io' as io;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:archive/archive.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:uuid/uuid.dart';
-import 'package:dio/dio.dart' as dio;
+import 'package:path_provider/path_provider.dart';
+import 'package:file_saver/file_saver.dart';
+import 'package:file_picker/file_picker.dart' show FilePicker, PlatformFile, FileType;
+import 'piglix_logo_data.dart';
 
 void main() {
   runApp(const PiglixProApp());
@@ -32,7 +37,113 @@ class PiglixProApp extends StatelessWidget {
         fontFamily: 'Inter',
         useMaterial3: true,
       ),
-      home: const StudioDashboard(),
+      home: const PiglixSplashScreen(),
+    );
+  }
+}
+
+class PiglixSplashScreen extends StatefulWidget {
+  const PiglixSplashScreen({super.key});
+
+  @override
+  State<PiglixSplashScreen> createState() => _PiglixSplashScreenState();
+}
+
+class _PiglixSplashScreenState extends State<PiglixSplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 1200), () {
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => const StudioDashboard(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF0F1511),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Center content: Glowing HD Piglix Logo + "Created by Piglix Labs"
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Soft radial green glow behind logo
+                Container(
+                  width: 170,
+                  height: 170,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF6DE846).withValues(alpha: 0.28),
+                        blurRadius: 65,
+                        spreadRadius: 25,
+                      ),
+                    ],
+                  ),
+                  child: Image.memory(
+                    kPiglixLogoBytes,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                const SizedBox(height: 28),
+                RichText(
+                  text: const TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Inter',
+                      letterSpacing: 0.3,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: 'Created by ',
+                        style: TextStyle(color: Color(0xFF8E9590)),
+                      ),
+                      TextSpan(
+                        text: 'Piglix Labs',
+                        style: TextStyle(
+                          color: Color(0xFF6DE846),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Animated green loading spinner near bottom
+          const Positioned(
+            left: 0,
+            right: 0,
+            bottom: 72,
+            child: Center(
+              child: SizedBox(
+                width: 32,
+                height: 32,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3.0,
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF6DE846)),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -45,45 +156,251 @@ class StudioDashboard extends StatefulWidget {
 }
 
 class _StudioDashboardState extends State<StudioDashboard> {
-  String selectedEngine = 'json'; // 'json' or 'bin'
-  bool isCloudConnected = true;
-  FragmentProgram? previewProgram;
+
   bool _isGenerated = false;
   List<int>? _generatedPackBytes;
   String? _generatedPackName;
 
-  void _downloadPack() {
+  // Uploaded custom shader
+  List<int>? _uploadedShaderBytes;
+  String? _uploadedShaderName;
+  bool _isUploadingShader = false;
+
+  // Shader pack icon / logo
+  Uint8List? _uploadedLogoBytes;
+  String? _uploadedLogoName;
+  bool _isUploadingLogo = false;
+
+  Future<void> _pickShaderFile() async {
+    try {
+      setState(() => _isUploadingShader = true);
+      
+      // file_picker v13: pickFile() returns PlatformFile?, read bytes via readAsBytes()
+      final PlatformFile? file = await FilePicker.pickFile(
+        type: FileType.custom,
+        allowedExtensions: ['mcpack', 'zip'],
+      );
+
+      if (file == null) {
+        setState(() => _isUploadingShader = false);
+        return;
+      }
+
+      Uint8List? bytes;
+      try {
+        bytes = await file.readAsBytes();
+      } catch (_) {
+        bytes = null;
+      }
+      if (bytes == null || bytes.isEmpty) {
+        setState(() => _isUploadingShader = false);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Could not read file bytes. Try again.'), backgroundColor: Colors.red),
+          );
+        }
+        return;
+      }
+
+      // Validate: must be a valid ZIP with at least one lighting/ or atmospherics/ JSON
+      bool isValidShader = false;
+      String detectedFiles = '';
+      try {
+        final archive = ZipDecoder().decodeBytes(bytes);
+        final relevantFiles = archive.files.where((f) =>
+          f.name.startsWith('lighting/') ||
+          f.name.startsWith('atmospherics/') ||
+          f.name.startsWith('pbr/') ||
+          f.name.startsWith('point_lights/')
+        ).toList();
+        if (relevantFiles.isNotEmpty) {
+          isValidShader = true;
+          detectedFiles = relevantFiles.map((f) => f.name).take(5).join(', ');
+        }
+      } catch (_) {
+        isValidShader = false;
+      }
+
+      if (!isValidShader) {
+        setState(() => _isUploadingShader = false);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('❌ Invalid shader! Must be a Vibrant Visuals .mcpack with lighting/global.json.'),
+              backgroundColor: Colors.red,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+        return;
+      }
+
+      setState(() {
+        _uploadedShaderBytes = bytes!.toList();
+        _uploadedShaderName = file.name;
+        _isUploadingShader = false;
+        _isGenerated = false;
+        _generatedPackBytes = null;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('✅ Loaded: ${file.name}\nDetected: $detectedFiles'),
+            backgroundColor: const Color(0xFF385E2E),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    } catch (e) {
+      setState(() => _isUploadingShader = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading shader: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  void _clearUploadedShader() {
+    setState(() {
+      _uploadedShaderBytes = null;
+      _uploadedShaderName = null;
+      _isGenerated = false;
+      _generatedPackBytes = null;
+    });
+  }
+
+  Future<void> _pickLogoFile() async {
+    try {
+      setState(() => _isUploadingLogo = true);
+      final PlatformFile? file = await FilePicker.pickFile(
+        type: FileType.image,
+      );
+      if (file == null) { setState(() => _isUploadingLogo = false); return; }
+      Uint8List? bytes;
+      try { bytes = await file.readAsBytes(); } catch (_) { bytes = null; }
+      if (bytes == null || bytes.isEmpty) {
+        setState(() => _isUploadingLogo = false);
+        if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not read image. Try another file.'), backgroundColor: Colors.red));
+        return;
+      }
+      setState(() {
+        _uploadedLogoBytes = bytes;
+        _uploadedLogoName = file.name;
+        _isUploadingLogo = false;
+      });
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('✅ Logo set: ${file.name}'),
+          backgroundColor: const Color(0xFF385E2E), behavior: SnackBarBehavior.floating));
+    } catch (e) {
+      setState(() => _isUploadingLogo = false);
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red));
+    }
+  }
+
+  void _clearUploadedLogo() {
+    setState(() { _uploadedLogoBytes = null; _uploadedLogoName = null; });
+  }
+
+  Future<void> _downloadPack() async {
+    if (_generatedPackBytes == null) return;
+    String pName = _generatedPackName ?? (shaderNameController.text.trim().isEmpty ? "Piglix Shader" : shaderNameController.text.trim());
+    if (!pName.endsWith('.mcpack')) pName = '$pName.mcpack';
+    final baseName = pName.replaceAll(RegExp(r'\.mcpack$', caseSensitive: false), '');
+
+    String savedMessage = 'Downloaded $pName!';
+
+    if (kIsWeb) {
+      final blob = html.Blob([_generatedPackBytes], 'application/octet-stream');
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      html.AnchorElement(href: url)
+        ..setAttribute("download", pName)
+        ..click();
+      html.Url.revokeObjectUrl(url);
+    } else {
+      try {
+        final bytes = Uint8List.fromList(_generatedPackBytes!);
+        // Save directly to device public Download directory
+        final savedPath = await FileSaver.instance.saveFile(
+          name: baseName,
+          bytes: bytes,
+          fileExtension: 'mcpack',
+          mimeType: MimeType.other,
+        );
+        savedMessage = 'Saved $pName to Downloads!';
+        print('Saved to: $savedPath');
+      } catch (e) {
+        print('FileSaver error: $e. Fallback to storage directory.');
+        try {
+          io.Directory? targetDir = await getExternalStorageDirectory();
+          if (targetDir != null) {
+            // Check for standard Download directory path on Android
+            final downloadDir = io.Directory('/storage/emulated/0/Download');
+            if (await downloadDir.exists()) {
+              targetDir = downloadDir;
+            }
+            final file = io.File('${targetDir.path}/$pName');
+            await file.writeAsBytes(_generatedPackBytes!);
+            savedMessage = 'Saved to ${targetDir.path}/$pName';
+          }
+        } catch (e2) {
+          print('Fallback download error: $e2');
+        }
+      }
+    }
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.check_circle, color: Color(0xFF6DE846), size: 18),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  savedMessage,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: const Color(0xFF181E19),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  Future<void> _openWithMinecraft() async {
     if (_generatedPackBytes == null) return;
     String pName = _generatedPackName ?? (shaderNameController.text.trim().isEmpty ? "Piglix Shader" : shaderNameController.text.trim());
     if (!pName.endsWith('.mcpack')) pName = '$pName.mcpack';
 
-    final blob = html.Blob([_generatedPackBytes], 'application/octet-stream');
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    html.AnchorElement(href: url)
-      ..setAttribute("download", pName)
-      ..click();
-    html.Url.revokeObjectUrl(url);
+    if (kIsWeb) {
+      await _downloadPack();
+      try {
+        html.window.open('minecraft://', '_self');
+      } catch (_) {}
+    } else {
+      try {
+        final dir = await getTemporaryDirectory();
+        final file = io.File('${dir.path}/$pName');
+        await file.writeAsBytes(_generatedPackBytes!);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.check_circle, color: Color(0xFF6DE846), size: 18),
-            const SizedBox(width: 8),
-            Text('Downloaded $pName!'),
-          ],
-        ),
-        backgroundColor: const Color(0xFF181E19),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
-
-  void _openWithMinecraft() {
-    _downloadPack();
-    try {
-      html.window.open('minecraft://', '_self');
-    } catch (_) {}
+        final platform = const MethodChannel('com.piglix.shader/launcher');
+        await platform.invokeMethod('openWithMinecraft', {'filePath': file.path});
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Could not open Minecraft: $e')),
+          );
+        }
+      }
+    }
   }
 
   @override
@@ -99,8 +416,11 @@ class _StudioDashboardState extends State<StudioDashboard> {
   Color eveningColor = const Color(0xFFFFA500);
   Color nightColor = const Color(0xFF00008B);
   
-  // Global Tints
-  Color rayColor = const Color(0xFFFAFCFF);
+  // God Ray Colors (per time-of-day)
+  Color rayMorningColor = const Color(0xFFFFA040);  // Warm golden sunrise
+  Color rayNoonColor    = const Color(0xFFFAFCFF);  // Pure white daylight
+  Color rayEveningColor = const Color(0xFFFF6020);  // Deep orange sunset
+  Color rayNightColor   = const Color(0xFF3050AA);  // Cool blue moonlight
   Color fogColor = const Color(0xFFC0BCE6);
   Color waterColor = const Color(0xFF4287F5);
   
@@ -118,7 +438,7 @@ class _StudioDashboardState extends State<StudioDashboard> {
   double sunSize = 1.0;
   double globalSaturation = 1.0;
   String toneMapFilter = 'ACES (Cinematic)';
-  double nightVision = 1.0;
+  double nightVision = 1.5;
   bool underwaterCaustics = true;
 
   double windSpeed = 1.0;
@@ -296,34 +616,6 @@ class _StudioDashboardState extends State<StudioDashboard> {
               'PIGLIX STUDIO',
               style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 2, fontSize: 18),
             ),
-            const Spacer(),
-            // Cloud Connection Indicator
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: isCloudConnected ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: isCloudConnected ? Colors.green : Colors.red),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    isCloudConnected ? Icons.cloud_done : Icons.cloud_off,
-                    size: 14,
-                    color: isCloudConnected ? Colors.green : Colors.red,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    isCloudConnected ? 'Cloud Active' : 'Offline Mode',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: isCloudConnected ? Colors.green : Colors.red,
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
         bottom: PreferredSize(
@@ -336,39 +628,250 @@ class _StudioDashboardState extends State<StudioDashboard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'ENGINE SELECTION',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5, color: Colors.white54),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: _EngineCard(
-                    title: 'Vibrant Engine',
-                    subtitle: 'JSON Deferred API',
-                    icon: Icons.data_object,
-                    isSelected: selectedEngine == 'json',
-                    onTap: () => setState(() => selectedEngine = 'json'),
-                  ),
+
+            const SizedBox(height: 20),
+
+            // ── UPLOAD CUSTOM SHADER CARD ───────────────────────────────────
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: _uploadedShaderBytes != null
+                      ? const Color(0xFF6DE846).withOpacity(0.7)
+                      : Colors.white12,
+                  width: 1.5,
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _EngineCard(
-                    title: 'Classic Engine',
-                    subtitle: 'C++ Material Bin',
-                    icon: Icons.memory,
-                    isSelected: selectedEngine == 'bin',
-                    onTap: () => setState(() => selectedEngine = 'bin'),
+                color: _uploadedShaderBytes != null
+                    ? const Color(0xFF6DE846).withOpacity(0.05)
+                    : Colors.white.withOpacity(0.03),
+              ),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        _uploadedShaderBytes != null ? Icons.check_circle : Icons.upload_file,
+                        color: _uploadedShaderBytes != null ? const Color(0xFF6DE846) : Colors.white38,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        _uploadedShaderBytes != null ? 'CUSTOM SHADER LOADED' : 'SHADER SOURCE',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.5,
+                          color: _uploadedShaderBytes != null ? const Color(0xFF6DE846) : Colors.white38,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  // Current shader name
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.black26,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.folder_zip_outlined, size: 14, color: Colors.white38),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _uploadedShaderName ?? 'Piglix Default (base_shader.zip)',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: _uploadedShaderBytes != null ? Colors.white.withOpacity(0.87) : Colors.white38,
+                              fontStyle: _uploadedShaderBytes != null ? FontStyle.normal : FontStyle.italic,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (_uploadedShaderBytes != null)
+                          GestureDetector(
+                            onTap: _clearUploadedShader,
+                            child: const Icon(Icons.close, size: 16, color: Colors.red),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Upload button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 44,
+                    child: ElevatedButton.icon(
+                      onPressed: _isUploadingShader ? null : _pickShaderFile,
+                      icon: _isUploadingShader
+                          ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                          : const Icon(Icons.file_upload_outlined, size: 18),
+                      label: Text(
+                        _isUploadingShader
+                            ? 'Loading...'
+                            : _uploadedShaderBytes != null
+                                ? 'Replace Shader (.mcpack / .zip)'
+                                : 'Upload Your Shader (.mcpack / .zip)',
+                        style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1C2E1C),
+                        foregroundColor: const Color(0xFF6DE846),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        side: const BorderSide(color: Color(0xFF6DE846), width: 1),
+                      ),
+                    ),
+                  ),
+                  if (_uploadedShaderBytes != null) ...[
+                    const SizedBox(height: 8),
+                    const Text(
+                      '⚡ All settings below will be applied to your uploaded shader when you generate.',
+                      style: TextStyle(fontSize: 11, color: Colors.white38),
+                    ),
+                  ] else ...[
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Upload any Vibrant Visuals .mcpack to edit its lighting, colors & atmosphere.',
+                      style: TextStyle(fontSize: 11, color: Colors.white38),
+                    ),
+                  ]
+                ],
+              ),
             ),
-            
-            const SizedBox(height: 32),
-            
-            if (selectedEngine == 'bin') _buildCloudWarning(),
-            if (selectedEngine == 'bin') const SizedBox(height: 24),
+            // ─────────────────────────────────────────────────────────────────
+
+            const SizedBox(height: 12),
+
+            // ── PACK ICON / LOGO CARD ─────────────────────────────────────────
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: _uploadedLogoBytes != null
+                      ? const Color(0xFF6DE846).withOpacity(0.7)
+                      : Colors.white12,
+                  width: 1.5,
+                ),
+                color: _uploadedLogoBytes != null
+                    ? const Color(0xFF6DE846).withOpacity(0.04)
+                    : Colors.white.withOpacity(0.02),
+              ),
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Logo preview
+                  Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: _uploadedLogoBytes != null
+                            ? const Color(0xFF6DE846)
+                            : Colors.white12,
+                        width: 1.5,
+                      ),
+                      color: Colors.black38,
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: _uploadedLogoBytes != null
+                        ? Image.memory(_uploadedLogoBytes!, fit: BoxFit.cover)
+                        : Image.memory(kPiglixLogoBytes, fit: BoxFit.cover),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              _uploadedLogoBytes != null ? Icons.check_circle : Icons.image_outlined,
+                              size: 14,
+                              color: _uploadedLogoBytes != null ? const Color(0xFF6DE846) : Colors.white38,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              _uploadedLogoBytes != null ? 'CUSTOM LOGO' : 'PACK ICON',
+                              style: TextStyle(
+                                fontSize: 11, fontWeight: FontWeight.bold,
+                                letterSpacing: 1.5,
+                                color: _uploadedLogoBytes != null ? const Color(0xFF6DE846) : Colors.white38,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _uploadedLogoName ?? 'Default Piglix Logo',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: _uploadedLogoBytes != null
+                                ? Colors.white.withOpacity(0.87)
+                                : Colors.white38,
+                            fontStyle: _uploadedLogoBytes != null ? FontStyle.normal : FontStyle.italic,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: SizedBox(
+                                height: 36,
+                                child: ElevatedButton.icon(
+                                  onPressed: _isUploadingLogo ? null : _pickLogoFile,
+                                  icon: _isUploadingLogo
+                                      ? const SizedBox(width: 14, height: 14,
+                                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                                      : const Icon(Icons.image_outlined, size: 16),
+                                  label: Text(
+                                    _isUploadingLogo ? 'Loading...' : 'Upload Logo',
+                                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF1C2E1C),
+                                    foregroundColor: const Color(0xFF6DE846),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                    side: const BorderSide(color: Color(0xFF6DE846), width: 1),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            if (_uploadedLogoBytes != null) ...[
+                              const SizedBox(width: 8),
+                              GestureDetector(
+                                onTap: _clearUploadedLogo,
+                                child: Container(
+                                  height: 36, width: 36,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: Colors.red.withOpacity(0.5)),
+                                    color: Colors.red.withOpacity(0.08),
+                                  ),
+                                  child: const Icon(Icons.close, color: Colors.red, size: 16),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // ─────────────────────────────────────────────────────────────────
+
+            const SizedBox(height: 28),
+
             _buildSettings(),
             
             const SizedBox(height: 48),
@@ -499,11 +1002,11 @@ class _StudioDashboardState extends State<StudioDashboard> {
               ]
             ),
             _sliderRow('Sun Size Multiplier', 'Mathematically scales the size of the Sun and Moon textures rendered in the skybox. Larger values create a massive, cinematic celestial body, while smaller values look more realistic.', sunSize, 0.0, 2.0, 20, sunSize == 1.0 ? '1.0x (Default)' : '${sunSize.toStringAsFixed(1)}x', (v) => sunSize = v),
-            _sliderRow('Night Brightness', 'Overrides the vanilla Minecraft moonlight intensity. Increasing this makes midnight completely visible without torches, while lowering it creates pitch-black, hardcore darkness.', nightVision, 0.0, 2.0, 20, nightVision == 1.0 ? '1.0x (Default)' : '${nightVision.toStringAsFixed(1)}x', (v) => nightVision = v),
-            if (selectedEngine == 'json') _sliderRow('Fog Density', 'Adjusts how close the atmospheric fog starts relative to the player. Higher density obscures distant chunks completely, creating a thick, moody atmosphere.', fogDensity, 0.0, 2.0, 20, fogDensity == 1.0 ? '1.0x (Default)' : '${fogDensity.toStringAsFixed(1)}x', (v) => fogDensity = v),
-            if (selectedEngine == 'json') _dropdownRow('Volumetric Fog', 'Defines the quality and depth of 3D God-Rays intersecting the fog. Cinematic calculates high-density scattering but costs more FPS. Low End uses flat rendering.', ['Cinematic (Heavy)', 'Balanced', 'Low End'], volumetricRays, (v) => volumetricRays = v),
-            if (selectedEngine == 'json') const SizedBox(height: 16),
-            if (selectedEngine == 'json') Stack(
+            _sliderRow('Night Brightness', 'Overrides the vanilla Minecraft moonlight intensity. Increasing this makes midnight completely visible without torches, while lowering it creates pitch-black, hardcore darkness.', nightVision, 0.0, 2.0, 20, nightVision == 1.5 ? '1.5x (Default)' : '${nightVision.toStringAsFixed(1)}x', (v) => nightVision = v),
+            _sliderRow('Fog Density', 'Adjusts how close the atmospheric fog starts relative to the player. Higher density obscures distant chunks completely, creating a thick, moody atmosphere.', fogDensity, 0.0, 2.0, 20, fogDensity == 1.0 ? '1.0x (Default)' : '${fogDensity.toStringAsFixed(1)}x', (v) => fogDensity = v),
+            _dropdownRow('Volumetric Fog', 'Defines the quality and depth of 3D God-Rays intersecting the fog. Cinematic calculates high-density scattering but costs more FPS. Low End uses flat rendering.', ['Cinematic (Heavy)', 'Balanced', 'Low End'], volumetricRays, (v) => volumetricRays = v),
+            const SizedBox(height: 16),
+            Stack(
               clipBehavior: Clip.none,
               children: [
                 Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
@@ -523,7 +1026,7 @@ class _StudioDashboardState extends State<StudioDashboard> {
         ]),
         const SizedBox(height: 16),
         
-        if (selectedEngine == 'json') _buildCategoryCard('WEATHER OVERRIDES', Icons.thunderstorm, [
+        _buildCategoryCard('WEATHER OVERRIDES', Icons.thunderstorm, [
             Stack(
               clipBehavior: Clip.none,
               children: [
@@ -542,32 +1045,59 @@ class _StudioDashboardState extends State<StudioDashboard> {
               ]
             ),
         ]),
-        if (selectedEngine == 'json') const SizedBox(height: 16),
+        const SizedBox(height: 16),
 
         _buildCategoryCard('LIGHTING & SHADOWS', Icons.lightbulb, [
+            // TIME-OF-DAY GOD RAYS
             Stack(
               clipBehavior: Clip.none,
               children: [
-                Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-                    _ColorNode('God Rays Tint', '', rayColor, (c) => rayColor = c), 
-                    _ColorNode('Fog Tint', '', fogColor, (c) => fogColor = c),
-                    if (selectedEngine == 'json') _ColorNode('Torch Light', '', torchLightColor, (c) => torchLightColor = c)
-                ]),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.wb_sunny_outlined, size: 15, color: Color(0xFF6DE846)),
+                          const SizedBox(width: 6),
+                          const Text('God Rays — Time of Day', style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 0.4)),
+                        ],
+                      ),
+                    ),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                      _ColorNode('Morning', 'Sunrise ray color (dawn)', rayMorningColor, (c) => rayMorningColor = c),
+                      _ColorNode('Noon', 'Midday ray color', rayNoonColor, (c) => rayNoonColor = c),
+                      _ColorNode('Evening', 'Sunset ray color (dusk)', rayEveningColor, (c) => rayEveningColor = c),
+                      _ColorNode('Night', 'Moonlight ray color', rayNightColor, (c) => rayNightColor = c),
+                    ]),
+                  ],
+                ),
                 Positioned(
                   right: -8,
                   top: -8,
                   child: GestureDetector(
-                    onTap: () => _showTooltip('Global Lighting Tints', 'Controls the color of the world lighting.\\n\\n• God Rays: Changes the color of direct sunlight beams.\\n• Fog Tint: Changes the ambient color of the fog in the distance.\\n• Torch Light: Customizes the exact RGB color of Torches, Glowstone, and Lava.'),
+                    onTap: () => _showTooltip('Time-of-Day God Rays', 'Controls the color of direct light rays at each time of day.\n\n• Morning: Warm sunrise tones (golden/pink).\n• Noon: Neutral bright daylight (white/blue).\n• Evening: Rich orange/red sunset glow.\n• Night: Cool blue/purple moonlight rays.\n\nEach color is independently written into the shader for a cinematic day-night cycle.'),
                     child: const Icon(Icons.help_outline, size: 16, color: Colors.white38),
                   )
                 )
               ]
             ),
+            const SizedBox(height: 12),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                    _ColorNode('Fog Tint', '', fogColor, (c) => fogColor = c),
+                    _ColorNode('Torch Light', '', torchLightColor, (c) => torchLightColor = c)
+                ]),
+              ]
+            ),
             const SizedBox(height: 16),
             _sliderRow('Light Intensity', 'Multiplies the global directional light from the Sun and Moon. This affects how bright the surface of blocks appear when exposed directly to the sky.', lightIntensity, 0.0, 2.0, 20, lightIntensity == 1.0 ? '1.0x (Default)' : '${lightIntensity.toStringAsFixed(1)}x', (v) => lightIntensity = v),
-            if (selectedEngine == 'json') _sliderRow('Block Light Intensity', 'Boosts the emissive strength and radius of all point lights. This allows a single torch to illuminate massive caves, completely changing the survival experience.', blockLightIntensity, 0.0, 2.0, 20, blockLightIntensity == 1.0 ? '1.0x (Default)' : '${blockLightIntensity.toStringAsFixed(1)}x', (v) => blockLightIntensity = v),
+            _sliderRow('Block Light Intensity', 'Boosts the emissive strength and radius of all point lights. This allows a single torch to illuminate massive caves, completely changing the survival experience.', blockLightIntensity, 0.0, 2.0, 20, blockLightIntensity == 1.0 ? '1.0x (Default)' : '${blockLightIntensity.toStringAsFixed(1)}x', (v) => blockLightIntensity = v),
             _dropdownRow('Shadow Fidelity', 'Controls the resolution of the shadow maps cast by the Sun. Soft Shadows uses high-res 1024px maps with soft-edge filtering, while Hard Shadows creates sharp edges.', ['Off', 'Ultra-Low (128px)', 'Hard Shadows (256px)', 'Soft Shadows (1024px)'], shadowFidelity, (v) => shadowFidelity = v),
-            if (selectedEngine == 'json') _switchRow('Point Light Shadows', 'Enables highly experimental real-time ray-traced shadows cast by Torches and Lava. This makes the game look incredible but can be heavy on mobile devices.', enablePointLightShadows, (v) => enablePointLightShadows = v),
+            _switchRow('Point Light Shadows', 'Enables highly experimental real-time ray-traced shadows cast by Torches and Lava. This makes the game look incredible but can be heavy on mobile devices.', enablePointLightShadows, (v) => enablePointLightShadows = v),
         ]),
         const SizedBox(height: 16),
         
@@ -577,11 +1107,9 @@ class _StudioDashboardState extends State<StudioDashboard> {
             _sliderRow('Wind & Wave Speed', 'Modifies the internal shader time-multiplier for vertex animations. This makes oceans and lakes look like they have fast, aggressive currents or slow, calm ripples.', windSpeed, 0.0, 2.0, 20, windSpeed == 1.0 ? '1.0x (Default)' : '${windSpeed.toStringAsFixed(1)}x', (v) => windSpeed = v),
             _dropdownRow('Water Quality', 'Controls the noise complexity (octaves) of the water surface. Ultra calculates multiple layers of overlapping waves for a highly realistic, churning ocean.', ['Low', 'Medium', 'Ultra'], waterQuality, (v) => waterQuality = v),
             _switchRow('Underwater Caustics', 'Generates animated, waving light patterns on the floor of oceans and rivers when the sun shines through the water surface.', underwaterCaustics, (v) => underwaterCaustics = v),
-            if (selectedEngine == 'json') _dropdownRow('World Reflections', 'Overrides the global PBR roughness of all blocks. Setting this to Ultra makes every block in the world behave like a mirror, reflecting the sky and clouds.', ['Off (Matte)', 'Low (Glossy)', 'High (Wet)', 'Ultra (Mirror)'], worldReflections, (v) => worldReflections = v),
-            if (selectedEngine == 'json') _sliderRow('Global Metalness', 'Overrides the global PBR metalness of all blocks. Increasing this makes blocks absorb light like conductive metals, giving everything a shiny, synthetic look.', globalMetalness, 0.0, 10.0, 10, globalMetalness == 0.0 ? '0.0 (Default)' : '${globalMetalness.toStringAsFixed(1)}', (v) => globalMetalness = v),
-            if (selectedEngine == 'json') _switchRow('PBR Bump Mapping', 'Activates the Normal/MER texture mapping pipeline. If you have a PBR texture pack installed, this will give blocks true 3D depth and bumpy surfaces.', enablePBR, (v) => enablePBR = v),
-            if (selectedEngine == 'bin') _dropdownRow('Cloud Type', 'Defines the shape of the clouds generated by the binary engine. Realistic 3D uses volumetric raymarching, while Box Clouds uses the classic Minecraft style.', ['Realistic 3D', 'Box Clouds', 'Disabled'], cloudType, (v) => cloudType = v),
-            if (selectedEngine == 'bin') _switchRow('Waving Foliage', 'Injects a sine-wave vertex displacement shader into plant life, causing Leaves, Grass, and Vines to sway realistically in the wind.', wavingFoliage, (v) => wavingFoliage = v),
+            _dropdownRow('World Reflections', 'Overrides the global PBR roughness of all blocks. Setting this to Ultra makes every block in the world behave like a mirror, reflecting the sky and clouds.', ['Off (Matte)', 'Low (Glossy)', 'High (Wet)', 'Ultra (Mirror)'], worldReflections, (v) => worldReflections = v),
+            _sliderRow('Global Metalness', 'Overrides the global PBR metalness of all blocks. Increasing this makes blocks absorb light like conductive metals, giving everything a shiny, synthetic look.', globalMetalness, 0.0, 10.0, 10, globalMetalness == 0.0 ? '0.0 (Default)' : '${globalMetalness.toStringAsFixed(1)}', (v) => globalMetalness = v),
+            _switchRow('PBR Bump Mapping', 'Activates the Normal/MER texture mapping pipeline. If you have a PBR texture pack installed, this will give blocks true 3D depth and bumpy surfaces.', enablePBR, (v) => enablePBR = v),
         ]),
 
       ],
@@ -620,7 +1148,7 @@ class _StudioDashboardState extends State<StudioDashboard> {
     );
   }
 
-  Widget _sliderRow(String title, String tooltip, double val, double min, double max, int div, String label, Function(double) onChanged, {double defaultVal = 1.0}) {
+  Widget _sliderRow(String title, String tooltip, double val, double min, double max, int div, String label, Function(double) onChanged) {
     return Padding(
         padding: const EdgeInsets.only(top: 10, bottom: 20),
         child: Column(
@@ -674,28 +1202,32 @@ class _StudioDashboardState extends State<StudioDashboard> {
             children: [
                 _buildTitleWithHelp(title, tooltip),
                 const SizedBox(height: 12),
-                Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    children: items.map((e) {
-                        bool isSelected = e == val;
-                        return GestureDetector(
-                            onTap: () => setState(() => onChanged(e)),
-                            child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                decoration: BoxDecoration(
-                                    color: isSelected ? const Color(0xFF6DE846) : const Color(0xFF222B22),
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: isSelected ? const Color(0xFF6DE846) : const Color(0xFF385E2E)),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                        children: items.map((e) {
+                            bool isSelected = e == val;
+                            return Padding(
+                                padding: const EdgeInsets.only(right: 6),
+                                child: GestureDetector(
+                                    onTap: () => setState(() => onChanged(e)),
+                                    child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                        decoration: BoxDecoration(
+                                            color: isSelected ? const Color(0xFF6DE846) : const Color(0xFF222B22),
+                                            borderRadius: BorderRadius.circular(8),
+                                            border: Border.all(color: isSelected ? const Color(0xFF6DE846) : const Color(0xFF385E2E)),
+                                        ),
+                                        child: Text(e, style: TextStyle(
+                                            color: isSelected ? Colors.black : Colors.white70,
+                                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                            fontSize: 11.5
+                                        )),
+                                    ),
                                 ),
-                                child: Text(e, style: TextStyle(
-                                    color: isSelected ? Colors.black : Colors.white70,
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                    fontSize: 11.5
-                                )),
-                            ),
-                        );
-                    }).toList(),
+                            );
+                        }).toList(),
+                    ),
                 )
             ]
         )
@@ -706,43 +1238,22 @@ class _StudioDashboardState extends State<StudioDashboard> {
     return Padding(
         padding: const EdgeInsets.only(bottom: 12),
         child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-                SizedBox(
-                    width: 140,
+                Expanded(
                     child: _buildTitleWithHelp(title, tooltip)
                 ),
-                Expanded(
-                    child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Switch(
-                            value: val,
-                            activeColor: const Color(0xFF111312),
-                            activeTrackColor: const Color(0xFF6DE846),
-                            inactiveThumbColor: Colors.white54,
-                            inactiveTrackColor: const Color(0xFF385E2E),
-                            onChanged: (v) => setState(() => onChanged(v))
-                        )
-                    )
+                const SizedBox(width: 8),
+                Switch(
+                    value: val,
+                    activeColor: const Color(0xFF111312),
+                    activeTrackColor: const Color(0xFF6DE846),
+                    inactiveThumbColor: Colors.white54,
+                    inactiveTrackColor: const Color(0xFF385E2E),
+                    onChanged: (v) => setState(() => onChanged(v))
                 )
             ]
         )
-    );
-  }
-  Widget _buildCloudWarning() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.red.withOpacity(0.1),
-        border: Border.all(color: Colors.red.withOpacity(0.3)),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: const Row(
-        children: [
-          Icon(Icons.cloud_off, color: Colors.red),
-          SizedBox(width: 12),
-          Expanded(child: Text('Cloud compilation is required for the Classic Engine.', style: TextStyle(color: Colors.redAccent))),
-        ],
-      ),
     );
   }
 
@@ -816,75 +1327,20 @@ class _StudioDashboardState extends State<StudioDashboard> {
     );
 
     try {
-      if (selectedEngine == 'bin') {
-        statusNotifier.value = "Uplinking to Piglix Cloud...";
-        progressNotifier.value = 0.2;
-        
-        String packName = shaderNameController.text.trim();
-        if (packName.isEmpty) packName = "Piglix Shader";
-
-        String hexStr(Color c) => '#${c.value.toRadixString(16).substring(2).toUpperCase()}';
-        final payload = {
-          'packName': packName,
-          'morning': hexStr(morningColor),
-          'noon': hexStr(noonColor),
-          'evening': hexStr(eveningColor),
-          'night': hexStr(nightColor),
-          'rayColor': hexStr(rayColor),
-          'fogColor': hexStr(fogColor),
-          'waterColor': hexStr(waterColor),
-          'lightIntensity': lightIntensity.toString(),
-          'fogDensity': fogDensity.toString(),
-          'sunSize': sunSize.toString(),
-          'globalSaturation': globalSaturation.toString(),
-          'toneMapFilter': toneMapFilter,
-          'nightVision': nightVision.toString(),
-          'underwaterCaustics': underwaterCaustics.toString(),
-          'windSpeed': windSpeed.toString(),
-          'waterQuality': waterQuality,
-          'shadowFidelity': shadowFidelity,
-          'cloudType': cloudType,
-          'wavingFoliage': wavingFoliage,
-        };
-        
-        statusNotifier.value = "Cloud Compiling C++ Shader...";
-        progressNotifier.value = 0.5;
-        
-        final response = await dio.Dio().post(
-          'http://127.0.0.1:5001/compile_bin',
-          data: payload,
-          options: dio.Options(responseType: dio.ResponseType.bytes),
-        );
-        
-        statusNotifier.value = "Preparing Shader Pack...";
-        progressNotifier.value = 1.0;
-        
-        final packBytes = response.data is List<int> ? (response.data as List<int>) : List<int>.from(response.data);
-        setState(() {
-          _generatedPackBytes = packBytes;
-          _generatedPackName = "$packName.mcpack";
-          _isGenerated = true;
-        });
-        
-        await Future.delayed(const Duration(milliseconds: 500));
-        if (mounted) Navigator.pop(context);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('✨ $packName generated! Tap "Open with Minecraft" or Download.'),
-              backgroundColor: const Color(0xFF385E2E),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-        }
-        return;
-      }
 
       await Future.delayed(const Duration(milliseconds: 600));
       statusNotifier.value = "Reading JSON Assets...";
       progressNotifier.value = 0.3;
       ByteData data = await rootBundle.load('assets/base_shader.zip');
-      List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      List<int> bytes;
+      if (_uploadedShaderBytes != null) {
+        // Use user-uploaded shader as the base
+        bytes = _uploadedShaderBytes!;
+        statusNotifier.value = "Using Uploaded Shader: $_uploadedShaderName";
+      } else {
+        // Use bundled Piglix default shader
+        bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      }
 
       await Future.delayed(const Duration(milliseconds: 600));
       statusNotifier.value = "Decoding Zip Archive...";
@@ -899,6 +1355,13 @@ class _StudioDashboardState extends State<StudioDashboard> {
       for (final file in archive) {
         if (file.isFile) {
           List<int> fileData = file.content as List<int>;
+          if (file.name == 'pack_icon.png') {
+            // Use user uploaded logo, or fall back to default Piglix logo
+            fileData = _uploadedLogoBytes != null
+                ? _uploadedLogoBytes!.toList()
+                : kPiglixLogoBytes.toList();
+          }
+
           if (file.name == 'manifest.json') {
             String content = utf8.decode(fileData);
             Map<String, dynamic> manifest;
@@ -1007,7 +1470,24 @@ class _StudioDashboardState extends State<StudioDashboard> {
                 if (sun != null) {
                     var sunColor = sun['color'];
                     if (sunColor is Map) {
-                        for (var key in sunColor.keys.toList()) sunColor[key] = toRgb(rayColor);
+                      // Map each time key to the correct user-chosen ray color.
+                      // Minecraft time keys: 0.0=noon, 0.22-0.26=sunset, 0.30-0.67=night, 0.74-0.82=sunrise
+                      for (var key in sunColor.keys.toList()) {
+                        final t = double.tryParse(key.toString()) ?? 0.0;
+                        if (t >= 0.74 && t <= 0.82) {
+                          // Morning / Sunrise
+                          sunColor[key] = toRgb(rayMorningColor);
+                        } else if ((t >= 0.0 && t < 0.19) || (t >= 0.82 && t <= 1.0)) {
+                          // Noon / Daytime
+                          sunColor[key] = toRgb(rayNoonColor);
+                        } else if (t >= 0.19 && t < 0.30) {
+                          // Evening / Sunset
+                          sunColor[key] = toRgb(rayEveningColor);
+                        } else {
+                          // Night (0.30 - 0.74)
+                          sunColor[key] = toRgb(rayNightColor);
+                        }
+                      }
                     }
                     var sunIllum = sun['illuminance'];
                     if (sunIllum is Map) {
@@ -1097,7 +1577,8 @@ class _StudioDashboardState extends State<StudioDashboard> {
                     double mult = 0.25;
                     if (volumetricRays == 'Balanced') mult = 0.15;
                     if (volumetricRays == 'Low End') mult = 0.05;
-                    vol['media_coefficients']['air']['scattering'] = [rayColor.red / 255.0 * mult, rayColor.green / 255.0 * mult, rayColor.blue / 255.0 * mult];
+                    // Volumetric air scattering tinted with daytime noon ray color (most visible during day)
+                    vol['media_coefficients']['air']['scattering'] = [rayNoonColor.red / 255.0 * mult, rayNoonColor.green / 255.0 * mult, rayNoonColor.blue / 255.0 * mult];
                 }
             }
             
@@ -1198,8 +1679,7 @@ class _StudioDashboardState extends State<StudioDashboard> {
       await Future.delayed(const Duration(milliseconds: 600));
       statusNotifier.value = "Encoding Final MCPACK...";
       progressNotifier.value = 0.9;
-      final encodedBytes = ZipEncoder().encode(newArchive);
-      if (encodedBytes == null) throw Exception("Failed to encode zip");
+      final encodedBytes = ZipEncoder().encode(newArchive)!;
 
       await Future.delayed(const Duration(milliseconds: 400));
       statusNotifier.value = "Finalizing Shader Pack...";
@@ -1237,47 +1717,3 @@ class _StudioDashboardState extends State<StudioDashboard> {
   }
 }
 
-class _EngineCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _EngineCard({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.white.withOpacity(0.05) : const Color(0xFF181E19),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isSelected ? Colors.white : Colors.white10,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, size: 28, color: isSelected ? Colors.white : Colors.white54),
-            const SizedBox(height: 16),
-            Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: isSelected ? Colors.white : Colors.white70)),
-            const SizedBox(height: 4),
-            Text(subtitle, style: const TextStyle(fontSize: 11, color: Colors.white54)),
-          ],
-        ),
-      ),
-    );
-  }
-}

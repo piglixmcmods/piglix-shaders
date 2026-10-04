@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="piglix_shader_builder"
+        android:label="Shader Generator for MCPE"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

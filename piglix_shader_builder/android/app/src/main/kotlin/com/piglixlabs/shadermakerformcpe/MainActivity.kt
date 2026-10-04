@@ -1,4 +1,4 @@
-package com.example.piglix_shader_builder
+package com.piglixlabs.shadermakerformcpe
 
 import android.content.Intent
 import android.net.Uri

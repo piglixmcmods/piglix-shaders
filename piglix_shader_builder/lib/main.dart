@@ -17,11 +17,11 @@ class PiglixProApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF0F1511),
+        scaffoldBackgroundColor: const Color(0xFF141312),
         colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF6DE846),
-          secondary: Color(0xFF385E2E),
-          surface: Color(0xFF181E19),
+          primary: Color(0xFFD49B6A),
+          secondary: Color(0xFF423C37),
+          surface: Color(0xFF1F1E1C),
         ),
         fontFamily: 'Minecraft',
         textTheme: ThemeData.dark().textTheme.apply(
@@ -80,9 +80,9 @@ class _PiglixSplashScreenState extends State<PiglixSplashScreen> {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF6DE846).withValues(alpha: 0.35),
+                        color: const Color(0xFFD49B6A).withOpacity(0.28),
                         blurRadius: 65,
-                        spreadRadius: 25,
+                        spreadRadius: 20,
                       ),
                     ],
                   ),
@@ -105,13 +105,13 @@ class _PiglixSplashScreenState extends State<PiglixSplashScreen> {
                         text: 'Created by ',
                         style: TextStyle(color: Color(0xFF8E9590)),
                       ),
-                      TextSpan(
-                        text: 'Piglix Labs',
-                        style: TextStyle(
-                          color: Color(0xFF6DE846),
-                          fontWeight: FontWeight.bold,
+                        TextSpan(
+                          text: 'Piglix Labs',
+                          style: TextStyle(
+                            color: Color(0xFFD49B6A),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -128,7 +128,7 @@ class _PiglixSplashScreenState extends State<PiglixSplashScreen> {
                 height: 32,
                 child: CircularProgressIndicator(
                   strokeWidth: 3.0,
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF6DE846)),
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFD49B6A)),
                 ),
               ),
             ),

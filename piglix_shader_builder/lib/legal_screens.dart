@@ -13,21 +13,21 @@ class LegalPage extends StatelessWidget {
     final icon = _getIcon(type);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF040F0A),
+      backgroundColor: const Color(0xFF141312),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF040F0A),
+        backgroundColor: const Color(0xFF141312),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: Color(0xFF10B981),
+            color: const Color(0xFFD49B6A),
             size: 20,
           ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Row(
           children: [
-            Icon(icon, color: const Color(0xFF10B981), size: 20),
+            Icon(icon, color: const Color(0xFFD49B6A), size: 20),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -329,7 +329,7 @@ class LegalPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: highlight
-              ? const Color(0xFF10B981).withOpacity(0.6)
+              ? const Color(0xFFD49B6A).withOpacity(0.6)
               : const Color(0xFF123424),
           width: 1.2,
         ),
@@ -343,7 +343,7 @@ class LegalPage extends StatelessWidget {
                 width: 3.5,
                 height: 16,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF10B981),
+                  color: const Color(0xFFD49B6A),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -352,7 +352,7 @@ class LegalPage extends StatelessWidget {
                 child: Text(
                   title,
                   style: const TextStyle(
-                    color: Color(0xFF10B981),
+                    color: const Color(0xFFD49B6A),
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
                     letterSpacing: 0.3,
@@ -383,7 +383,7 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: const Color(0xFF040F0A),
+      backgroundColor: const Color(0xFF141312),
       child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -403,13 +403,13 @@ class AppDrawer extends StatelessWidget {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF10B981).withOpacity(0.15),
+                      color: const Color(0xFFD49B6A).withOpacity(0.15),
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: const Color(0xFF10B981), width: 1.5),
+                      border: Border.all(color: const Color(0xFFD49B6A), width: 1.5),
                     ),
                     child: const Icon(
                       Icons.auto_awesome_rounded,
-                      color: Color(0xFF10B981),
+                      color: const Color(0xFFD49B6A),
                       size: 26,
                     ),
                   ),
@@ -431,7 +431,7 @@ class AppDrawer extends StatelessWidget {
                         Text(
                           'Shader Generator for MCPE',
                           style: TextStyle(
-                            color: const Color(0xFF10B981).withOpacity(0.9),
+                            color: const Color(0xFFD49B6A).withOpacity(0.9),
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                           ),
@@ -570,10 +570,10 @@ class AppDrawer extends StatelessWidget {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: const Color(0xFF10B981).withOpacity(0.12),
+              color: const Color(0xFFD49B6A).withOpacity(0.12),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: const Color(0xFF10B981), size: 20),
+            child: Icon(icon, color: const Color(0xFFD49B6A), size: 20),
           ),
           title: Text(
             title,
@@ -592,7 +592,7 @@ class AppDrawer extends StatelessWidget {
           ),
           trailing: const Icon(
             Icons.chevron_right_rounded,
-            color: Color(0xFF10B981),
+            color: const Color(0xFFD49B6A),
             size: 20,
           ),
           onTap: onTap,

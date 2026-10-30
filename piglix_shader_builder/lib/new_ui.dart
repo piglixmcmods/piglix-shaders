@@ -337,11 +337,34 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final avail = constraints.maxHeight;
-                      // Base natural height of the 6 sections with minimal 6px gaps: ~485px.
-                      const baseContentHeight = 485.0;
+                      // Base natural height of the 6 sections with modest gaps: ~510px.
+                      const baseContentHeight = 470.0;
+
+                      Widget buildStaticColumn() {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const Spacer(),
+                              _buildHeroTextSection(),
+                              const SizedBox(height: 10),
+                              _buildStartBuildingButton(),
+                              const SizedBox(height: 10),
+                              _buildQuickActionCards(),
+                              const SizedBox(height: 10),
+                              _buildEngineSection(),
+                              const SizedBox(height: 10),
+                              _buildShaderNameSection(),
+                              const SizedBox(height: 10),
+                              _buildUploadCards(),
+                              const SizedBox(height: 10),
+                            ],
+                          ),
+                        );
+                      }
 
                       if (avail < baseContentHeight) {
-                        // Viewport is shorter than content: scale down smoothly to fit 100% statically without scrolling
                         return Center(
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
@@ -349,60 +372,13 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                             child: SizedBox(
                               width: constraints.maxWidth,
                               height: baseContentHeight,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    _buildHeroTextSection(),
-                                    const SizedBox(height: 6),
-                                    _buildStartBuildingButton(),
-                                    const SizedBox(height: 6),
-                                    _buildQuickActionCards(),
-                                    const SizedBox(height: 6),
-                                    _buildEngineSection(),
-                                    const SizedBox(height: 6),
-                                    _buildShaderNameSection(),
-                                    const SizedBox(height: 6),
-                                    _buildUploadCards(),
-                                    const SizedBox(height: 6),
-                                  ],
-                                ),
-                              ),
+                              child: buildStaticColumn(),
                             ),
                           ),
                         );
                       }
 
-                      // Viewport is tall enough: distribute extra height to push buttons down
-                      final extra = avail - baseContentHeight;
-                      final targetTop = (extra * 0.45).clamp(0.0, 160.0);
-                      final remainingForGaps = math.max(0.0, extra - targetTop);
-                      final gap = 6.0 + (remainingForGaps / 5).clamp(0.0, 18.0);
-                      final topOffset = math.max(0.0, extra - (gap - 6.0) * 5);
-
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            if (topOffset > 0) SizedBox(height: topOffset),
-                            _buildHeroTextSection(),
-                            SizedBox(height: gap),
-                            _buildStartBuildingButton(),
-                            SizedBox(height: gap),
-                            _buildQuickActionCards(),
-                            SizedBox(height: gap),
-                            _buildEngineSection(),
-                            SizedBox(height: gap),
-                            _buildShaderNameSection(),
-                            SizedBox(height: gap),
-                            _buildUploadCards(),
-                            const SizedBox(height: 6),
-                          ],
-                        ),
-                      );
+                      return buildStaticColumn();
                     },
                   ),
                 ),
@@ -519,12 +495,12 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                 ),
                 const SizedBox(height: 1),
                 const Text(
-                  'MCPE SHADER BUILDER',
+                  'SHADER GENERATOR FOR MCPE',
                   style: TextStyle(
-                    fontSize: 9.0,
+                    fontSize: 8.5,
                     fontWeight: FontWeight.w800,
                     color: Color(0xFF94A3B8),
-                    letterSpacing: 1.2,
+                    letterSpacing: 1.0,
                   ),
                 ),
               ],
@@ -535,20 +511,20 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
     );
   }
 
-  // 2. Hero Text Section: Slogan over landscape + 5 dots
+  // 2. Hero Text Section
   Widget _buildHeroTextSection() {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'TURN\nYOUR WORLD\nINTO SOMETHING\nINCREDIBLE',
           style: TextStyle(
             fontFamily: 'monospace',
-            fontSize: 19.5,
+            fontSize: 20.0,
             fontWeight: FontWeight.w900,
             color: Colors.white,
             height: 1.15,
-            letterSpacing: 1.0,
+            letterSpacing: 1.1,
             shadows: [
               Shadow(
                 color: Colors.black,
@@ -557,19 +533,20 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
               ),
               Shadow(
                 color: Colors.black,
-                blurRadius: 2,
+                blurRadius: 3,
                 offset: Offset(1, 1),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 5),
-        const Text(
+        SizedBox(height: 5),
+        Text(
           'Easy. Powerful. Made for MCPE.',
           style: TextStyle(
-            fontSize: 12.0,
+            fontSize: 12.5,
             fontWeight: FontWeight.w600,
             color: Colors.white70,
+            letterSpacing: 0.3,
             shadows: [
               Shadow(
                 color: Colors.black,
@@ -579,42 +556,11 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
             ],
           ),
         ),
-        const SizedBox(height: 8),
-        // 5 Indicator Dots: Active Green Dot + 4 Inactive Dots
-        Row(
-          children: [
-            Container(
-              width: 7,
-              height: 7,
-              decoration: BoxDecoration(
-                color: const Color(0xFF4ADE80),
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF4ADE80).withOpacity(0.8),
-                    blurRadius: 6,
-                  ),
-                ],
-              ),
-            ),
-            for (int i = 0; i < 4; i++) ...[
-              const SizedBox(width: 5),
-              Container(
-                width: 5,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.3),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ],
-          ],
-        ),
       ],
     );
   }
 
-  // 3. CTA Button: START BUILDING with Diamond Pickaxe and Pixeled Corners
+  // 3. CTA Button: GENERATE SHADER with Diamond Pickaxe and Pixeled Corners
   Widget _buildStartBuildingButton() {
     const s = 4.0;
     return SizedBox(
@@ -656,7 +602,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                     const SizedBox(width: 12),
                     const Expanded(
                       child: Text(
-                        'START BUILDING',
+                        'GENERATE SHADER',
                         style: TextStyle(
                           fontFamily: 'monospace',
                           color: Colors.white,
@@ -788,133 +734,68 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
     );
   }
 
-  // 5. ENGINE Section: Long Full-Width Vibrant Engine Card with Pixelated Corners (Classic Engine removed)
+  // 5. ENGINE Section: Long Full-Width Vibrant Engine Card with Pixelated Corners
   Widget _buildEngineSection() {
     const s = 3.5;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Text(
-              'ENGINE',
-              style: TextStyle(
-                fontFamily: 'monospace',
-                color: Colors.white,
-                fontSize: 12.5,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.0,
-              ),
-            ),
-            const SizedBox(width: 6),
-            GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    backgroundColor: const Color(0xFF111822),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: const BorderSide(color: Color(0xFF1E293B)),
-                    ),
-                    title: const Text('Render Engine', style: TextStyle(color: Colors.white)),
-                    content: const Text(
-                      '• Vibrant Engine: Bedrock JSON Deferred Rendering API (Render Dragon) with PBR materials, atmospheric fog, and advanced lighting.',
-                      style: TextStyle(color: Colors.white70, fontSize: 13),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(ctx),
-                        child: const Text('OK', style: TextStyle(color: Color(0xFF4ADE80))),
+    return CustomPaint(
+      painter: _PixelatedCardPainter(
+        fillColor: const Color(0xFF0F1722),
+        borderColor: const Color(0xFF22C55E),
+        borderWidth: 1.8,
+        step: s,
+        hasShadow: true,
+      ),
+      foregroundPainter: _PixelatedBorderPainter(
+        borderColor: const Color(0xFF22C55E),
+        borderWidth: 1.8,
+        step: s,
+      ),
+      child: ClipPath(
+        clipper: _PixelatedClipper(s),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+          child: Row(
+            children: [
+              const AnimatedMinecraftIcon(type: VoxelIconType.grassBlock, size: 28),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'VIBRANT ENGINE',
+                      style: TextStyle(
+                        fontFamily: 'monospace',
+                        color: Colors.white,
+                        fontSize: 13.0,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.8,
                       ),
-                    ],
-                  ),
-                );
-              },
-              child: Container(
-                width: 16,
-                height: 16,
-                decoration: BoxDecoration(
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      'Minecraft Bedrock JSON Deferred Rendering API',
+                      style: TextStyle(
+                        color: Color(0xFF4ADE80),
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Color(0xFF4ADE80),
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white38, width: 1.2),
                 ),
-                child: const Center(
-                  child: Text(
-                    '?',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ),
+                child: const Icon(Icons.check, color: Colors.black, size: 14),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 6),
-        // Vibrant Engine: Long full-width card filling space with pixelated corners
-        CustomPaint(
-          painter: _PixelatedCardPainter(
-            fillColor: const Color(0xFF0F1722),
-            borderColor: const Color(0xFF22C55E),
-            borderWidth: 1.8,
-            step: s,
-            hasShadow: true,
-          ),
-          foregroundPainter: _PixelatedBorderPainter(
-            borderColor: const Color(0xFF22C55E),
-            borderWidth: 1.8,
-            step: s,
-          ),
-          child: ClipPath(
-            clipper: _PixelatedClipper(s),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 14),
-              child: Row(
-                children: [
-                  const AnimatedMinecraftIcon(type: VoxelIconType.grassBlock, size: 26),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'VIBRANT ENGINE',
-                          style: TextStyle(
-                            fontFamily: 'monospace',
-                            color: Colors.white,
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.8,
-                          ),
-                        ),
-                        SizedBox(height: 2),
-                        Text(
-                          'Minecraft Bedrock JSON Deferred Rendering API',
-                          style: TextStyle(
-                            color: Color(0xFF4ADE80),
-                            fontSize: 10.0,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF4ADE80),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.check, color: Colors.black, size: 14),
-                  ),
-                ],
-              ),
-            ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -954,14 +835,14 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                 child: ClipPath(
                   clipper: _PixelatedClipper(s),
                   child: Container(
-                    height: 42,
+                    height: 44,
                     padding: const EdgeInsets.symmetric(horizontal: 14),
                     child: Row(
                       children: [
                         const Icon(
                           Icons.edit_rounded,
                           color: Color(0xFF4ADE80),
-                          size: 16,
+                          size: 17,
                         ),
                         const SizedBox(width: 10),
                         Expanded(
@@ -969,13 +850,13 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                             controller: _shaderNameCtrl,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 12.5,
+                              fontSize: 13.0,
                               fontWeight: FontWeight.w800,
                             ),
                             decoration: const InputDecoration(
                               border: InputBorder.none,
                               hintText: 'Enter shader name...',
-                              hintStyle: TextStyle(color: Colors.white38, fontSize: 12.5),
+                              hintStyle: TextStyle(color: Colors.white38, fontSize: 13.0),
                               isDense: true,
                               contentPadding: EdgeInsets.zero,
                             ),
@@ -1007,12 +888,12 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                 child: ClipPath(
                   clipper: _PixelatedClipper(s),
                   child: const SizedBox(
-                    width: 42,
-                    height: 42,
+                    width: 44,
+                    height: 44,
                     child: Icon(
                       Icons.casino_rounded,
                       color: Color(0xFFFB923C),
-                      size: 20,
+                      size: 21,
                     ),
                   ),
                 ),
@@ -1046,12 +927,12 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
         child: ClipPath(
           clipper: _PixelatedClipper(s),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             child: Row(
               children: [
                 Container(
-                  width: 32,
-                  height: 32,
+                  width: 34,
+                  height: 34,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(
@@ -4596,10 +4477,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   title: '',
                   gap: 14.0,
                   tiles: [
-                    _colorRow('Morning', 'Sunrise sky tint', morningColor, (c) => morningColor = c, iconType: ShaderIconType.morning, labelColor: Colors.white70),
-                    _colorRow('Noon', 'Midday sky tint', noonColor, (c) => noonColor = c, iconType: ShaderIconType.noon, labelColor: Colors.white70),
-                    _colorRow('Evening', 'Sunset sky tint', eveningColor, (c) => eveningColor = c, iconType: ShaderIconType.evening, labelColor: Colors.white70),
-                    _colorRow('Night', 'Midnight sky tint', nightColor, (c) => nightColor = c, iconType: ShaderIconType.night, labelColor: Colors.white70),
+                    _colorRow('Morning', 'Sunrise sky tint', morningColor, (c) => morningColor = c, iconType: ShaderIconType.morning, labelColor: Colors.white70, aspectRatio: 1.0),
+                    _colorRow('Noon', 'Midday sky tint', noonColor, (c) => noonColor = c, iconType: ShaderIconType.noon, labelColor: Colors.white70, aspectRatio: 1.0),
+                    _colorRow('Evening', 'Sunset sky tint', eveningColor, (c) => eveningColor = c, iconType: ShaderIconType.evening, labelColor: Colors.white70, aspectRatio: 1.0),
+                    _colorRow('Night', 'Midnight sky tint', nightColor, (c) => nightColor = c, iconType: ShaderIconType.night, labelColor: Colors.white70, aspectRatio: 1.0),
                   ],
                 ),
               ],
@@ -5723,42 +5604,309 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
     ValueNotifier<String> statusN,
   ) async {
     try {
-      await Future.delayed(const Duration(milliseconds: 300));
-      progressN.value = 0.3;
-      statusN.value = 'Injecting Atmosphere & Water shaders...';
+      await Future.delayed(const Duration(milliseconds: 200));
+      progressN.value = 0.15;
+      statusN.value = 'Loading Render Dragon materials & base configs...';
 
       Archive sourceArchive;
       if (widget.uploadedShaderBytes != null && widget.uploadedShaderBytes!.isNotEmpty) {
         sourceArchive = ZipDecoder().decodeBytes(widget.uploadedShaderBytes!);
       } else {
-        sourceArchive = Archive();
+        final byteData = await rootBundle.load('assets/base_shader.zip');
+        sourceArchive = ZipDecoder().decodeBytes(byteData.buffer.asUint8List());
       }
 
-      final newArchive = Archive();
+      final fileMap = <String, ArchiveFile>{};
       for (final file in sourceArchive) {
         if (file.isFile) {
-          newArchive.addFile(ArchiveFile(file.name, file.size, file.content));
+          fileMap[file.name] = file;
         }
       }
 
-      await Future.delayed(const Duration(milliseconds: 300));
-      progressN.value = 0.6;
-      statusN.value = 'Configuring Deferred PBR & Ray-tracing...';
+      await Future.delayed(const Duration(milliseconds: 200));
+      progressN.value = 0.35;
+      statusN.value = 'Configuring Waving Foliage & Clouds...';
 
-      // Pack icon
+      // 1. Foliage Waving Material Injection
+      if (!wavingFoliage && fileMap.containsKey('subpacks/no_wave/renderer/materials/RenderChunk.material.bin')) {
+        final noWaveChunk = fileMap['subpacks/no_wave/renderer/materials/RenderChunk.material.bin']!;
+        fileMap['renderer/materials/RenderChunk.material.bin'] = ArchiveFile(
+          'renderer/materials/RenderChunk.material.bin',
+          noWaveChunk.size,
+          noWaveChunk.content,
+        );
+      }
+
+      // 2. Cloud Material & Style Injection
+      if (cloudType == 'Flat 2D' && fileMap.containsKey('subpacks/box_clouds/renderer/materials/Clouds.material.bin')) {
+        final boxCloud = fileMap['subpacks/box_clouds/renderer/materials/Clouds.material.bin']!;
+        fileMap['renderer/materials/Clouds.material.bin'] = ArchiveFile(
+          'renderer/materials/Clouds.material.bin',
+          boxCloud.size,
+          boxCloud.content,
+        );
+      } else if (cloudType == 'Realistic 3D' && fileMap.containsKey('subpacks/realistic_clouds/renderer/materials/Clouds.material.bin')) {
+        final realCloud = fileMap['subpacks/realistic_clouds/renderer/materials/Clouds.material.bin']!;
+        fileMap['renderer/materials/Clouds.material.bin'] = ArchiveFile(
+          'renderer/materials/Clouds.material.bin',
+          realCloud.size,
+          realCloud.content,
+        );
+      }
+
+      await Future.delayed(const Duration(milliseconds: 200));
+      progressN.value = 0.55;
+      statusN.value = 'Injecting Torch, Water & Lighting JSONs...';
+
+      // 3. Torch & Lantern Light Color (point_lights/global.json)
+      final torchHex = '#${torchLightColor.value.toRadixString(16).padLeft(8, '0').substring(2)}';
+      Map<String, dynamic> pointLights = {
+        'format_version': '1.21.40',
+        'minecraft:point_light_settings': {
+          'colors': {
+            'minecraft:torch': torchHex,
+            'minecraft:lantern': torchHex,
+            'minecraft:copper_bulb': torchHex,
+            'minecraft:lit_furnace': torchHex,
+            'minecraft:lit_redstone_lamp': torchHex,
+            'minecraft:glowstone': torchHex,
+            'minecraft:light_block': torchHex,
+            'minecraft:campfire': torchHex,
+            'minecraft:soul_torch': '#29c2f1',
+            'minecraft:soul_lantern': '#29c2f1',
+            'minecraft:shroomlight': torchHex,
+          }
+        }
+      };
+      if (fileMap.containsKey('point_lights/global.json')) {
+        try {
+          final existing = jsonDecode(utf8.decode(fileMap['point_lights/global.json']!.content as List<int>)) as Map<String, dynamic>;
+          if (existing['minecraft:point_light_settings'] != null && existing['minecraft:point_light_settings']['colors'] != null) {
+            existing['minecraft:point_light_settings']['colors']['minecraft:torch'] = torchHex;
+            existing['minecraft:point_light_settings']['colors']['minecraft:lantern'] = torchHex;
+            pointLights = existing;
+          }
+        } catch (_) {}
+      }
+      final plBytes = utf8.encode(jsonEncode(pointLights));
+      fileMap['point_lights/global.json'] = ArchiveFile('point_lights/global.json', plBytes.length, plBytes);
+
+      // 4. Water Waves, Caustics & Transparency (water/water.json)
+      final waterTransparency = waterQuality == 'Ultra'
+          ? 0.85
+          : (waterQuality == 'High' ? 0.70 : (waterQuality == 'Medium' ? 0.55 : 0.40));
+      final waterSpeed = (windSpeed * 2.8).clamp(0.5, 6.0);
+      final waterFreq = (windSpeed * 1.0).clamp(0.2, 3.0);
+      Map<String, dynamic> waterSettings = {
+        'format_version': '1.21.40',
+        'minecraft:water_settings': {
+          'description': {'identifier': 'piglix:water_settings'},
+          'particle_concentrations': {
+            'chlorophyll': ((1.0 - waterTransparency) * 0.04).clamp(0.001, 0.1),
+            'suspended_sediment': 0.0,
+            'cdom': 0.0,
+          },
+          'caustics': {
+            'enabled': underwaterCaustics,
+            'frame_length': 0.066,
+            'texture': 'textures/caustic/caustics.png',
+            'scale': 0.37,
+            'power': 2.0,
+          },
+          'waves': {
+            'enabled': true,
+            'depth': 0.15,
+            'frequency': waterFreq,
+            'frequency_scaling': 1.2,
+            'mix': 0.18,
+            'octaves': 3,
+            'pull': 0.37,
+            'sampleWidth': 0.01,
+            'shape': 2.989,
+            'speed': waterSpeed,
+            'speed_scaling': 1.02,
+          }
+        }
+      };
+      final wBytes = utf8.encode(jsonEncode(waterSettings));
+      fileMap['water/water.json'] = ArchiveFile('water/water.json', wBytes.length, wBytes);
+
+      // 5. Biome Water Surface Color & Transparency across all biomes
+      for (final key in fileMap.keys.toList()) {
+        if (key.startsWith('biomes/') && key.endsWith('.client_biome.json')) {
+          try {
+            final bData = jsonDecode(utf8.decode(fileMap[key]!.content as List<int>)) as Map<String, dynamic>;
+            final bSettings = bData['minecraft:client_biome'] ?? bData;
+            if (bSettings != null) {
+              bSettings['water_surface_color'] = [waterColor.red, waterColor.green, waterColor.blue];
+              bSettings['water_surface_transparency'] = waterTransparency;
+              final bBytes = utf8.encode(jsonEncode(bData));
+              fileMap[key] = ArchiveFile(key, bBytes.length, bBytes);
+            }
+          } catch (_) {}
+        }
+      }
+
+      // 6. Color Grading (Tone mapping operator, Contrast, Saturation, Gamma)
+      final op = toneMapFilter.toLowerCase() == 'reinhard'
+          ? 'reinhard'
+          : (toneMapFilter.toLowerCase() == 'filmic' ? 'filmic' : 'aces');
+      Map<String, dynamic> colorGrading = {
+        'format_version': '1.21.40',
+        'minecraft:color_grading_settings': {
+          'description': {'identifier': 'piglix:color_grading'},
+          'color_grading': {
+            'highlights': {
+              'contrast': [contrast, contrast, contrast],
+              'saturation': [globalSaturation, globalSaturation, globalSaturation],
+              'gain': [1.2, 1.2, 1.2],
+              'gamma': [2.5, 2.5, 2.5],
+            },
+            'midtones': {
+              'contrast': [contrast, contrast, contrast],
+              'saturation': [globalSaturation, globalSaturation, globalSaturation],
+              'gain': [1.2, 1.2, 1.2],
+              'gamma': [2.5, 2.5, 2.5],
+            },
+            'shadows': {
+              'contrast': [contrast, contrast, contrast],
+              'saturation': [globalSaturation, globalSaturation, globalSaturation],
+              'gain': [1.1, 1.1, 1.1],
+              'gamma': [2.5, 2.5, 2.5],
+            }
+          },
+          'tone_mapping': {'operator': op}
+        }
+      };
+      final cgBytes = utf8.encode(jsonEncode(colorGrading));
+      fileMap['color_grading/color_grading.json'] = ArchiveFile('color_grading/color_grading.json', cgBytes.length, cgBytes);
+
+      // 7. Directional Sun & Moon Illuminance & Sky Color (lighting/global.json)
+      final sunIllum = (90.0 * lightIntensity).clamp(10.0, 200.0);
+      final moonIllum = (0.5 * (nightVision + 0.2)).clamp(0.1, 15.0);
+      Map<String, dynamic> lightingGlobal = {
+        'format_version': '1.21.70',
+        'minecraft:lighting_settings': {
+          'description': {'identifier': 'piglix:global_lighting'},
+          'directional_lights': {
+            'sun': {
+              'illuminance': {
+                '0.0': sunIllum,
+                '0.19': sunIllum,
+                '0.22': sunIllum * 0.65,
+                '0.25': 1.0,
+                '0.75': sunIllum * 0.35,
+                '0.795': sunIllum,
+                '0.81': sunIllum,
+              },
+              'color': {
+                '0.0': [noonColor.red, noonColor.green, noonColor.blue],
+                '0.18': [noonColor.red, noonColor.green, noonColor.blue],
+                '0.22': [eveningColor.red, eveningColor.green, eveningColor.blue],
+                '0.25': [eveningColor.red, (eveningColor.green * 0.6).round(), (eveningColor.blue * 0.3).round()],
+                '0.75': [morningColor.red, morningColor.green, morningColor.blue],
+                '0.81': [noonColor.red, noonColor.green, noonColor.blue],
+              }
+            },
+            'moon': {
+              'illuminance': {
+                '0.3': moonIllum,
+                '0.5': moonIllum,
+                '0.7': moonIllum,
+              },
+              'color': {
+                '0.3': [nightColor.red, nightColor.green, nightColor.blue],
+                '0.5': [nightColor.red, nightColor.green, nightColor.blue],
+                '0.7': [nightColor.red, nightColor.green, nightColor.blue],
+              }
+            }
+          }
+        }
+      };
+      final lgBytes = utf8.encode(jsonEncode(lightingGlobal));
+      fileMap['lighting/global.json'] = ArchiveFile('lighting/global.json', lgBytes.length, lgBytes);
+
+      // 8. Atmospherics: Sky Zenith & Horizon Colors, God Rays (atmospherics/atmospherics.json)
+      final mieGodRays = (3.5 * lightIntensity).clamp(1.0, 9.0);
+      Map<String, dynamic> atmosphereJson = {
+        'format_version': '1.21.40',
+        'minecraft:atmosphere_settings': {
+          'description': {'identifier': 'piglix:atmosphere_settings'},
+          'rayleigh_strength': {
+            '0.0': (0.9 * fogDensity).clamp(0.2, 3.0),
+            '0.25': (0.6 * fogDensity).clamp(0.2, 2.5),
+            '0.75': (0.6 * fogDensity).clamp(0.2, 2.5),
+            '0.81': (0.9 * fogDensity).clamp(0.2, 3.0),
+          },
+          'sun_mie_strength': {
+            '0.0': mieGodRays,
+            '0.22': mieGodRays * 1.3,
+            '0.25': mieGodRays * 1.5,
+            '0.75': mieGodRays * 1.5,
+            '0.81': mieGodRays,
+          },
+          'moon_mie_strength': {
+            '0.3': 1.5,
+            '0.5': 2.0,
+            '0.7': 1.5,
+          },
+          'sun_glare_shape': {
+            '0.0': (5.0 * sunSize).clamp(1.0, 15.0),
+            '0.25': (5.0 * sunSize).clamp(1.0, 15.0),
+            '0.75': (5.0 * sunSize).clamp(1.0, 15.0),
+          },
+          'sky_zenith_color': {
+            '0.0': [noonColor.red, noonColor.green, noonColor.blue],
+            '0.22': [eveningColor.red, eveningColor.green, eveningColor.blue],
+            '0.67': [nightColor.red, nightColor.green, nightColor.blue],
+            '0.75': [morningColor.red, morningColor.green, morningColor.blue],
+          },
+          'sky_horizon_color': {
+            '0.0': [noonColor.red, noonColor.green, noonColor.blue],
+            '0.22': [eveningColor.red, eveningColor.green, eveningColor.blue],
+            '0.67': [nightColor.red, nightColor.green, nightColor.blue],
+            '0.75': [morningColor.red, morningColor.green, morningColor.blue],
+          }
+        }
+      };
+      final atmBytes = utf8.encode(jsonEncode(atmosphereJson));
+      fileMap['atmospherics/atmospherics.json'] = ArchiveFile('atmospherics/atmospherics.json', atmBytes.length, atmBytes);
+
+      // 9. Shadows & PBR Settings
+      Map<String, dynamic> shadowSettings = {
+        'format_version': '1.21.40',
+        'minecraft:shadow_settings': {
+          'description': {'identifier': 'piglix:shadow_settings'},
+          'point_light_shadows': enablePointLightShadows,
+          'shadow_quality': shadowQuality.toLowerCase(),
+        }
+      };
+      final shBytes = utf8.encode(jsonEncode(shadowSettings));
+      fileMap['shadows/global.json'] = ArchiveFile('shadows/global.json', shBytes.length, shBytes);
+
+      Map<String, dynamic> pbrSettings = {
+        'format_version': '1.21.40',
+        'minecraft:pbr_settings': {
+          'description': {'identifier': 'piglix:pbr_settings'},
+          'enabled': enablePBR,
+        }
+      };
+      final pbrBytes = utf8.encode(jsonEncode(pbrSettings));
+      fileMap['pbr/global.json'] = ArchiveFile('pbr/global.json', pbrBytes.length, pbrBytes);
+
+      // 10. Pack Icon
       final iconBytes = widget.uploadedLogoBytes ?? kPiglixLogoBytes;
-      newArchive.addFile(
-        ArchiveFile('pack_icon.png', iconBytes.length, iconBytes),
-      );
+      fileMap['pack_icon.png'] = ArchiveFile('pack_icon.png', iconBytes.length, iconBytes);
 
-      // manifest.json
+      // 11. Manifest.json
       final packUuid = const Uuid().v4();
       final moduleUuid = const Uuid().v4();
+      String pName = shaderNameCtrl.text.trim().isEmpty ? 'Piglix Shader' : shaderNameCtrl.text.trim();
       final manifestJson = jsonEncode({
         'format_version': 2,
         'header': {
-          'name': shaderNameCtrl.text.trim().isEmpty ? 'Piglix Shader' : shaderNameCtrl.text.trim(),
-          'description': 'Generated with Piglix Shader Studio v2.4',
+          'name': pName,
+          'description': 'Piglix Vibrant Engine · Ultra Bedrock Shader\n§aWaving Plants & Water · 3D Clouds · Custom Sky & Lighting',
           'uuid': packUuid,
           'version': [1, 0, 0],
           'min_engine_version': [1, 21, 0],
@@ -5771,122 +5919,49 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           }
         ],
         'capabilities': ['raytraced'],
+        'subpacks': [
+          {'folder_name': 'realistic_clouds', 'name': 'Realistic 3D Clouds', 'memory_tier': 2},
+          {'folder_name': 'rounded_clouds', 'name': 'Rounded Clouds', 'memory_tier': 1},
+          {'folder_name': 'box_clouds', 'name': 'Classic Box Clouds', 'memory_tier': 1},
+          {'folder_name': 'chunk_anim', 'name': 'Chunk Loading Animation', 'memory_tier': 1},
+          {'folder_name': 'no_wave', 'name': 'No Waves (Low-End / High FPS)', 'memory_tier': 0},
+          {'folder_name': 'no_fog', 'name': 'Clear Sky (No Fog)', 'memory_tier': 1},
+          {'folder_name': 'default', 'name': 'Default Balanced', 'memory_tier': 1},
+        ],
       });
-      newArchive.addFile(
-        ArchiveFile('manifest.json', manifestJson.length, utf8.encode(manifestJson)),
-      );
+      final mBytes = utf8.encode(manifestJson);
+      fileMap['manifest.json'] = ArchiveFile('manifest.json', mBytes.length, mBytes);
 
-      // Tonemapping & Atmospherics configs
-      final atmJson = jsonEncode({
-        'format_version': '1.21.40',
-        'minecraft:atmosphere_settings': {
-          'sun_size': sunSize,
-          'night_vision': nightVision,
-          'fog_density': fogDensity,
-          'bloom_intensity': bloomIntensity,
-          'global_saturation': globalSaturation,
-          'contrast': contrast,
-          'auto_exposure': autoExposure,
-          'tone_map': toneMapFilter,
-          'water_tint': [waterColor.red / 255.0, waterColor.green / 255.0, waterColor.blue / 255.0],
-          'wind_speed': windSpeed,
-          'underwater_caustics': underwaterCaustics,
-          'pbr_bump': enablePBR,
-          // 1. CLOUD STYLE
-          'cloud_style': cloudType,
-          'clouds': {
-            'type': cloudType,
-            'is_3d': cloudType != 'Flat 2D',
-            'layers': cloudType == 'Realistic 3D' ? 2 : (cloudType == 'Volumetric' ? 3 : 1),
-            'thickness': cloudType == 'Flat 2D' ? 0.0 : (cloudType == 'Volumetric' ? 12.0 : 6.0),
-            'top_tint': [cloudTopColor.red / 255.0, cloudTopColor.green / 255.0, cloudTopColor.blue / 255.0],
-            'bottom_tint': [cloudBottomColor.red / 255.0, cloudBottomColor.green / 255.0, cloudBottomColor.blue / 255.0],
-          },
-          // 2. WAVING FOLIAGE
-          'foliage_animation': {
-            'enabled': wavingFoliage,
-            'wave_speed': foliageWaveSpeed,
-            'sway_blocks': ['leaves', 'grass', 'tallgrass', 'flower', 'crops', 'vines', 'lilypad', 'sugar_cane'],
-            'wind_strength': foliageWaveSpeed * (windSpeed * 0.8),
-          },
-          // 3. VOLUMETRIC FOG
-          'volumetric_fog': {
-            'profile': volumetricFogProfile,
-            'ray_marching_samples': volumetricFogProfile == 'Cinematic' ? 64 : (volumetricFogProfile == 'Balanced' ? 32 : 12),
-            'shadow_samples': volumetricFogProfile == 'Cinematic' ? 16 : (volumetricFogProfile == 'Balanced' ? 8 : 4),
-            'in_scattering_intensity': volumetricFogProfile == 'Cinematic' ? 1.0 : (volumetricFogProfile == 'Balanced' ? 0.75 : 0.5),
-            'anisotropy': 0.75,
-            'height_falloff': 0.05,
-          },
-          // 4. BIOME-WISE TONE
-          'biome_color_grading': {
-            'mode': biomeTone,
-            'enabled': true,
-            'biomes': {
-              'plains': {'saturation': biomeTone == 'Vibrant' ? 1.25 : 1.1, 'warmth': 0.05},
-              'jungle': {'saturation': 1.3, 'tint': [0.1, 0.4, 0.1], 'fog_tint': [0.15, 0.35, 0.2]},
-              'savanna': {'saturation': biomeTone == 'Savanna' ? 1.15 : 0.95, 'warmth': 0.35, 'tint': [0.4, 0.25, 0.05]},
-              'taiga_snowy': {'saturation': 0.85, 'coolness': 0.35, 'tint': [0.08, 0.2, 0.4]},
-              'swamp': {'saturation': 0.75, 'tint': [0.15, 0.28, 0.12]},
-              'desert': {'saturation': 0.9, 'warmth': 0.45, 'tint': [0.45, 0.3, 0.1]},
-              'nether': {'saturation': 1.2, 'warmth': 0.5, 'tint': [0.5, 0.08, 0.08]},
-            },
-          },
-          'god_rays_colors': {
-            'morning': [rayMorningColor.red / 255.0, rayMorningColor.green / 255.0, rayMorningColor.blue / 255.0],
-            'noon': [rayNoonColor.red / 255.0, rayNoonColor.green / 255.0, rayNoonColor.blue / 255.0],
-            'evening': [rayEveningColor.red / 255.0, rayEveningColor.green / 255.0, rayEveningColor.blue / 255.0],
-            'night': [rayNightColor.red / 255.0, rayNightColor.green / 255.0, rayNightColor.blue / 255.0],
-          },
-          'lighting_settings': {
-            'light_intensity': lightIntensity,
-            'block_light_intensity': blockLightIntensity,
-            'shadow_quality': shadowQuality,
-            'point_light_shadows': enablePointLightShadows,
-            'torch_tint': [torchLightColor.red / 255.0, torchLightColor.green / 255.0, torchLightColor.blue / 255.0],
-            'fog_tint': [fogColor.red / 255.0, fogColor.green / 255.0, fogColor.blue / 255.0],
-          },
-        }
-      });
-      newArchive.addFile(
-        ArchiveFile('atmospherics/atmosphere.json', atmJson.length, utf8.encode(atmJson)),
-      );
-
-      // Subpack configuration and material files
+      // 12. Subpacks.json
       final subpackJson = jsonEncode({
         'subpacks': [
-          {
-            'folder_name': 'cinematic',
-            'name': 'Cinematic ($cloudType, $volumetricFogProfile)',
-            'memory_tier': 2,
-          },
-          {
-            'folder_name': 'balanced',
-            'name': 'Balanced ($cloudType)',
-            'memory_tier': 1,
-          },
-          {
-            'folder_name': 'low_end',
-            'name': 'Performance / Low-End',
-            'memory_tier': 0,
-          },
+          {'folder_name': 'realistic_clouds', 'name': 'Realistic 3D Clouds', 'memory_tier': 2},
+          {'folder_name': 'rounded_clouds', 'name': 'Rounded Clouds', 'memory_tier': 1},
+          {'folder_name': 'box_clouds', 'name': 'Classic Box Clouds', 'memory_tier': 1},
+          {'folder_name': 'chunk_anim', 'name': 'Chunk Loading Animation', 'memory_tier': 1},
+          {'folder_name': 'no_wave', 'name': 'No Waves (Low-End / High FPS)', 'memory_tier': 0},
+          {'folder_name': 'no_fog', 'name': 'Clear Sky (No Fog)', 'memory_tier': 1},
+          {'folder_name': 'default', 'name': 'Default Balanced', 'memory_tier': 1},
         ]
       });
-      newArchive.addFile(
-        ArchiveFile('subpacks.json', subpackJson.length, utf8.encode(subpackJson)),
-      );
+      final spBytes = utf8.encode(subpackJson);
+      fileMap['subpacks.json'] = ArchiveFile('subpacks.json', spBytes.length, spBytes);
 
-      await Future.delayed(const Duration(milliseconds: 400));
+      await Future.delayed(const Duration(milliseconds: 300));
       progressN.value = 0.85;
-      statusN.value = 'Packaging MCPACK...';
+      statusN.value = 'Packaging MCPACK with Render Dragon binaries...';
 
-      final encoded = ZipEncoder().encode(newArchive);
+      final finalArchive = Archive();
+      for (final f in fileMap.values) {
+        finalArchive.addFile(f);
+      }
+      final encoded = ZipEncoder().encode(finalArchive);
 
       await Future.delayed(const Duration(milliseconds: 300));
       progressN.value = 1.0;
       statusN.value = 'Done! ✨';
 
-      String pName = shaderNameCtrl.text.trim().isEmpty
+      pName = shaderNameCtrl.text.trim().isEmpty
           ? 'Piglix Shader'
           : shaderNameCtrl.text.trim();
       setState(() {

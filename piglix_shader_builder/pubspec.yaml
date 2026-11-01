@@ -80,6 +80,14 @@ flutter:
     - assets/block_light_bg.jpg
     - assets/wind_waves_bg.jpg
     - assets/global_metalness_bg.jpg
+
+  fonts:
+    - family: PixelifySans
+      fonts:
+        - asset: assets/fonts/PixelifySans.ttf
+    - family: Minecraft
+      fonts:
+        - asset: assets/fonts/Minecraft.otf
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

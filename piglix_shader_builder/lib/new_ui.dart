@@ -337,16 +337,17 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final avail = constraints.maxHeight;
-                      // Base natural height of the 6 sections with modest gaps: ~510px.
-                      const baseContentHeight = 470.0;
+                      // Base natural height of the 6 sections with modest gaps: ~550px.
+                      const baseContentHeight = 560.0;
 
-                      Widget buildStaticColumn() {
+                      Widget buildStaticColumn({bool withSpacer = true}) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              const Spacer(),
+                              if (withSpacer) const Spacer(),
                               _buildHeroTextSection(),
                               const SizedBox(height: 10),
                               _buildStartBuildingButton(),
@@ -368,17 +369,17 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                         return Center(
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
-                            alignment: Alignment.center,
+                            alignment: Alignment.bottomCenter,
                             child: SizedBox(
                               width: constraints.maxWidth,
                               height: baseContentHeight,
-                              child: buildStaticColumn(),
+                              child: buildStaticColumn(withSpacer: false),
                             ),
                           ),
                         );
                       }
 
-                      return buildStaticColumn();
+                      return buildStaticColumn(withSpacer: true);
                     },
                   ),
                 ),
@@ -392,34 +393,34 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
     );
   }
 
-  // 1. Top Bar: 3-Line Menu Button on Left + 3D Grass Block + PIGLIX STUDIO Title
+  // 1. Top Bar: Hamburger button on Left + Centered Shader Generator Title
   Widget _buildTopBar() {
     const s = 2.5;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
-          // 3-Line Hamburger Menu Button to open the Sidebar Drawer
+          // 3-Line Hamburger Menu Button with Neon Green Pixelated Border
           GestureDetector(
             onTap: () => _scaffoldKey.currentState?.openDrawer(),
             child: CustomPaint(
               painter: _PixelatedCardPainter(
-                fillColor: const Color(0xFF182230).withOpacity(0.85),
-                borderColor: const Color(0xFF2D3B4E),
-                borderWidth: 1.2,
+                fillColor: const Color(0xFF0E1722),
+                borderColor: const Color(0xFF22C55E),
+                borderWidth: 1.5,
                 step: s,
                 hasShadow: true,
               ),
               foregroundPainter: _PixelatedBorderPainter(
-                borderColor: const Color(0xFF2D3B4E),
-                borderWidth: 1.2,
+                borderColor: const Color(0xFF22C55E),
+                borderWidth: 1.5,
                 step: s,
               ),
               child: ClipPath(
                 clipper: _PixelatedClipper(s),
                 child: const SizedBox(
-                  width: 40,
-                  height: 40,
+                  width: 42,
+                  height: 42,
                   child: Icon(
                     Icons.menu_rounded,
                     color: Colors.white,
@@ -429,125 +430,105 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
               ),
             ),
           ),
-          const SizedBox(width: 12),
-          // 3D Grass Block Logo Icon
-          Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF4ADE80).withOpacity(0.35),
-                  blurRadius: 10,
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.memory(
-                kPiglixLogoBytes,
-                fit: BoxFit.cover,
-                errorBuilder: (ctx, err, stack) => const AnimatedMinecraftIcon(
-                  type: VoxelIconType.grassBlock,
-                  size: 38,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
-          // Studio Title in Green Glowing Gradient
+          // Centered Title & Subtitle matching reference screenshot
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'PIGLIX ',
+                  children: const [
+                    Text(
+                      'Shader ',
                       style: TextStyle(
-                        fontFamily: 'monospace',
-                        fontSize: 17,
+                        fontSize: 23,
                         fontWeight: FontWeight.w900,
                         color: Colors.white,
-                        letterSpacing: 1.2,
+                        letterSpacing: -0.3,
                       ),
                     ),
                     Text(
-                      'STUDIO',
+                      'Generator',
                       style: TextStyle(
-                        fontFamily: 'monospace',
-                        fontSize: 17,
+                        fontSize: 23,
                         fontWeight: FontWeight.w900,
-                        color: const Color(0xFF4ADE80),
-                        letterSpacing: 1.2,
-                        shadows: [
-                          Shadow(
-                            color: const Color(0xFF4ADE80).withOpacity(0.5),
-                            blurRadius: 10,
-                          ),
-                        ],
+                        color: Color(0xFF22C55E),
+                        letterSpacing: -0.3,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 1),
+                const SizedBox(height: 2),
                 const Text(
-                  'SHADER GENERATOR FOR MCPE',
+                  'FOR MCPE',
                   style: TextStyle(
-                    fontSize: 8.5,
+                    fontSize: 9.5,
                     fontWeight: FontWeight.w800,
                     color: Color(0xFF94A3B8),
-                    letterSpacing: 1.0,
+                    letterSpacing: 2.8,
                   ),
                 ),
               ],
             ),
           ),
+          // Symmetrical balance space so title remains centered
+          const SizedBox(width: 42, height: 42),
         ],
       ),
     );
   }
 
-  // 2. Hero Text Section
+  // 2. Hero Text Section matching exact screenshot (Bold, Thick, Big normal font)
   Widget _buildHeroTextSection() {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'TURN\nYOUR WORLD\nINTO SOMETHING\nINCREDIBLE',
-          style: TextStyle(
-            fontFamily: 'monospace',
-            fontSize: 20.0,
-            fontWeight: FontWeight.w900,
-            color: Colors.white,
-            height: 1.15,
-            letterSpacing: 1.1,
-            shadows: [
-              Shadow(
-                color: Colors.black,
-                blurRadius: 8,
-                offset: Offset(0, 2),
-              ),
-              Shadow(
-                color: Colors.black,
-                blurRadius: 3,
-                offset: Offset(1, 1),
-              ),
+        Container(
+          width: 28,
+          height: 4.0,
+          decoration: BoxDecoration(
+            color: const Color(0xFF22C55E),
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(height: 8),
+        RichText(
+          text: const TextSpan(
+            style: TextStyle(
+              fontSize: 30.0,
+              fontWeight: FontWeight.w900,
+              height: 1.05,
+              letterSpacing: -0.5,
+              shadows: [
+                Shadow(
+                  color: Colors.black,
+                  blurRadius: 10,
+                  offset: Offset(0, 2),
+                ),
+                Shadow(
+                  color: Colors.black,
+                  blurRadius: 4,
+                  offset: Offset(1, 1),
+                ),
+              ],
+            ),
+            children: [
+              TextSpan(text: 'Create\nStunning\n', style: TextStyle(color: Colors.white)),
+              TextSpan(text: 'Shaders\n', style: TextStyle(color: Color(0xFF22C55E))),
+              TextSpan(text: 'for MCPE', style: TextStyle(color: Colors.white)),
             ],
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 6),
         Text(
-          'Easy. Powerful. Made for MCPE.',
+          'Simple. Powerful. Fully Customizable.',
           style: TextStyle(
-            fontSize: 12.5,
+            fontSize: 13.0,
             fontWeight: FontWeight.w600,
-            color: Colors.white70,
-            letterSpacing: 0.3,
-            shadows: [
+            color: Colors.white.withOpacity(0.9),
+            letterSpacing: 0.2,
+            shadows: const [
               Shadow(
                 color: Colors.black,
                 blurRadius: 4,
@@ -560,11 +541,11 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
     );
   }
 
-  // 3. CTA Button: GENERATE SHADER with Diamond Pickaxe and Pixeled Corners
+  // 3. CTA Button: START GENERATING with Diamond Pickaxe, Pixelated Border, and Forward Arrow
   Widget _buildStartBuildingButton() {
     const s = 4.0;
     return SizedBox(
-      height: 52,
+      height: 54,
       child: CustomPaint(
         painter: _PixelatedCardPainter(
           fillColor: const Color(0xFF16A34A),
@@ -598,17 +579,16 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
-                    const AnimatedMinecraftIcon(type: VoxelIconType.pickaxe, size: 26),
-                    const SizedBox(width: 12),
+                    const AnimatedMinecraftIcon(type: VoxelIconType.pickaxe, size: 28),
+                    const SizedBox(width: 14),
                     const Expanded(
                       child: Text(
-                        'GENERATE SHADER',
+                        'START GENERATING',
                         style: TextStyle(
-                          fontFamily: 'monospace',
                           color: Colors.white,
-                          fontSize: 15.5,
+                          fontSize: 16.0,
                           fontWeight: FontWeight.w900,
-                          letterSpacing: 1.4,
+                          letterSpacing: 1.0,
                           shadows: [
                             Shadow(
                               color: Colors.black54,
@@ -620,16 +600,17 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                       ),
                     ),
                     Container(
-                      width: 32,
-                      height: 32,
+                      width: 34,
+                      height: 34,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 1.6),
+                        color: const Color(0xFF0F5132).withOpacity(0.4),
+                        border: Border.all(color: Colors.white, width: 1.8),
                       ),
                       child: const Icon(
                         Icons.arrow_forward_rounded,
                         color: Colors.white,
-                        size: 18,
+                        size: 20,
                       ),
                     ),
                   ],
@@ -642,7 +623,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
     );
   }
 
-  // 4. Three Quick Action Cards: PRESETS, MY SHADERS, COMMUNITY (Pixelated corners)
+  // 4. Three Quick Action Cards: PRESETS, MY SHADERS, COMMUNITY with Titles & Subtitles
   Widget _buildQuickActionCards() {
     return Row(
       children: [
@@ -651,6 +632,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
           child: _buildActionTile(
             voxelIcon: VoxelIconType.grassBlock,
             label: 'PRESETS',
+            subtitle: 'Ready to use',
             onTap: _pickCustomShader,
           ),
         ),
@@ -660,6 +642,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
           child: _buildActionTile(
             voxelIcon: VoxelIconType.chest,
             label: 'MY SHADERS',
+            subtitle: 'Saved packs',
             onTap: _openMyShaders,
           ),
         ),
@@ -669,6 +652,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
           child: _buildActionTile(
             voxelIcon: VoxelIconType.globe,
             label: 'COMMUNITY',
+            subtitle: 'Explore & Share',
             onTap: () {
               _snack('Community shader sharing & cloud packs coming soon!');
             },
@@ -683,6 +667,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
     IconData? iconData,
     Color? iconColor,
     required String label,
+    required String subtitle,
     required VoidCallback onTap,
   }) {
     const s = 3.5;
@@ -690,37 +675,48 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
       onTap: onTap,
       child: CustomPaint(
         painter: _PixelatedCardPainter(
-          fillColor: const Color(0xFF111822),
+          fillColor: const Color(0xFF0E1722),
           borderColor: const Color(0xFF1E293B),
-          borderWidth: 1.5,
+          borderWidth: 1.4,
           step: s,
           hasShadow: true,
         ),
         foregroundPainter: _PixelatedBorderPainter(
           borderColor: const Color(0xFF1E293B),
-          borderWidth: 1.5,
+          borderWidth: 1.4,
           step: s,
         ),
         child: ClipPath(
           clipper: _PixelatedClipper(s),
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 6),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (voxelIcon != null)
-                  AnimatedMinecraftIcon(type: voxelIcon, size: 26)
+                  AnimatedMinecraftIcon(type: voxelIcon, size: 28)
                 else if (iconData != null)
-                  Icon(iconData, size: 26, color: iconColor ?? Colors.white),
-                const SizedBox(height: 5),
+                  Icon(iconData, size: 28, color: iconColor ?? Colors.white),
+                const SizedBox(height: 6),
                 Text(
                   label,
                   style: const TextStyle(
-                    fontFamily: 'monospace',
                     color: Colors.white,
-                    fontSize: 10.0,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.8,
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.5,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    color: Color(0xFF94A3B8),
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 1,
@@ -734,72 +730,109 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
     );
   }
 
-  // 5. ENGINE Section: Long Full-Width Vibrant Engine Card with Pixelated Corners
+  // 5. RENDER ENGINE Section: RENDER ENGINE (?) Header + Vibrant Engine Card
   Widget _buildEngineSection() {
     const s = 3.5;
-    return CustomPaint(
-      painter: _PixelatedCardPainter(
-        fillColor: const Color(0xFF0F1722),
-        borderColor: const Color(0xFF22C55E),
-        borderWidth: 1.8,
-        step: s,
-        hasShadow: true,
-      ),
-      foregroundPainter: _PixelatedBorderPainter(
-        borderColor: const Color(0xFF22C55E),
-        borderWidth: 1.8,
-        step: s,
-      ),
-      child: ClipPath(
-        clipper: _PixelatedClipper(s),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-          child: Row(
-            children: [
-              const AnimatedMinecraftIcon(type: VoxelIconType.grassBlock, size: 28),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'VIBRANT ENGINE',
-                      style: TextStyle(
-                        fontFamily: 'monospace',
-                        color: Colors.white,
-                        fontSize: 13.0,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      'Minecraft Bedrock JSON Deferred Rendering API',
-                      style: TextStyle(
-                        color: Color(0xFF4ADE80),
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Text(
+              'RENDER ENGINE',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12.5,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.8,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Container(
+              width: 15,
+              height: 15,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: const Color(0xFF64748B), width: 1.2),
+              ),
+              alignment: Alignment.center,
+              child: const Text(
+                '?',
+                style: TextStyle(
+                  color: Color(0xFF94A3B8),
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.bold,
+                  height: 1.0,
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                  color: Color(0xFF4ADE80),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.check, color: Colors.black, size: 14),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        CustomPaint(
+          painter: _PixelatedCardPainter(
+            fillColor: const Color(0xFF0E1722),
+            borderColor: const Color(0xFF22C55E),
+            borderWidth: 1.8,
+            step: s,
+            hasShadow: true,
+          ),
+          foregroundPainter: _PixelatedBorderPainter(
+            borderColor: const Color(0xFF22C55E),
+            borderWidth: 1.8,
+            step: s,
+          ),
+          child: ClipPath(
+            clipper: _PixelatedClipper(s),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+              child: Row(
+                children: [
+                  const AnimatedMinecraftIcon(type: VoxelIconType.grassBlock, size: 28),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'VIBRANT ENGINE',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'Minecraft Bedrock JSON Deferred Rendering API',
+                          style: TextStyle(
+                            color: Color(0xFF22C55E),
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF22C55E),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.check_rounded, color: Colors.black, size: 16),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 
-  // 6. SHADER NAME Section with Green Pencil + Randomize Dice (Pixelated corners)
+  // 6. SHADER NAME Section with Green Pencil + Randomize Dice
   Widget _buildShaderNameSection() {
     const s = 3.0;
     return Column(
@@ -808,11 +841,10 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
         const Text(
           'SHADER NAME',
           style: TextStyle(
-            fontFamily: 'monospace',
             color: Colors.white,
             fontSize: 12.5,
             fontWeight: FontWeight.w900,
-            letterSpacing: 1.0,
+            letterSpacing: 0.8,
           ),
         ),
         const SizedBox(height: 6),
@@ -821,7 +853,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
             Expanded(
               child: CustomPaint(
                 painter: _PixelatedCardPainter(
-                  fillColor: const Color(0xFF111822),
+                  fillColor: const Color(0xFF0E1722),
                   borderColor: const Color(0xFF1E293B),
                   borderWidth: 1.4,
                   step: s,
@@ -841,8 +873,8 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                       children: [
                         const Icon(
                           Icons.edit_rounded,
-                          color: Color(0xFF4ADE80),
-                          size: 17,
+                          color: Color(0xFF22C55E),
+                          size: 18,
                         ),
                         const SizedBox(width: 10),
                         Expanded(
@@ -850,7 +882,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                             controller: _shaderNameCtrl,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 13.0,
+                              fontSize: 14.0,
                               fontWeight: FontWeight.w800,
                             ),
                             decoration: const InputDecoration(
@@ -874,7 +906,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
               onTap: _randomizeShaderName,
               child: CustomPaint(
                 painter: _PixelatedCardPainter(
-                  fillColor: const Color(0xFF111822),
+                  fillColor: const Color(0xFF0E1722),
                   borderColor: const Color(0xFF1E293B),
                   borderWidth: 1.4,
                   step: s,
@@ -887,13 +919,14 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                 ),
                 child: ClipPath(
                   clipper: _PixelatedClipper(s),
-                  child: const SizedBox(
+                  child: Container(
                     width: 44,
                     height: 44,
-                    child: Icon(
+                    alignment: Alignment.center,
+                    child: const Icon(
                       Icons.casino_rounded,
                       color: Color(0xFFFB923C),
-                      size: 21,
+                      size: 22,
                     ),
                   ),
                 ),
@@ -905,7 +938,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
     );
   }
 
-  // 7. Custom Pack Logo Upload Card with Pixelated Corners
+  // 7. Custom Pack Logo Upload Card matching screenshot
   Widget _buildUploadCards() {
     final hasLogo = _uploadedLogoBytes != null;
     const s = 3.5;
@@ -913,15 +946,15 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
       onTap: _pickCustomLogo,
       child: CustomPaint(
         painter: _PixelatedCardPainter(
-          fillColor: const Color(0xFF111822),
-          borderColor: hasLogo ? const Color(0xFF22C55E) : const Color(0xFF1E293B),
-          borderWidth: hasLogo ? 1.8 : 1.2,
+          fillColor: const Color(0xFF0E1722),
+          borderColor: const Color(0xFF1E293B),
+          borderWidth: 1.4,
           step: s,
           hasShadow: true,
         ),
         foregroundPainter: _PixelatedBorderPainter(
-          borderColor: hasLogo ? const Color(0xFF22C55E) : const Color(0xFF1E293B),
-          borderWidth: hasLogo ? 1.8 : 1.2,
+          borderColor: const Color(0xFF1E293B),
+          borderWidth: 1.4,
           step: s,
         ),
         child: ClipPath(
@@ -931,22 +964,17 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
             child: Row(
               children: [
                 Container(
-                  width: 34,
-                  height: 34,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(
-                      color: hasLogo ? const Color(0xFF22C55E) : const Color(0xFF2D3B4E),
-                    ),
+                    border: Border.all(color: const Color(0xFF1E293B), width: 1.2),
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: hasLogo
                       ? Image.memory(_uploadedLogoBytes!, fit: BoxFit.cover)
-                      : Image.memory(
-                          kPiglixLogoBytes,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.image, color: Colors.white38),
+                      : const Center(
+                          child: Icon(Icons.image_outlined, color: Color(0xFF94A3B8), size: 20),
                         ),
                 ),
                 const SizedBox(width: 12),
@@ -957,9 +985,8 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                       Text(
                         hasLogo ? 'Pack Logo: $_uploadedLogoName' : 'Custom Pack Logo',
                         style: const TextStyle(
-                          fontFamily: 'monospace',
                           color: Colors.white,
-                          fontSize: 12.5,
+                          fontSize: 13.0,
                           fontWeight: FontWeight.w800,
                         ),
                         maxLines: 1,
@@ -968,15 +995,24 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                       const SizedBox(height: 2),
                       Text(
                         hasLogo ? 'Tap to change pack icon' : 'Set custom 1:1 image for pack icon',
-                        style: const TextStyle(color: Colors.white54, fontSize: 10),
+                        style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 10.0),
                       ),
                     ],
                   ),
                 ),
-                Icon(
-                  hasLogo ? Icons.check_circle_rounded : Icons.add_photo_alternate_rounded,
-                  color: hasLogo ? const Color(0xFF22C55E) : Colors.white38,
-                  size: 20,
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: const Color(0xFF1E293B), width: 1.2),
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(
+                    hasLogo ? Icons.check_rounded : Icons.add_photo_alternate_outlined,
+                    color: hasLogo ? const Color(0xFF22C55E) : const Color(0xFF94A3B8),
+                    size: 18,
+                  ),
                 ),
               ],
             ),
@@ -986,7 +1022,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
     );
   }
 
-  // 8. Fixed Bottom Navigation Bar matching reference with pixelated corners on active pill
+  // 8. Fixed Bottom Navigation Bar matching reference screenshot
   Widget _buildBottomNavBar() {
     const s = 3.0;
     return Container(
@@ -1019,18 +1055,17 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
               child: ClipPath(
                 clipper: _PixelatedClipper(s),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: const Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AnimatedMinecraftIcon(type: VoxelIconType.grassBlock, size: 20),
+                      Icon(Icons.inventory_2_rounded, color: Colors.black, size: 22),
                       SizedBox(height: 2),
                       Text(
                         'BUILDER',
                         style: TextStyle(
-                          fontFamily: 'monospace',
                           color: Colors.black,
-                          fontSize: 10,
+                          fontSize: 10.5,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 0.6,
                         ),
@@ -1053,7 +1088,6 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                 Text(
                   'GALLERY',
                   style: TextStyle(
-                    fontFamily: 'monospace',
                     color: Colors.white70,
                     fontSize: 9.5,
                     fontWeight: FontWeight.w800,
@@ -1074,7 +1108,6 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                 Text(
                   'PRESETS',
                   style: TextStyle(
-                    fontFamily: 'monospace',
                     color: Colors.white70,
                     fontSize: 9.5,
                     fontWeight: FontWeight.w800,
@@ -1095,7 +1128,6 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                 Text(
                   'SETTINGS',
                   style: TextStyle(
-                    fontFamily: 'monospace',
                     color: Colors.white70,
                     fontSize: 9.5,
                     fontWeight: FontWeight.w800,
@@ -1108,6 +1140,8 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
       ),
     );
   }
+
+
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
       backgroundColor: const Color(0xFF141312),

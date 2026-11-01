@@ -337,14 +337,15 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final avail = constraints.maxHeight;
-                      // Base natural height of the 6 sections with modest gaps: ~550px.
-                      const baseContentHeight = 560.0;
+                      // Base natural height of the 6 sections with modest gaps: ~570px.
+                      const baseContentHeight = 580.0;
 
                       Widget buildStaticColumn({bool withSpacer = true}) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: withSpacer ? MainAxisSize.max : MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               if (withSpacer) const Spacer(),
@@ -4216,6 +4217,7 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               ),
               const Spacer(),
               GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: onCustomTap,
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -4249,12 +4251,17 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
             children: [
               ...swatches.map((item) {
                 final c = item['color'] as Color;
-                final isSel = selectedColor.value == c.value;
+                final isSel = (selectedColor.value & 0x00FFFFFF) == (c.value & 0x00FFFFFF);
                 return Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 3),
                     child: GestureDetector(
-                      onTap: () => onChanged(c),
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        setState(() {
+                          onChanged(c);
+                        });
+                      },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 150),
                         height: 38,
@@ -4379,15 +4386,16 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
 
   /// Interactive Water Preview Banner matching Screen 4 in reference
   Widget _buildWaterPreviewBanner() {
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
       height: 120,
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFF00E5FF).withOpacity(0.4), width: 1.5),
+        border: Border.all(color: waterColor.withOpacity(0.5), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF00E5FF).withOpacity(0.15),
+            color: waterColor.withOpacity(0.20),
             blurRadius: 12,
             offset: const Offset(0, 3),
           ),
@@ -4417,6 +4425,13 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 },
               ),
             ),
+            // Dynamic real-time water color tint layer over the lake
+            Positioned.fill(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                color: waterColor.withOpacity(0.22),
+              ),
+            ),
             Positioned(
               left: 12,
               bottom: 8,
@@ -4426,15 +4441,15 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AnimatedMinecraftIcon(type: VoxelIconType.sparkles, size: 12),
-                    SizedBox(width: 4),
+                    const AnimatedMinecraftIcon(type: VoxelIconType.sparkles, size: 12),
+                    const SizedBox(width: 4),
                     Text(
                       'PIGLIX WATER SHADER (LIVE)',
                       style: TextStyle(
-                        color: Color(0xFF00E5FF),
+                        color: waterColor,
                         fontSize: 9.5,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 0.8,
@@ -4449,6 +4464,7 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       ),
     );
   }
+
 
   // ── 4 TAB IMPLEMENTATIONS (ATMOSPHERE, LIGHTING, WATER, WEATHER) ──────────
 
@@ -4870,8 +4886,21 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   icon: VoxelIconType.waterDroplet,
                   title: 'Water Tint',
                   selectedColor: waterColor,
-                  onChanged: (c) => waterColor = c,
-                  onCustomTap: () => _pickColor('Water Tint', waterColor, (c) => waterColor = c, iconType: ShaderIconType.water),
+                  onChanged: (c) {
+                    setState(() {
+                      waterColor = c;
+                    });
+                  },
+                  onCustomTap: () => _pickColor(
+                    'Water Tint',
+                    waterColor,
+                    (c) {
+                      setState(() {
+                        waterColor = c;
+                      });
+                    },
+                    iconType: ShaderIconType.water,
+                  ),
                 ),
               ],
             ),

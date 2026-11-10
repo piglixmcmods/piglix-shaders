@@ -8,13 +8,13 @@ import 'package:file_picker/file_picker.dart';
 import 'minecraft_icons.dart';
 import 'io_stub.dart' if (dart.library.io) 'io_real.dart';
 
-// ─── COHESIVE DARK GREY BROWNISH PALETTE ─────────────────────────────────────
-const _bg = Color(0xFF141312);          // Deep dark grey with warm brownish tone
-const _surface = Color(0xFF1F1E1C);     // Dark grey top bar, header & bottom bar
-const _card = Color(0xFF282624);        // Dark grey brownish card
-const _border = Color(0xFF423C37);      // Muted dark grey brownish border
-const _green = Color(0xFFD49B6A);      // Warm bronze-amber gold accent (replaces green)
-const _greenDim = Color(0xFF262422);   // Dark grey brownish notification & surface
+// ─── OBSIDIAN & EMERALD PALETTE (MATCHING HOME SCREEN) ────────────────────────
+const _bg = Color(0xFF080D14);          // Deep obsidian dark
+const _surface = Color(0xFF0E1722);     // Deep midnight slate surface
+const _card = Color(0xFF0E1722);        // Card background
+const _border = Color(0xFF1E293B);      // Crisp slate border
+const _green = Color(0xFF22C55E);       // Vibrant emerald green accent
+const _greenDim = Color(0xFF16A34A);    // Darker emerald green
 
 /// Model for a saved or generated shader
 class UserShaderItem {
@@ -45,7 +45,7 @@ class UserShaderStore {
       name: 'Piglix Vibrant Horizon',
       date: DateTime.now().subtract(const Duration(hours: 2)),
       byteSize: 184320,
-      previewColor: const Color(0xFFD49B6A),
+      previewColor: const Color(0xFF22C55E),
       engine: 'Vibrant Engine (JSON Deferred)',
     ),
     UserShaderItem(

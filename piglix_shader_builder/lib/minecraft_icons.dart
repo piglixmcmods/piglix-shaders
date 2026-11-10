@@ -1,5 +1,12 @@
+import 'dart:convert';
 import 'dart:math' as math;
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+
+/// Authentic Minecraft Diamond Pickaxe 48x48 pixel PNG bytes with adjusted vibrant diamond blue
+final Uint8List kMinecraftPickaxeBytes = base64Decode(
+  'iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAA+UlEQVR4nO2YMQrCQBBFZ4aI3sLaEyS9hYiFpbcJi3YewcYbCHZa2JsTpM4tlCCxW7ZRSQxs/uy+apoNA/8xs1miSCRsuI+PZLdH0/XsfT75qwchcITA4T602c5GnRvIy9rWzX5jazN92np5uLDaBITAYR9T6JNyL7OytanGti6u56iQboXaki7WVrnd8fRzOn1bdvAJCIHDPrRxl5Rxpk0XneATEAIn8a1N4SypvKxb36/gExACJ/GtDYWegBA4CaI2qhIQClWh1KM2qhIQAoeHqk3mPBTEP7IhwyjTRm0CQuAwojaqEhDSfhcyA9RGVQLiu4FIJBI4b9I/ZewkNKspAAAAAElFTkSuQmCC',
+);
 
 /// All available Minecraft voxel icon types matching the user reference
 enum VoxelIconType {
@@ -33,6 +40,8 @@ enum VoxelIconType {
   camera,
   contrast,
   film,
+  enchantedBook,
+  reload,
 }
 
 /// A crisp static Minecraft-style pixel-art icon matching user reference images
@@ -50,6 +59,15 @@ class AnimatedMinecraftIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (type == VoxelIconType.pickaxe) {
+      return Image.memory(
+        kMinecraftPickaxeBytes,
+        width: size,
+        height: size,
+        filterQuality: FilterQuality.none,
+        fit: BoxFit.contain,
+      );
+    }
     return CustomPaint(
       size: Size(size, size),
       painter: _VoxelIconPainter(
@@ -169,6 +187,12 @@ class _VoxelIconPainter extends CustomPainter {
         break;
       case VoxelIconType.film:
         _drawFilm(canvas, cx, cy, w);
+        break;
+      case VoxelIconType.enchantedBook:
+        _drawEnchantedBook(canvas, cx, cy, w);
+        break;
+      case VoxelIconType.reload:
+        _drawReload(canvas, cx, cy, w);
         break;
     }
   }
@@ -948,89 +972,89 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawLine(Offset(cx + s * 0.34, cy + float), Offset(cx + s * 0.34, cy + s * 0.18), beamPaint);
   }
 
-  // 15. PICKAXE: High-detail 3D Minecraft Diamond Pickaxe matching user reference image 1
+  // 15. PICKAXE: High-detail 16x16 Minecraft Diamond Pickaxe with authentic pixel blocks, oak handle & diamond shine
   void _drawPickaxe(Canvas canvas, double cx, double cy, double s) {
     canvas.save();
-    canvas.translate(cx, cy);
+    final u = s / 16.0;
+    final ox = cx - s * 0.5;
+    final oy = cy - s * 0.5;
 
-    final p = s * 0.082; // pixel block step
-
-    // 1. Stepped Oak Handle (diagonal pixels from bottom-left to center-right)
-    final handleFill = Paint()..color = const Color(0xFF8D5A36);
-    final handleShadow = Paint()..color = const Color(0xFF5C361A);
-    final handleOutline = Paint()
-      ..color = const Color(0xFF2E1708)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.4;
-
-    for (var i = -4; i <= 1; i++) {
-      final hx = i * p * 0.95;
-      final hy = -i * p * 0.95 + s * 0.04;
-      final hRect = Rect.fromCenter(center: Offset(hx, hy), width: p * 1.15, height: p * 1.15);
-      canvas.drawRect(hRect, handleFill);
-      canvas.drawRect(Rect.fromLTWH(hRect.left + p * 0.45, hRect.top + p * 0.45, p * 0.65, p * 0.65), handleShadow);
-      canvas.drawRect(hRect, handleOutline);
+    void drawPx(int gx, int gy, Color col) {
+      canvas.drawRect(Rect.fromLTWH(ox + gx * u, oy + gy * u, u, u), Paint()..color = col);
     }
 
-    // 2. Diamond Pickaxe Head (curved dual-pointed arc with diamond highlight)
-    final headOutline = Paint()
-      ..color = const Color(0xFF00363A)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.2
-      ..strokeJoin = StrokeJoin.round;
-    final headDark = Paint()..color = const Color(0xFF00838F);
-    final headMid = Paint()..color = const Color(0xFF00BCD4);
-    final headLit = Paint()..color = const Color(0xFF00E5FF);
-    final headHighlight = Paint()..color = const Color(0xFFE0F7FA);
+    // Palette:
+    // Oak Wood handle
+    const wDark = Color(0xFF281E0B);
+    const wShadow = Color(0xFF493615);
+    const wBody = Color(0xFF684E1E);
+    const wLit = Color(0xFF896727);
 
-    // Pickaxe head polygon path
-    final headPath = Path()
-      ..moveTo(-s * 0.16, -s * 0.38) // Left sharp tip
-      ..lineTo(s * 0.28, -s * 0.36)  // Top curve
-      ..lineTo(s * 0.38, -s * 0.08)  // Right sharp tip
-      ..lineTo(s * 0.24, -s * 0.16)  // Inner crook
-      ..lineTo(s * 0.12, -s * 0.12)  // Socket underside
-      ..lineTo(-s * 0.04, -s * 0.26) // Left crook
-      ..close();
+    // Diamond Pickaxe head
+    const dBorder = Color(0xFF0E3F36);
+    const dDark = Color(0xFF082520);
+    const dTeal = Color(0xFF27B29A);
+    const dMid = Color(0xFF2BC7AC);
+    const dBright = Color(0xFF33EBCB);
+    const dWhite = Color(0xFFFFFFFF);
 
-    // Dark outline
-    canvas.drawPath(headPath, headOutline);
+    // 1. Oak Handle (diagonal pixels from bottom-left to center socket)
+    for (int i = 2; i <= 9; i++) {
+      final gx = i;
+      final gy = 15 - i;
+      drawPx(gx, gy, wBody);
+      canvas.drawRect(
+        Rect.fromLTWH(ox + gx * u, oy + gy * u, u * 0.45, u * 0.45),
+        Paint()..color = wLit,
+      );
+      canvas.drawRect(
+        Rect.fromLTWH(ox + gx * u + u * 0.55, oy + gy * u + u * 0.55, u * 0.45, u * 0.45),
+        Paint()..color = wShadow,
+      );
+      canvas.drawRect(
+        Rect.fromLTWH(ox + gx * u, oy + gy * u, u, u),
+        Paint()..color = wDark..style = PaintingStyle.stroke..strokeWidth = 0.8,
+      );
+    }
 
-    // Base body fill
-    canvas.drawPath(headPath, headDark);
+    // Socket Collar reinforcement
+    drawPx(10, 5, const Color(0xFF4A4E58));
 
-    // Mid diamond cyan layer
-    final innerHead = Path()
-      ..moveTo(-s * 0.14, -s * 0.36)
-      ..lineTo(s * 0.26, -s * 0.34)
-      ..lineTo(s * 0.36, -s * 0.10)
-      ..lineTo(s * 0.24, -s * 0.18)
-      ..lineTo(s * 0.11, -s * 0.14)
-      ..lineTo(-s * 0.03, -s * 0.27)
-      ..close();
-    canvas.drawPath(innerHead, headMid);
+    // 2. Diamond Pickaxe Head (classic symmetrical curved diamond picks)
+    final headBlocks = <(int, int, Color)>[
+      // Top arch crown
+      (8, 2, dBorder), (9, 2, dBorder), (10, 2, dBorder), (11, 2, dBorder), (12, 2, dBorder),
+      (7, 3, dBorder), (8, 3, dWhite), (9, 3, dBright), (10, 3, dBright), (11, 3, dMid), (12, 3, dMid), (13, 3, dBorder),
+      (6, 4, dBorder), (7, 4, dBright), (8, 4, dMid), (9, 4, dTeal), (11, 4, dTeal), (12, 4, dMid), (13, 4, dBorder),
+      (5, 5, dBorder), (6, 5, dBright), (7, 5, dMid), (12, 5, dMid), (13, 5, dBorder),
+      (4, 6, dBorder), (5, 6, dBright), (6, 6, dTeal), (13, 6, dMid), (14, 6, dBorder),
+      (3, 7, dBorder), (4, 7, dBright), (5, 7, dTeal), (13, 7, dMid), (14, 7, dBorder),
+      (2, 8, dBorder), (3, 8, dBright), (4, 8, dDark), (13, 8, dDark), (14, 8, dBorder),
+      (2, 9, dBorder), (3, 9, dMid), (13, 9, dMid), (14, 9, dBorder),
+      (2, 10, dBorder), (14, 10, dBorder),
+    ];
 
-    // Bright cyan spine
-    final spinePath = Path()
-      ..moveTo(-s * 0.12, -s * 0.36)
-      ..lineTo(s * 0.24, -s * 0.34)
-      ..lineTo(s * 0.24, -s * 0.22)
-      ..lineTo(s * 0.06, -s * 0.24)
-      ..close();
-    canvas.drawPath(spinePath, headLit);
+    for (final b in headBlocks) {
+      drawPx(b.$1, b.$2, b.$3);
+    }
 
-    // Signature white glint notch on top corner
-    canvas.drawRect(Rect.fromCenter(center: Offset(s * 0.22, -s * 0.33), width: p * 0.9, height: p * 0.9), headHighlight);
-    canvas.drawRect(Rect.fromCenter(center: Offset(-s * 0.14, -s * 0.36), width: p * 0.6, height: p * 0.6), headHighlight);
-    canvas.drawRect(Rect.fromCenter(center: Offset(s * 0.36, -s * 0.10), width: p * 0.6, height: p * 0.6), headHighlight);
-
-    // Socket center accent (wooden socket core)
-    canvas.drawRect(Rect.fromCenter(center: Offset(s * 0.12, -s * 0.18), width: p * 0.9, height: p * 0.9), handleShadow);
+    // Sparkle star glint on crown
+    canvas.drawCircle(Offset(ox + 8.5 * u, oy + 3.5 * u), u * 0.9, Paint()..color = Colors.white.withOpacity(0.9));
+    canvas.drawLine(
+      Offset(ox + 8.5 * u - u * 1.5, oy + 3.5 * u),
+      Offset(ox + 8.5 * u + u * 1.5, oy + 3.5 * u),
+      Paint()..color = Colors.white..strokeWidth = 1.0,
+    );
+    canvas.drawLine(
+      Offset(ox + 8.5 * u, oy + 3.5 * u - u * 1.5),
+      Offset(ox + 8.5 * u, oy + 3.5 * u + u * 1.5),
+      Paint()..color = Colors.white..strokeWidth = 1.0,
+    );
 
     canvas.restore();
   }
 
-  // 16. CHEST: Authentic 3D Isometric Minecraft Oak Chest matching user reference image 3
+  // 16. CHEST: Authentic 3D Isometric Minecraft Oak Chest
   void _drawChest(Canvas canvas, double cx, double cy, double s) {
     // 3D Isometric Projection Points
     final topVertex = Offset(cx, cy - s * 0.34);
@@ -1045,7 +1069,7 @@ class _VoxelIconPainter extends CustomPainter {
     final edgeOutline = Paint()
       ..color = const Color(0xFF1B120C)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0
+      ..strokeWidth = 1.8
       ..strokeJoin = StrokeJoin.miter;
 
     // 1. Top Lid Face (Isometric Rhombus)
@@ -1059,7 +1083,7 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawPath(topLidPath, edgeOutline);
 
     // Plank lines on top lid
-    final plankPaint = Paint()..color = const Color(0xFF9E5D20)..strokeWidth = 1.4;
+    final plankPaint = Paint()..color = const Color(0xFF9E5D20)..strokeWidth = 1.2;
     canvas.drawLine(
       Offset.lerp(topVertex, leftTopVertex, 0.5)!,
       Offset.lerp(rightTopVertex, centerVertex, 0.5)!,
@@ -1084,7 +1108,7 @@ class _VoxelIconPainter extends CustomPainter {
     // Horizontal split seam for lid
     final frontSeamLeft = Offset.lerp(leftTopVertex, leftBottomVertex, 0.36)!;
     final frontSeamCenter = Offset.lerp(centerVertex, centerBottomVertex, 0.36)!;
-    canvas.drawLine(frontSeamLeft, frontSeamCenter, Paint()..color = const Color(0xFF1B120C)..strokeWidth = 2.0);
+    canvas.drawLine(frontSeamLeft, frontSeamCenter, Paint()..color = const Color(0xFF1B120C)..strokeWidth = 1.8);
 
     // 3. Right Side Face (Shadowed oak)
     final sideFacePath = Path()
@@ -1098,34 +1122,42 @@ class _VoxelIconPainter extends CustomPainter {
 
     // Horizontal split seam on side
     final sideSeamRight = Offset.lerp(rightTopVertex, rightBottomVertex, 0.36)!;
-    canvas.drawLine(frontSeamCenter, sideSeamRight, Paint()..color = const Color(0xFF1B120C)..strokeWidth = 2.0);
+    canvas.drawLine(frontSeamCenter, sideSeamRight, Paint()..color = const Color(0xFF1B120C)..strokeWidth = 1.8);
 
     // 4. Black Iron Perimeter Straps
-    final ironBandPaint = Paint()..color = const Color(0xFF263238)..strokeWidth = 2.4;
-    canvas.drawLine(leftTopVertex, Offset.lerp(leftTopVertex, centerVertex, 0.16)!, ironBandPaint);
-    canvas.drawLine(rightTopVertex, Offset.lerp(rightTopVertex, centerVertex, 0.16)!, ironBandPaint);
-    canvas.drawLine(leftBottomVertex, Offset.lerp(leftBottomVertex, centerBottomVertex, 0.16)!, ironBandPaint);
-    canvas.drawLine(rightBottomVertex, Offset.lerp(rightBottomVertex, centerBottomVertex, 0.16)!, ironBandPaint);
+    final ironBandPaint = Paint()..color = const Color(0xFF263238)..strokeWidth = 2.0;
+    canvas.drawLine(leftTopVertex, centerVertex, ironBandPaint);
+    canvas.drawLine(leftBottomVertex, centerBottomVertex, ironBandPaint);
+    canvas.drawLine(centerBottomVertex, rightBottomVertex, ironBandPaint);
+    canvas.drawLine(leftTopVertex, leftBottomVertex, ironBandPaint);
 
-    // 5. Silver Latch in center of front seam (matching user reference image 3)
-    final latchCenter = Offset(frontSeamCenter.dx - s * 0.05, frontSeamCenter.dy + s * 0.02);
-    final latchRect = Rect.fromCenter(center: latchCenter, width: s * 0.14, height: s * 0.16);
-    canvas.drawRect(latchRect, Paint()..color = const Color(0xFFCFD8DC)); // Silver body
-    canvas.drawRect(Rect.fromLTWH(latchRect.left, latchRect.top, latchRect.width, latchRect.height * 0.30), Paint()..color = Colors.white); // Top highlight
-    canvas.drawRect(Rect.fromCenter(center: Offset(latchCenter.dx, latchCenter.dy + s * 0.02), width: s * 0.04, height: s * 0.07), Paint()..color = const Color(0xFF1B120C)); // Keyhole
-    canvas.drawRect(latchRect, Paint()..color = const Color(0xFF1B120C)..style = PaintingStyle.stroke..strokeWidth = 1.4); // Outline
+    // 5. Silver Latch centered on the front seam
+    final latchCenter = Offset.lerp(frontSeamLeft, frontSeamCenter, 0.52)!;
+    final latchRect = Rect.fromCenter(center: latchCenter, width: s * 0.12, height: s * 0.16);
+    canvas.drawRRect(RRect.fromRectAndRadius(latchRect, const Radius.circular(2)), Paint()..color = const Color(0xFFCFD8DC)); // Silver body
+    canvas.drawRect(Rect.fromLTWH(latchRect.left, latchRect.top, latchRect.width, latchRect.height * 0.32), Paint()..color = Colors.white); // Top highlight
+    canvas.drawRect(Rect.fromCenter(center: Offset(latchCenter.dx, latchCenter.dy + s * 0.02), width: s * 0.035, height: s * 0.06), Paint()..color = const Color(0xFF1B120C)); // Keyhole
+    canvas.drawRRect(RRect.fromRectAndRadius(latchRect, const Radius.circular(2)), Paint()..color = const Color(0xFF1B120C)..style = PaintingStyle.stroke..strokeWidth = 1.2); // Outline
   }
 
   // 17. GLOBE: 3D Voxel Planet Earth with ocean depth, multi-tone continents & polar ice
   void _drawGlobe(Canvas canvas, double cx, double cy, double s) {
+    canvas.save();
+    final globeRadius = s * 0.35;
+    final globeRect = Rect.fromCircle(center: Offset(cx, cy), radius: globeRadius);
+
+    // Clip all globe elements smoothly to the sphere
+    canvas.clipPath(Path()..addOval(globeRect));
+
     // Deep ocean sphere with radial depth
     canvas.drawCircle(
       Offset(cx, cy),
-      s * 0.34,
+      globeRadius,
       Paint()
         ..shader = const RadialGradient(
+          center: Alignment(-0.3, -0.3),
           colors: [Color(0xFF039BE5), Color(0xFF0277BD), Color(0xFF01579B)],
-        ).createShader(Rect.fromCircle(center: Offset(cx - s * 0.06, cy - s * 0.06), radius: s * 0.34)),
+        ).createShader(globeRect),
     );
 
     // Stepped green continents with varied terrain
@@ -1133,30 +1165,53 @@ class _VoxelIconPainter extends CustomPainter {
     final landSavanna = Paint()..color = const Color(0xFF8BC34A);
 
     // Continent 1 (North-west)
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(cx - s * 0.22, cy - s * 0.20, s * 0.18, s * 0.16), const Radius.circular(2)), landForest);
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.16, cy - s * 0.14, s * 0.10, s * 0.10), landSavanna);
+    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(cx - s * 0.24, cy - s * 0.20, s * 0.20, s * 0.18), const Radius.circular(3)), landForest);
+    canvas.drawRect(Rect.fromLTWH(cx - s * 0.18, cy - s * 0.14, s * 0.11, s * 0.10), landSavanna);
 
     // Continent 2 (East)
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(cx + s * 0.02, cy - s * 0.10, s * 0.22, s * 0.22), const Radius.circular(3)), landForest);
-    canvas.drawRect(Rect.fromLTWH(cx + s * 0.08, cy - s * 0.04, s * 0.12, s * 0.10), landSavanna);
+    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(cx + s * 0.04, cy - s * 0.12, s * 0.22, s * 0.24), const Radius.circular(3)), landForest);
+    canvas.drawRect(Rect.fromLTWH(cx + s * 0.09, cy - s * 0.06, s * 0.12, s * 0.12), landSavanna);
 
     // Continent 3 (South-west)
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.16, cy + s * 0.08, s * 0.14, s * 0.14), landForest);
+    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(cx - s * 0.18, cy + s * 0.08, s * 0.16, s * 0.15), const Radius.circular(3)), landForest);
 
     // North polar ice cap
     canvas.drawArc(
-      Rect.fromCircle(center: Offset(cx, cy), radius: s * 0.34),
-      -math.pi * 0.75,
-      math.pi * 0.50,
+      globeRect,
+      -math.pi * 0.85,
+      math.pi * 0.70,
       true,
-      Paint()..color = Colors.white,
+      Paint()..color = const Color(0xFFE0F7FA),
     );
 
-    // Orbiting semi-transparent atmosphere cloud streaks
-    final cloudShift = (anim * 2 * math.pi);
-    final cloudPaint = Paint()..color = Colors.white.withOpacity(0.55)..strokeWidth = 1.8..strokeCap = StrokeCap.round;
-    final cy1 = cy - s * 0.04;
-    canvas.drawLine(Offset(cx - s * 0.25 + math.sin(cloudShift) * 4, cy1), Offset(cx + s * 0.10 + math.sin(cloudShift) * 4, cy1), cloudPaint);
+    // South polar ice cap
+    canvas.drawArc(
+      globeRect,
+      math.pi * 0.25,
+      math.pi * 0.50,
+      true,
+      Paint()..color = const Color(0xFFE0F7FA),
+    );
+
+    // Atmospheric cloud ribbons
+    final cloudPaint = Paint()
+      ..color = Colors.white.withOpacity(0.55)
+      ..strokeWidth = 2.2
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(Offset(cx - s * 0.22, cy - s * 0.04), Offset(cx + s * 0.12, cy - s * 0.04), cloudPaint);
+    canvas.drawLine(Offset(cx - s * 0.08, cy + s * 0.12), Offset(cx + s * 0.22, cy + s * 0.12), cloudPaint);
+
+    canvas.restore();
+
+    // Atmosphere glowing rim outline
+    canvas.drawCircle(
+      Offset(cx, cy),
+      globeRadius,
+      Paint()
+        ..color = const Color(0xFF38BDF8).withOpacity(0.4)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.4,
+    );
   }
 
   // 18. GEAR: Precision engineered steampunk cog with 3D metallic bevel & central brass hub
@@ -1333,12 +1388,18 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawRect(Rect.fromCenter(center: Offset(cx + s * 0.30, cy - s * 0.02), width: 1.8, height: 1.8), motePaint);
   }
 
-  // 22. GRASS BLOCK: Iconic 3D Minecraft Grass Block with textured grass top & loam dirt sides
+  // 22. GRASS BLOCK: Authentic 3D Isometric Minecraft Grass Block with voxel fringe drops & dirt pebbles
   void _drawGrassBlock(Canvas canvas, double cx, double cy, double s) {
     final w2 = s * 0.36;
-    final h2 = s * 0.21;
+    final h2 = s * 0.20;
 
-    // 1. Top green grass face
+    final edgeOutline = Paint()
+      ..color = const Color(0xFF1B120C)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5
+      ..strokeJoin = StrokeJoin.miter;
+
+    // 1. Top green grass face (Isometric Rhombus)
     final topFace = Path()
       ..moveTo(cx, cy - s * 0.32)
       ..lineTo(cx + w2, cy - s * 0.32 + h2)
@@ -1346,23 +1407,25 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(cx - w2, cy - s * 0.32 + h2)
       ..close();
     canvas.drawPath(topFace, Paint()..color = const Color(0xFF4CAF50));
+    canvas.drawPath(topFace, edgeOutline);
 
     // Top grass texture pixels
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.14, cy - s * 0.22, s * 0.08, s * 0.06), Paint()..color = const Color(0xFF66BB6A));
-    canvas.drawRect(Rect.fromLTWH(cx + s * 0.06, cy - s * 0.26, s * 0.08, s * 0.06), Paint()..color = const Color(0xFF388E3C));
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.02, cy - s * 0.14, s * 0.08, s * 0.06), Paint()..color = const Color(0xFF2E7D32));
+    canvas.drawRect(Rect.fromLTWH(cx - s * 0.14, cy - s * 0.22, s * 0.08, s * 0.05), Paint()..color = const Color(0xFF66BB6A));
+    canvas.drawRect(Rect.fromLTWH(cx + s * 0.06, cy - s * 0.25, s * 0.07, s * 0.05), Paint()..color = const Color(0xFF388E3C));
+    canvas.drawRect(Rect.fromLTWH(cx - s * 0.02, cy - s * 0.14, s * 0.07, s * 0.05), Paint()..color = const Color(0xFF2E7D32));
 
     // 2. Left dirt face
     final leftFace = Path()
       ..moveTo(cx - w2, cy - s * 0.32 + h2)
       ..lineTo(cx, cy - s * 0.32 + 2 * h2)
-      ..lineTo(cx, cy + s * 0.28)
-      ..lineTo(cx - w2, cy + s * 0.28 - h2)
+      ..lineTo(cx, cy + s * 0.30)
+      ..lineTo(cx - w2, cy + s * 0.30 - h2)
       ..close();
     canvas.drawPath(leftFace, Paint()..color = const Color(0xFF5D4037));
+    canvas.drawPath(leftFace, edgeOutline);
 
     // Left dirt pebbles
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.20, cy + s * 0.04, s * 0.06, s * 0.06), Paint()..color = const Color(0xFF8D6E63));
+    canvas.drawRect(Rect.fromLTWH(cx - s * 0.20, cy + s * 0.05, s * 0.06, s * 0.06), Paint()..color = const Color(0xFF8D6E63));
     canvas.drawRect(Rect.fromLTWH(cx - s * 0.10, cy + s * 0.14, s * 0.05, s * 0.05), Paint()..color = const Color(0xFF3E2723));
 
     // 3. Right dirt face (shaded)
@@ -1373,31 +1436,38 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(cx, cy + s * 0.30)
       ..close();
     canvas.drawPath(rightFace, Paint()..color = const Color(0xFF4E342E));
+    canvas.drawPath(rightFace, edgeOutline);
 
     // Right dirt pebbles
     canvas.drawRect(Rect.fromLTWH(cx + s * 0.14, cy + s * 0.08, s * 0.06, s * 0.05), Paint()..color = const Color(0xFF3E2723));
     canvas.drawRect(Rect.fromLTWH(cx + s * 0.06, cy + s * 0.18, s * 0.05, s * 0.05), Paint()..color = const Color(0xFF6D4C41));
 
-    // 4. Jagged grass overhang fringe hanging down both sides
+    // 4. Stepped voxel grass overhang fringe hanging down both sides
     final overLeft = Path()
       ..moveTo(cx - w2, cy - s * 0.32 + h2)
       ..lineTo(cx, cy - s * 0.32 + 2 * h2)
-      ..lineTo(cx, cy - s * 0.32 + 2 * h2 + s * 0.12)
-      ..lineTo(cx - s * 0.12, cy - s * 0.32 + 2 * h2 + s * 0.06)
-      ..lineTo(cx - s * 0.22, cy - s * 0.32 + 2 * h2 + s * 0.14)
+      ..lineTo(cx, cy - s * 0.32 + 2 * h2 + s * 0.08)
+      ..lineTo(cx - s * 0.12, cy - s * 0.32 + 2 * h2 + s * 0.08)
+      ..lineTo(cx - s * 0.12, cy - s * 0.32 + 2 * h2 + s * 0.04)
+      ..lineTo(cx - s * 0.24, cy - s * 0.32 + 2 * h2 + s * 0.04)
+      ..lineTo(cx - s * 0.24, cy - s * 0.32 + 2 * h2 + s * 0.08)
       ..lineTo(cx - w2, cy - s * 0.32 + h2 + s * 0.08)
       ..close();
     canvas.drawPath(overLeft, Paint()..color = const Color(0xFF388E3C));
+    canvas.drawPath(overLeft, edgeOutline);
 
     final overRight = Path()
       ..moveTo(cx, cy - s * 0.32 + 2 * h2)
       ..lineTo(cx + w2, cy - s * 0.32 + h2)
       ..lineTo(cx + w2, cy - s * 0.32 + h2 + s * 0.08)
-      ..lineTo(cx + s * 0.20, cy - s * 0.32 + 2 * h2 + s * 0.13)
-      ..lineTo(cx + s * 0.10, cy - s * 0.32 + 2 * h2 + s * 0.06)
-      ..lineTo(cx, cy - s * 0.32 + 2 * h2 + s * 0.11)
+      ..lineTo(cx + s * 0.24, cy - s * 0.32 + 2 * h2 + s * 0.08)
+      ..lineTo(cx + s * 0.24, cy - s * 0.32 + 2 * h2 + s * 0.04)
+      ..lineTo(cx + s * 0.12, cy - s * 0.32 + 2 * h2 + s * 0.04)
+      ..lineTo(cx + s * 0.12, cy - s * 0.32 + 2 * h2 + s * 0.08)
+      ..lineTo(cx, cy - s * 0.32 + 2 * h2 + s * 0.08)
       ..close();
     canvas.drawPath(overRight, Paint()..color = const Color(0xFF2E7D32));
+    canvas.drawPath(overRight, edgeOutline);
   }
 
   // 23. STEVE: High-res pixel-perfect Steve avatar with textured hair, eyes & beard
@@ -1728,6 +1798,223 @@ class _VoxelIconPainter extends CustomPainter {
       Offset(cx + s * 0.30, cy - s * 0.23),
       Paint()..color = Colors.white54..strokeWidth = 1.0,
     );
+  }
+
+  // 31. ENCHANTED BOOK: Authentic 3D Isometric Minecraft Enchanted Spell Tome
+  void _drawEnchantedBook(Canvas canvas, double cx, double cy, double s) {
+    // 3D Isometric projection points matching Minecraft block perspective
+    final topVertex = Offset(cx, cy - s * 0.34);
+    final rightTopVertex = Offset(cx + s * 0.36, cy - s * 0.14);
+    final centerVertex = Offset(cx, cy + s * 0.06);
+    final leftTopVertex = Offset(cx - s * 0.36, cy - s * 0.14);
+
+    final leftBottomVertex = Offset(cx - s * 0.36, cy + s * 0.20);
+    final centerBottomVertex = Offset(cx, cy + s * 0.40);
+    final rightBottomVertex = Offset(cx + s * 0.36, cy + s * 0.20);
+
+    final edgeOutline = Paint()
+      ..color = const Color(0xFF1E1B4B)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.8
+      ..strokeJoin = StrokeJoin.miter;
+
+    // 1. Top Cover Face (Isometric Rhombus - Royal Purple Enchanted Leather)
+    final topCoverPath = Path()
+      ..moveTo(topVertex.dx, topVertex.dy)
+      ..lineTo(rightTopVertex.dx, rightTopVertex.dy)
+      ..lineTo(centerVertex.dx, centerVertex.dy)
+      ..lineTo(leftTopVertex.dx, leftTopVertex.dy)
+      ..close();
+    canvas.drawPath(topCoverPath, Paint()..color = const Color(0xFF7E22CE));
+    canvas.drawPath(topCoverPath, edgeOutline);
+
+    // Inner gold embossed inlay border
+    final insetTop = Offset.lerp(topVertex, centerVertex, 0.12)!;
+    final insetBottom = Offset.lerp(centerVertex, topVertex, 0.12)!;
+    final insetLeft = Offset.lerp(leftTopVertex, rightTopVertex, 0.12)!;
+    final insetRight = Offset.lerp(rightTopVertex, leftTopVertex, 0.12)!;
+    final goldInlayPath = Path()
+      ..moveTo(insetTop.dx, insetTop.dy)
+      ..lineTo(insetRight.dx, insetRight.dy)
+      ..lineTo(insetBottom.dx, insetBottom.dy)
+      ..lineTo(insetLeft.dx, insetLeft.dy)
+      ..close();
+    canvas.drawPath(
+      goldInlayPath,
+      Paint()
+        ..color = const Color(0xFFF59E0B)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2,
+    );
+
+    // Gold Corner Reinforcement Plates on the 4 corners
+    void drawCornerPlate(Offset corner, Offset v1, Offset v2) {
+      final p1 = Offset.lerp(corner, v1, 0.25)!;
+      final p2 = Offset.lerp(corner, v2, 0.25)!;
+      final cPath = Path()
+        ..moveTo(corner.dx, corner.dy)
+        ..lineTo(p1.dx, p1.dy)
+        ..lineTo(p2.dx, p2.dy)
+        ..close();
+      canvas.drawPath(cPath, Paint()..color = const Color(0xFFFBBF24));
+      canvas.drawPath(
+        cPath,
+        Paint()
+          ..color = const Color(0xFF78350F)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.8,
+      );
+    }
+    drawCornerPlate(topVertex, leftTopVertex, rightTopVertex);
+    drawCornerPlate(rightTopVertex, topVertex, centerVertex);
+    drawCornerPlate(centerVertex, rightTopVertex, leftTopVertex);
+    drawCornerPlate(leftTopVertex, topVertex, centerVertex);
+
+    // Center Magical Mystic Rune / Eye Emblem on Cover
+    final coverCenter = Offset(cx, cy - s * 0.14);
+    final runePath = Path()
+      ..moveTo(coverCenter.dx, coverCenter.dy - s * 0.08)
+      ..lineTo(coverCenter.dx + s * 0.07, coverCenter.dy)
+      ..lineTo(coverCenter.dx, coverCenter.dy + s * 0.08)
+      ..lineTo(coverCenter.dx - s * 0.07, coverCenter.dy)
+      ..close();
+    canvas.drawPath(runePath, Paint()..color = const Color(0xFF38BDF8));
+    canvas.drawCircle(coverCenter, s * 0.028, Paint()..color = Colors.white);
+    canvas.drawPath(
+      runePath,
+      Paint()
+        ..color = const Color(0xFF0C4A6E)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.8,
+    );
+
+    // 2. Left Spine Face (Dark Shaded Leather with Gold Binding Bands)
+    final spineFacePath = Path()
+      ..moveTo(leftTopVertex.dx, leftTopVertex.dy)
+      ..lineTo(centerVertex.dx, centerVertex.dy)
+      ..lineTo(centerBottomVertex.dx, centerBottomVertex.dy)
+      ..lineTo(leftBottomVertex.dx, leftBottomVertex.dy)
+      ..close();
+    canvas.drawPath(spineFacePath, Paint()..color = const Color(0xFF4C1D95));
+    canvas.drawPath(spineFacePath, edgeOutline);
+
+    // Horizontal Golden Ribs on the spine
+    for (final f in [0.30, 0.70]) {
+      final p1 = Offset.lerp(leftTopVertex, leftBottomVertex, f)!;
+      final p2 = Offset.lerp(centerVertex, centerBottomVertex, f)!;
+      canvas.drawLine(
+        p1,
+        p2,
+        Paint()
+          ..color = const Color(0xFFF59E0B)
+          ..strokeWidth = 2.0,
+      );
+    }
+
+    // 3. Right Pages Face (Aged Parchment with Visible Paper Strata)
+    final rightPagesPath = Path()
+      ..moveTo(centerVertex.dx, centerVertex.dy)
+      ..lineTo(rightTopVertex.dx, rightTopVertex.dy)
+      ..lineTo(rightBottomVertex.dx, rightBottomVertex.dy)
+      ..lineTo(centerBottomVertex.dx, centerBottomVertex.dy)
+      ..close();
+    canvas.drawPath(rightPagesPath, Paint()..color = const Color(0xFFFEF3C7));
+    canvas.drawPath(rightPagesPath, edgeOutline);
+
+    // Horizontal page strata lines (paper sheets)
+    final pageLinePaint = Paint()
+      ..color = const Color(0xFFD97706).withOpacity(0.45)
+      ..strokeWidth = 1.0;
+    for (final f in [0.28, 0.44, 0.60, 0.76]) {
+      final lineStart = Offset.lerp(centerVertex, centerBottomVertex, f)!;
+      final lineEnd = Offset.lerp(rightTopVertex, rightBottomVertex, f)!;
+      canvas.drawLine(lineStart, lineEnd, pageLinePaint);
+    }
+
+    // Purple cover overhang on right side (top and bottom rim)
+    final topRimEnd = Offset.lerp(rightTopVertex, rightBottomVertex, 0.12)!;
+    final topRimStart = Offset.lerp(centerVertex, centerBottomVertex, 0.12)!;
+    final bottomRimEnd = Offset.lerp(rightBottomVertex, rightTopVertex, 0.12)!;
+    final bottomRimStart = Offset.lerp(centerBottomVertex, centerVertex, 0.12)!;
+
+    final topRimPath = Path()
+      ..moveTo(centerVertex.dx, centerVertex.dy)
+      ..lineTo(rightTopVertex.dx, rightTopVertex.dy)
+      ..lineTo(topRimEnd.dx, topRimEnd.dy)
+      ..lineTo(topRimStart.dx, topRimStart.dy)
+      ..close();
+    canvas.drawPath(topRimPath, Paint()..color = const Color(0xFF581C87));
+
+    final bottomRimPath = Path()
+      ..moveTo(bottomRimStart.dx, bottomRimStart.dy)
+      ..lineTo(bottomRimEnd.dx, bottomRimEnd.dy)
+      ..lineTo(rightBottomVertex.dx, rightBottomVertex.dy)
+      ..lineTo(centerBottomVertex.dx, centerBottomVertex.dy)
+      ..close();
+    canvas.drawPath(bottomRimPath, Paint()..color = const Color(0xFF3B0764));
+
+    // 4. Crimson Ribbon Bookmark dangling from inside the pages over the bottom corner
+    final ribbonOrigin = Offset.lerp(centerVertex, centerBottomVertex, 0.50)!;
+    final ribbonMid = Offset(ribbonOrigin.dx + s * 0.04, ribbonOrigin.dy + s * 0.12);
+    final ribbonTip = Offset(ribbonOrigin.dx + s * 0.06, ribbonOrigin.dy + s * 0.22);
+    final ribbonWidth = s * 0.06;
+
+    final ribbonPath = Path()
+      ..moveTo(ribbonOrigin.dx - ribbonWidth * 0.5, ribbonOrigin.dy)
+      ..lineTo(ribbonOrigin.dx + ribbonWidth * 0.5, ribbonOrigin.dy)
+      ..lineTo(ribbonMid.dx + ribbonWidth * 0.5, ribbonMid.dy)
+      ..lineTo(ribbonTip.dx, ribbonTip.dy)
+      ..lineTo(ribbonMid.dx - ribbonWidth * 0.5, ribbonTip.dy - s * 0.03)
+      ..lineTo(ribbonMid.dx - ribbonWidth * 0.5, ribbonMid.dy)
+      ..close();
+    canvas.drawPath(ribbonPath, Paint()..color = const Color(0xFFDC2626));
+    canvas.drawPath(
+      ribbonPath,
+      Paint()
+        ..color = const Color(0xFF7F1D1D)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.8,
+    );
+    // Gold bookmark tassel tip
+    canvas.drawCircle(ribbonTip, s * 0.02, Paint()..color = const Color(0xFFFBBF24));
+  }
+
+  // 32. RELOAD: Authentic Minecraft Pixelated Circular Refresh Arrows
+  void _drawReload(Canvas canvas, double cx, double cy, double s) {
+    const matrix = [
+      '..............',
+      '....######....',
+      '..##......##..',
+      '.##........#..',
+      '.#.......####.',
+      '.#........##..',
+      '..........#...',
+      '...#..........',
+      '..##........#.',
+      '.####.......#.',
+      '..#........##.',
+      '..##......##..',
+      '....######....',
+      '..............',
+    ];
+    final u = s / 14.0;
+    final ox = cx - s * 0.5;
+    final oy = cy - s * 0.5;
+
+    final fillPaint = Paint()..color = (colorOverride ?? const Color(0xFF22C55E));
+    final highlightPaint = Paint()..color = const Color(0xFF86EFAC);
+    final shadowPaint = Paint()..color = const Color(0xFF14532D);
+
+    for (var y = 0; y < 14; y++) {
+      for (var x = 0; x < 14; x++) {
+        if (matrix[y][x] == '#') {
+          final rect = Rect.fromLTWH(ox + x * u, oy + y * u, u, u);
+          canvas.drawRect(Rect.fromLTWH(rect.left, rect.top + u * 0.15, rect.width, rect.height), shadowPaint);
+          canvas.drawRect(rect, fillPaint);
+          canvas.drawRect(Rect.fromLTWH(rect.left, rect.top, u * 0.45, u * 0.45), highlightPaint);
+        }
+      }
+    }
   }
 
   @override

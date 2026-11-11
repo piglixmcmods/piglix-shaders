@@ -1,0 +1,45 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  analyze-and-test:
+    name: Lint, Test & Build Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        working-directory: piglix_shader_builder
+        run: flutter pub get
+
+      - name: Verify Formatting & Static Analysis
+        working-directory: piglix_shader_builder
+        run: flutter analyze
+
+      - name: Run Automated Test Suite
+        working-directory: piglix_shader_builder
+        run: flutter test test/widget_test.dart test/shader_store_test.dart
+
+      - name: Verify Debug APK Build
+        working-directory: piglix_shader_builder
+        run: flutter build apk --debug
+

@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +14,6 @@ const _surface = Color(0xFF0E1722);     // Deep midnight slate surface
 const _card = Color(0xFF0E1722);        // Card background
 const _border = Color(0xFF1E293B);      // Crisp slate border
 const _green = Color(0xFF22C55E);       // Vibrant emerald green accent
-const _greenDim = Color(0xFF16A34A);    // Darker emerald green
 
 /// Model for a saved or generated shader
 class UserShaderItem {
@@ -22,7 +21,8 @@ class UserShaderItem {
   final String name;
   final DateTime date;
   final int byteSize;
-  final List<int>? bytes;
+  final String? localFilePath;
+  List<int>? _cachedBytes;
   final Color previewColor;
   final String engine;
 
@@ -31,55 +31,208 @@ class UserShaderItem {
     required this.name,
     required this.date,
     required this.byteSize,
-    this.bytes,
+    this.localFilePath,
+    List<int>? bytes,
     required this.previewColor,
     this.engine = 'Vibrant Engine',
-  });
+  }) : _cachedBytes = bytes;
+
+  Future<List<int>?> loadBytes() async {
+    if (_cachedBytes != null && _cachedBytes!.isNotEmpty) {
+      return _cachedBytes;
+    }
+    if (localFilePath != null) {
+      _cachedBytes = await readNativeFile(localFilePath!);
+      return _cachedBytes;
+    }
+    return null;
+  }
+
+  List<int>? get bytes {
+    if (_cachedBytes != null && _cachedBytes!.isNotEmpty) {
+      return _cachedBytes;
+    }
+    if (localFilePath != null) {
+      _cachedBytes = readNativeFileSync(localFilePath!);
+      return _cachedBytes;
+    }
+    return null;
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'date': date.toIso8601String(),
+    'byteSize': byteSize,
+    'localFilePath': localFilePath,
+    'previewColor': previewColor.toARGB32(),
+    'engine': engine,
+  };
+
+  factory UserShaderItem.fromJson(Map<String, dynamic> json) {
+    return UserShaderItem(
+      id: json['id'] as String? ?? 'shader_${DateTime.now().millisecondsSinceEpoch}',
+      name: json['name'] as String? ?? 'Piglix Shader',
+      date: DateTime.tryParse(json['date'] as String? ?? '') ?? DateTime.now(),
+      byteSize: json['byteSize'] as int? ?? 0,
+      localFilePath: json['localFilePath'] as String?,
+      previewColor: Color(json['previewColor'] as int? ?? 0xFF22C55E),
+      engine: json['engine'] as String? ?? 'Vibrant Engine',
+    );
+  }
 }
 
-/// Global store holding previously generated / saved shaders
+/// Persistent store holding previously generated / saved shaders on disk
 class UserShaderStore {
-  static final List<UserShaderItem> shaders = [
-    UserShaderItem(
-      id: 'shader_vibrant_default',
-      name: 'Piglix Vibrant Horizon',
-      date: DateTime.now().subtract(const Duration(hours: 2)),
-      byteSize: 184320,
-      previewColor: const Color(0xFF22C55E),
-      engine: 'Vibrant Engine (JSON Deferred)',
-    ),
-    UserShaderItem(
-      id: 'shader_pink_atmosphere',
-      name: 'Newb X Pink Atmosphere',
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      byteSize: 245760,
-      previewColor: const Color(0xFFE91E63),
-      engine: 'Vibrant Engine (JSON Deferred)',
-    ),
-  ];
+  static final List<UserShaderItem> shaders = [];
+  static bool _initialized = false;
 
-  static void addShader({
+  static Future<void> init() async {
+    if (_initialized) return;
+    _initialized = true;
+
+    try {
+      final dirPath = await getShadersDirectoryPath();
+      final manifestJson = await readNativeString('$dirPath/shaders_manifest.json');
+      if (manifestJson != null && manifestJson.isNotEmpty) {
+        try {
+          final List<dynamic> list = jsonDecode(manifestJson) as List<dynamic>;
+          shaders.clear();
+          for (final item in list) {
+            if (item is Map<String, dynamic>) {
+              shaders.add(UserShaderItem.fromJson(item));
+            }
+          }
+        } on FormatException catch (e) {
+          debugPrint('[Piglix] Corrupt shaders_manifest.json, repairing from disk: $e');
+          await _repairManifestFromDisk(dirPath);
+        }
+      } else {
+        // Seed default shaders with real base shader template bytes
+        await _seedDefaultShaders(dirPath);
+      }
+    } catch (e) {
+      debugPrint('[Piglix] UserShaderStore init warning: $e');
+    }
+  }
+
+  static Future<void> _repairManifestFromDisk(String dirPath) async {
+    try {
+      final packs = await listNativePacks(dirPath);
+      shaders.clear();
+      if (packs.isNotEmpty) {
+        for (final p in packs) {
+          shaders.add(
+            UserShaderItem(
+              id: 'shader_${p.modified.millisecondsSinceEpoch}',
+              name: p.name,
+              date: p.modified,
+              byteSize: p.byteSize,
+              localFilePath: p.path,
+              previewColor: const Color(0xFF22C55E),
+              engine: 'Vibrant Engine (JSON Deferred)',
+            ),
+          );
+        }
+        await _saveManifest(dirPath);
+      } else {
+        await _seedDefaultShaders(dirPath);
+      }
+    } catch (e) {
+      debugPrint('[Piglix] Manifest recovery fallback: $e');
+      await _seedDefaultShaders(dirPath);
+    }
+  }
+
+  static Future<void> _seedDefaultShaders(String dirPath) async {
+    try {
+      final byteData = await rootBundle.load('assets/base_shader.zip');
+      final defaultBytes = byteData.buffer.asUint8List();
+      final defaultPath = '$dirPath/shader_vibrant_default.mcpack';
+      await writeNativeFile(defaultPath, defaultBytes);
+
+      shaders.clear();
+      shaders.add(
+        UserShaderItem(
+          id: 'shader_vibrant_default',
+          name: 'Piglix Vibrant Horizon',
+          date: DateTime.now().subtract(const Duration(hours: 2)),
+          byteSize: defaultBytes.length,
+          localFilePath: defaultPath,
+          bytes: defaultBytes,
+          previewColor: const Color(0xFF22C55E),
+          engine: 'Vibrant Engine (JSON Deferred)',
+        ),
+      );
+      await _saveManifest(dirPath);
+    } catch (e) {
+      debugPrint('[Piglix] Error seeding default shader: $e');
+    }
+  }
+
+  static Future<void> _saveManifest([String? dirPath]) async {
+    try {
+      final path = dirPath ?? await getShadersDirectoryPath();
+      final jsonList = shaders.map((e) => e.toJson()).toList();
+      await writeNativeString('$path/shaders_manifest.json', jsonEncode(jsonList));
+    } catch (e) {
+      debugPrint('[Piglix] Error saving shaders_manifest.json: $e');
+    }
+  }
+
+  static Future<void> addShader({
     required String name,
     required List<int> bytes,
     required Color previewColor,
-  }) {
+    String engine = 'Vibrant Engine',
+  }) async {
     final cleanName = name.trim().isEmpty ? 'Piglix Shader' : name.trim();
+    final id = 'shader_${DateTime.now().millisecondsSinceEpoch}';
+    String? localPath;
+
+    try {
+      final dirPath = await getShadersDirectoryPath();
+      localPath = '$dirPath/$id.mcpack';
+      await writeNativeFile(localPath, bytes);
+    } catch (e) {
+      debugPrint('[Piglix] addShader storage write warning: $e');
+    }
+
     shaders.insert(
       0,
       UserShaderItem(
-        id: 'shader_${DateTime.now().millisecondsSinceEpoch}',
+        id: id,
         name: cleanName,
         date: DateTime.now(),
         byteSize: bytes.length,
+        localFilePath: localPath,
         bytes: bytes,
         previewColor: previewColor,
-        engine: 'Vibrant Engine',
+        engine: engine,
       ),
     );
+
+    await _saveManifest();
   }
 
-  static void removeShader(String id) {
+  static Future<void> removeShader(String id) async {
+    final item = shaders.firstWhere(
+      (item) => item.id == id,
+      orElse: () => UserShaderItem(
+        id: '',
+        name: '',
+        date: DateTime.now(),
+        byteSize: 0,
+        previewColor: Colors.transparent,
+      ),
+    );
+
+    if (item.localFilePath != null && item.localFilePath!.isNotEmpty) {
+      await deleteNativeFile(item.localFilePath!);
+    }
+
     shaders.removeWhere((item) => item.id == id);
+    await _saveManifest();
   }
 }
 
@@ -99,6 +252,14 @@ class MyShadersScreen extends StatefulWidget {
 }
 
 class _MyShadersScreenState extends State<MyShadersScreen> {
+  @override
+  void initState() {
+    super.initState();
+    UserShaderStore.init().then((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
   void _snack(String msg, {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -128,7 +289,7 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
     final pName = item.name.endsWith('.mcpack') ? item.name : '${item.name}.mcpack';
     final bytes = item.bytes;
     if (bytes == null || bytes.isEmpty) {
-      _snack('⬇ Downloaded $pName (Template Pack)');
+      _snack('❌ Shader file data is empty or missing.', isError: true);
       return;
     }
 
@@ -188,9 +349,12 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
           await platform.invokeMethod('openWithMinecraft', {'filePath': path});
           _snack('✅ Opening $pName in Minecraft...');
           return;
-        } catch (_) {}
+        } catch (e) {
+          _snack('❌ Failed to launch Minecraft: $e', isError: true);
+          return;
+        }
       }
-      _snack('Please export and open $pName with Minecraft.');
+      _snack('❌ Shader file data is empty or missing.', isError: true);
     }
   }
 
@@ -204,14 +368,15 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
         final bytes = await f.readAsBytes();
         if (bytes.isNotEmpty) {
           final name = f.name.replaceAll(RegExp(r'\.(mcpack|zip)$', caseSensitive: false), '');
-          setState(() {
-            UserShaderStore.addShader(
-              name: name,
-              bytes: bytes,
-              previewColor: const Color(0xFF4CAF50),
-            );
-          });
-          _snack('Imported "${f.name}" to My Shaders!');
+          await UserShaderStore.addShader(
+            name: name,
+            bytes: bytes,
+            previewColor: const Color(0xFF4CAF50),
+          );
+          if (mounted) {
+            setState(() {});
+            _snack('Imported "${f.name}" to My Shaders!');
+          }
         }
       }
     } catch (e) {
@@ -242,12 +407,13 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
             child: const Text('Cancel', style: TextStyle(color: Colors.white54)),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(ctx);
-              setState(() {
-                UserShaderStore.removeShader(item.id);
-              });
-              _snack('Deleted "${item.name}"');
+              await UserShaderStore.removeShader(item.id);
+              if (mounted) {
+                setState(() {});
+                _snack('Deleted "${item.name}"');
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red.shade900,
@@ -387,7 +553,7 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
         border: Border.all(color: _border, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withValues(alpha: 0.4),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -406,12 +572,12 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: item.previewColor.withOpacity(0.20),
+                    color: item.previewColor.withValues(alpha: 0.20),
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: item.previewColor, width: 1.5),
                     boxShadow: [
                       BoxShadow(
-                        color: item.previewColor.withOpacity(0.35),
+                        color: item.previewColor.withValues(alpha: 0.35),
                         blurRadius: 8,
                       ),
                     ],
@@ -444,9 +610,9 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: _green.withOpacity(0.15),
+                              color: _green.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: _green.withOpacity(0.5), width: 0.8),
+                              border: Border.all(color: _green.withValues(alpha: 0.5), width: 0.8),
                             ),
                             child: const Text(
                               'VIBRANT',
@@ -479,7 +645,7 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
           ),
 
           // Divider
-          Container(height: 1, color: _border.withOpacity(0.5)),
+          Container(height: 1, color: _border.withValues(alpha: 0.5)),
 
           // Action Buttons Bar
           Container(

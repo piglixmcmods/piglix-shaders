@@ -37,22 +37,20 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   archive: ^4.3.0
   path_provider: ^2.1.6
-  file_saver: ^0.4.0
+  file_saver: ^0.7.0
   universal_html: ^2.3.0
   uuid: ^4.6.0
   file_picker: ^13.1.0
-  google_fonts: ^8.2.1
+  shared_preferences: ^2.5.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^6.0.0
+
+dependency_overrides:
+  meta: 1.18.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -67,27 +65,13 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/
-    - assets/minecraft_shader_lake.jpg
-    - assets/mirrored_sunset_lakeside_nap.webp
-    - "assets/Mirrored Minecraft Sunset Lakeside Nap.webp"
     - assets/base_shader.zip
-    - assets/banner.webp
-    - assets/sun_multiplier_bg.jpg
-    - assets/night_brightness_bg.jpg
-    - assets/fog_density_bg.jpg
-    - assets/light_intensity_bg.jpg
-    - assets/block_light_bg.jpg
-    - assets/wind_waves_bg.jpg
-    - assets/global_metalness_bg.jpg
+    - assets/hero_sunset.webp
 
   fonts:
     - family: PixelifySans
       fonts:
         - asset: assets/fonts/PixelifySans.ttf
-    - family: Minecraft
-      fonts:
-        - asset: assets/fonts/Minecraft.otf
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

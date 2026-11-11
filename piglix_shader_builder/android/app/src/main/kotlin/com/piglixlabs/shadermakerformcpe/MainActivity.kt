@@ -25,12 +25,30 @@ class MainActivity : FlutterActivity() {
                                 "${applicationContext.packageName}.fileprovider",
                                 file
                             )
-                            val intent = Intent(Intent.ACTION_VIEW).apply {
+
+                            // Try direct intent to Minecraft Bedrock first
+                            val mcIntent = Intent(Intent.ACTION_VIEW).apply {
+                                setDataAndType(uri, "application/mcpack")
+                                setPackage("com.mojang.minecraftpe")
+                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
+
+                            if (mcIntent.resolveActivity(packageManager) != null) {
+                                startActivity(mcIntent)
+                                result.success(true)
+                                return@setMethodCallHandler
+                            }
+
+                            // Fallback: general chooser with octet-stream MIME
+                            val chooserIntent = Intent(Intent.ACTION_VIEW).apply {
                                 setDataAndType(uri, "application/octet-stream")
                                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             }
-                            startActivity(Intent.createChooser(intent, "Open with Minecraft"))
+                            val chooser = Intent.createChooser(chooserIntent, "Open with Minecraft or File Manager")
+                            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(chooser)
                             result.success(true)
                         } catch (e: Exception) {
                             result.error("OPEN_FAILED", e.localizedMessage, null)

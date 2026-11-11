@@ -206,7 +206,7 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawCircle(
       Offset(cx, cy),
       s * 0.44 * pulse,
-      Paint()..color = (colorOverride ?? const Color(0xFFFFB300)).withOpacity(0.30),
+      Paint()..color = (colorOverride ?? const Color(0xFFFFB300)).withValues(alpha: 0.30),
     );
 
     final rayPaint = Paint()..color = (colorOverride ?? const Color(0xFFFDD835));
@@ -267,7 +267,7 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawCircle(
       Offset(cx, cy),
       s * 0.45,
-      Paint()..color = const Color(0xFF312E81).withOpacity(0.35),
+      Paint()..color = const Color(0xFF312E81).withValues(alpha: 0.35),
     );
 
     // Crescent Path
@@ -303,13 +303,13 @@ class _VoxelIconPainter extends CustomPainter {
     final innerShadow = Path.combine(PathOperation.intersect, crescent, shadowPath);
     canvas.drawPath(
       innerShadow,
-      Paint()..color = const Color(0xFFC7D2FE).withOpacity(0.70),
+      Paint()..color = const Color(0xFFC7D2FE).withValues(alpha: 0.70),
     );
 
     // Small pixel star in the crescent nook (matching user reference)
     final starX = cx + s * 0.18;
     final starY = cy - s * 0.10;
-    final starPaint = Paint()..color = Colors.white.withOpacity(0.40 + 0.60 * twinkle);
+    final starPaint = Paint()..color = Colors.white.withValues(alpha: 0.40 + 0.60 * twinkle);
     canvas.drawRect(Rect.fromCenter(center: Offset(starX, starY), width: 3, height: 3), starPaint);
     canvas.drawRect(Rect.fromCenter(center: Offset(starX - 2.5, starY), width: 2, height: 1.5), starPaint);
     canvas.drawRect(Rect.fromCenter(center: Offset(starX + 2.5, starY), width: 2, height: 1.5), starPaint);
@@ -370,7 +370,7 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawCircle(
       Offset(cx, cy - s * 0.06),
       s * 0.45,
-      Paint()..color = const Color(0xFFFFD54F).withOpacity(0.35 * glow),
+      Paint()..color = const Color(0xFFFFD54F).withValues(alpha: 0.35 * glow),
     );
 
     // Bulb glass path
@@ -412,7 +412,7 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawPath(
       highlightPath,
       Paint()
-        ..color = Colors.white.withOpacity(0.90)
+        ..color = Colors.white.withValues(alpha: 0.90)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2.4
         ..strokeCap = StrokeCap.round,
@@ -514,7 +514,7 @@ class _VoxelIconPainter extends CustomPainter {
       final gx = (cx - w2) + (2 * w2) * gleamPos;
       canvas.drawRect(
         Rect.fromCenter(center: Offset(gx, cy - s * 0.15), width: s * 0.15, height: s * 0.45),
-        Paint()..color = Colors.white.withOpacity(0.70),
+        Paint()..color = Colors.white.withValues(alpha: 0.70),
       );
       canvas.restore();
     }
@@ -592,7 +592,7 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawCircle(
       Offset(cx, cy - s * 0.16 + flicker),
       s * 0.44,
-      Paint()..color = const Color(0xFFFF9800).withOpacity(0.30),
+      Paint()..color = const Color(0xFFFF9800).withValues(alpha: 0.30),
     );
 
     // 3-Tone oak handle with shadow edge
@@ -652,7 +652,7 @@ class _VoxelIconPainter extends CustomPainter {
       final sx = cx + math.sin(spAnim * 2 * math.pi + i) * (s * 0.12);
       final sy = flameY - s * 0.08 - spAnim * (s * 0.24);
       final sz = s * 0.035 * (1.0 - spAnim * 0.5);
-      canvas.drawRect(Rect.fromCenter(center: Offset(sx, sy), width: sz, height: sz), sparkPaint..color = const Color(0xFFFFD54F).withOpacity(1.0 - spAnim));
+      canvas.drawRect(Rect.fromCenter(center: Offset(sx, sy), width: sz, height: sz), sparkPaint..color = const Color(0xFFFFD54F).withValues(alpha: 1.0 - spAnim));
     }
   }
 
@@ -662,7 +662,7 @@ class _VoxelIconPainter extends CustomPainter {
     final y = cy + bob - s * 0.04;
 
     // Ambient aqua halo
-    canvas.drawCircle(Offset(cx, y), s * 0.36, Paint()..color = const Color(0xFF00E5FF).withOpacity(0.20));
+    canvas.drawCircle(Offset(cx, y), s * 0.36, Paint()..color = const Color(0xFF00E5FF).withValues(alpha: 0.20));
 
     // Teardrop body
     final dropPath = Path()
@@ -687,16 +687,16 @@ class _VoxelIconPainter extends CustomPainter {
       ..cubicTo(cx - s * 0.18, y - s * 0.14, cx - s * 0.08, y - s * 0.22, cx, y - s * 0.24);
     canvas.drawPath(
       glarePath,
-      Paint()..color = Colors.white.withOpacity(0.90)..style = PaintingStyle.stroke..strokeWidth = 2.0..strokeCap = StrokeCap.round,
+      Paint()..color = Colors.white.withValues(alpha: 0.90)..style = PaintingStyle.stroke..strokeWidth = 2.0..strokeCap = StrokeCap.round,
     );
     // Lower secondary bounce glint
-    canvas.drawCircle(Offset(cx + s * 0.10, y + s * 0.14), s * 0.04, Paint()..color = const Color(0xFFB3E5FC).withOpacity(0.80));
+    canvas.drawCircle(Offset(cx + s * 0.10, y + s * 0.14), s * 0.04, Paint()..color = const Color(0xFFB3E5FC).withValues(alpha: 0.80));
 
     // Base ripple pool
     final ripR = (anim * 2.0) % 1.0;
     canvas.drawOval(
       Rect.fromCenter(center: Offset(cx, cy + s * 0.32), width: s * 0.50 * ripR, height: s * 0.14 * ripR),
-      Paint()..color = const Color(0xFF80D8FF).withOpacity(1.0 - ripR)..style = PaintingStyle.stroke..strokeWidth = 1.2,
+      Paint()..color = const Color(0xFF80D8FF).withValues(alpha: 1.0 - ripR)..style = PaintingStyle.stroke..strokeWidth = 1.2,
     );
   }
 
@@ -740,7 +740,7 @@ class _VoxelIconPainter extends CustomPainter {
     final sparkle = (math.sin(anim * 4 * math.pi) * 0.5 + 0.5).clamp(0.0, 1.0);
 
     // Radiant cyan aura
-    canvas.drawCircle(Offset(cx, cy), s * 0.40, Paint()..color = const Color(0xFF00E5FF).withOpacity(0.30));
+    canvas.drawCircle(Offset(cx, cy), s * 0.40, Paint()..color = const Color(0xFF00E5FF).withValues(alpha: 0.30));
 
     // Outer dark cyan outline
     final outerPath = Path()
@@ -785,7 +785,7 @@ class _VoxelIconPainter extends CustomPainter {
 
     // Rotating 4-point star twinkle glint
     if (sparkle > 0.35) {
-      final glintPaint = Paint()..color = Colors.white.withOpacity(sparkle);
+      final glintPaint = Paint()..color = Colors.white.withValues(alpha: sparkle);
       final gx = cx + s * 0.18;
       final gy = cy - s * 0.16;
       final gw = s * 0.18 * sparkle;
@@ -805,10 +805,10 @@ class _VoxelIconPainter extends CustomPainter {
     final phase = anim * 2 * math.pi;
 
     // Ambient water glow
-    canvas.drawCircle(Offset(cx, cy), s * 0.40, Paint()..color = const Color(0xFF00B0FF).withOpacity(0.18));
+    canvas.drawCircle(Offset(cx, cy), s * 0.40, Paint()..color = const Color(0xFF00B0FF).withValues(alpha: 0.18));
 
     final causticPaint = Paint()
-      ..color = (colorOverride ?? const Color(0xFF80D8FF)).withOpacity(0.70)
+      ..color = (colorOverride ?? const Color(0xFF80D8FF)).withValues(alpha: 0.70)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.8;
 
@@ -822,11 +822,11 @@ class _VoxelIconPainter extends CustomPainter {
       // Bright photon intersection nodes
       final nx = ox + math.cos(phase + i * 2) * r;
       final ny = oy + math.sin(phase + i * 2) * r;
-      canvas.drawCircle(Offset(nx, ny), 2.2, Paint()..color = Colors.white.withOpacity(0.85));
+      canvas.drawCircle(Offset(nx, ny), 2.2, Paint()..color = Colors.white.withValues(alpha: 0.85));
     }
 
     // Inner bright focus point
-    canvas.drawCircle(Offset(cx, cy), s * 0.06, Paint()..color = const Color(0xFFE0F7FA).withOpacity(0.80));
+    canvas.drawCircle(Offset(cx, cy), s * 0.06, Paint()..color = const Color(0xFFE0F7FA).withValues(alpha: 0.80));
   }
 
   // 12. CUBE MIRROR: 3D Holographic refractive glass cube with chromatic dispersion sheen
@@ -841,7 +841,7 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(cx, cy - s * 0.32 + 2 * h2)
       ..lineTo(cx - w2, cy - s * 0.32 + h2)
       ..close();
-    canvas.drawPath(topFace, Paint()..color = const Color(0xFFE0F7FA).withOpacity(0.90));
+    canvas.drawPath(topFace, Paint()..color = const Color(0xFFE0F7FA).withValues(alpha: 0.90));
     canvas.drawPath(topFace, Paint()..color = Colors.white..style = PaintingStyle.stroke..strokeWidth = 1.2);
 
     // Left face (Prism cyan)
@@ -851,7 +851,7 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(cx, cy + s * 0.30)
       ..lineTo(cx - w2, cy + s * 0.30 - h2)
       ..close();
-    canvas.drawPath(leftFace, Paint()..color = const Color(0xFF80DEEA).withOpacity(0.80));
+    canvas.drawPath(leftFace, Paint()..color = const Color(0xFF80DEEA).withValues(alpha: 0.80));
     canvas.drawPath(leftFace, Paint()..color = const Color(0xFF4DD0E1)..style = PaintingStyle.stroke..strokeWidth = 1.0);
 
     // Right face (Deep refractive turquoise)
@@ -861,7 +861,7 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(cx + w2, cy + s * 0.30 - h2)
       ..lineTo(cx, cy + s * 0.30)
       ..close();
-    canvas.drawPath(rightFace, Paint()..color = const Color(0xFF26C6DA).withOpacity(0.75));
+    canvas.drawPath(rightFace, Paint()..color = const Color(0xFF26C6DA).withValues(alpha: 0.75));
     canvas.drawPath(rightFace, Paint()..color = const Color(0xFF00ACC1)..style = PaintingStyle.stroke..strokeWidth = 1.0);
 
     // Rainbow chromatic dispersion sheen across left face
@@ -885,7 +885,7 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawCircle(
       Offset(cx, cy),
       s * 0.44 * pulse,
-      Paint()..color = const Color(0xFFAB47BC).withOpacity(0.35),
+      Paint()..color = const Color(0xFFAB47BC).withValues(alpha: 0.35),
     );
 
     // Deep void body
@@ -904,13 +904,13 @@ class _VoxelIconPainter extends CustomPainter {
       Offset(cx, cy),
       s * 0.18,
       Paint()
-        ..color = const Color(0xFF1DE9B6).withOpacity(0.65)
+        ..color = const Color(0xFF1DE9B6).withValues(alpha: 0.65)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.8,
     );
 
     // Specular highlight glint
-    canvas.drawCircle(Offset(cx - s * 0.10, cy - s * 0.10), s * 0.065, Paint()..color = Colors.white.withOpacity(0.95));
+    canvas.drawCircle(Offset(cx - s * 0.10, cy - s * 0.10), s * 0.065, Paint()..color = Colors.white.withValues(alpha: 0.95));
 
     // 3 Orbiting glowing Ender particles
     for (var i = 0; i < 3; i++) {
@@ -967,7 +967,7 @@ class _VoxelIconPainter extends CustomPainter {
     }
 
     // Cyan vertical alignment laser beam linking top to bottom sheet
-    final beamPaint = Paint()..color = const Color(0xFF00E5FF).withOpacity(0.60)..strokeWidth = 1.0;
+    final beamPaint = Paint()..color = const Color(0xFF00E5FF).withValues(alpha: 0.60)..strokeWidth = 1.0;
     canvas.drawLine(Offset(cx - s * 0.34, cy + float), Offset(cx - s * 0.34, cy + s * 0.18), beamPaint);
     canvas.drawLine(Offset(cx + s * 0.34, cy + float), Offset(cx + s * 0.34, cy + s * 0.18), beamPaint);
   }
@@ -1039,7 +1039,7 @@ class _VoxelIconPainter extends CustomPainter {
     }
 
     // Sparkle star glint on crown
-    canvas.drawCircle(Offset(ox + 8.5 * u, oy + 3.5 * u), u * 0.9, Paint()..color = Colors.white.withOpacity(0.9));
+    canvas.drawCircle(Offset(ox + 8.5 * u, oy + 3.5 * u), u * 0.9, Paint()..color = Colors.white.withValues(alpha: 0.9));
     canvas.drawLine(
       Offset(ox + 8.5 * u - u * 1.5, oy + 3.5 * u),
       Offset(ox + 8.5 * u + u * 1.5, oy + 3.5 * u),
@@ -1195,7 +1195,7 @@ class _VoxelIconPainter extends CustomPainter {
 
     // Atmospheric cloud ribbons
     final cloudPaint = Paint()
-      ..color = Colors.white.withOpacity(0.55)
+      ..color = Colors.white.withValues(alpha: 0.55)
       ..strokeWidth = 2.2
       ..strokeCap = StrokeCap.round;
     canvas.drawLine(Offset(cx - s * 0.22, cy - s * 0.04), Offset(cx + s * 0.12, cy - s * 0.04), cloudPaint);
@@ -1208,7 +1208,7 @@ class _VoxelIconPainter extends CustomPainter {
       Offset(cx, cy),
       globeRadius,
       Paint()
-        ..color = const Color(0xFF38BDF8).withOpacity(0.4)
+        ..color = const Color(0xFF38BDF8).withValues(alpha: 0.4)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.4,
     );
@@ -1359,7 +1359,7 @@ class _VoxelIconPainter extends CustomPainter {
 
     void draw8PointStar(double x, double y, double r, Color coreColor, Color auraColor) {
       // Chromatic aura
-      canvas.drawCircle(Offset(x, y), r * 1.4, Paint()..color = auraColor.withOpacity(0.35));
+      canvas.drawCircle(Offset(x, y), r * 1.4, Paint()..color = auraColor.withValues(alpha: 0.35));
 
       final p = Path()
         ..moveTo(x, y - r)
@@ -1510,12 +1510,12 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawCircle(
       Offset(cx, cy + s * 0.04),
       s * 0.44 * glow,
-      Paint()..color = const Color(0xFFFF9800).withOpacity(0.38),
+      Paint()..color = const Color(0xFFFF9800).withValues(alpha: 0.38),
     );
     canvas.drawCircle(
       Offset(cx, cy + s * 0.04),
       s * 0.28 * glow,
-      Paint()..color = const Color(0xFFFFD54F).withOpacity(0.45),
+      Paint()..color = const Color(0xFFFFD54F).withValues(alpha: 0.45),
     );
 
     // 1. Top Hanger Ring / Loop
@@ -1621,7 +1621,7 @@ class _VoxelIconPainter extends CustomPainter {
 
       canvas.drawOval(
         Rect.fromCenter(center: Offset(cx, cy + s * 0.26), width: rw, height: rh),
-        Paint()..color = const Color(0xFF80D8FF).withOpacity(rAlpha * 0.85)..style = PaintingStyle.stroke..strokeWidth = 1.4,
+        Paint()..color = const Color(0xFF80D8FF).withValues(alpha: rAlpha * 0.85)..style = PaintingStyle.stroke..strokeWidth = 1.4,
       );
     }
 
@@ -1671,7 +1671,7 @@ class _VoxelIconPainter extends CustomPainter {
       // Paint dome
       canvas.drawCircle(pos, s * 0.065, Paint()..color = colors[i]);
       // Specular highlight dot
-      canvas.drawCircle(Offset(pos.dx - 1.5, pos.dy - 1.5), 1.5, Paint()..color = Colors.white.withOpacity(0.90));
+      canvas.drawCircle(Offset(pos.dx - 1.5, pos.dy - 1.5), 1.5, Paint()..color = Colors.white.withValues(alpha: 0.90));
     }
   }
 
@@ -1707,7 +1707,7 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawCircle(Offset(cx + s * 0.06, cy + s * 0.04), s * 0.11, lensGlint);
 
     // Specular lens flare dot
-    canvas.drawCircle(Offset(cx + s * 0.02, cy), 2.2, Paint()..color = Colors.white.withOpacity(0.90));
+    canvas.drawCircle(Offset(cx + s * 0.02, cy), 2.2, Paint()..color = Colors.white.withValues(alpha: 0.90));
 
     // Blinking red recording tally LED
     final blink = (math.sin(anim * 4 * math.pi) > 0);
@@ -1923,7 +1923,7 @@ class _VoxelIconPainter extends CustomPainter {
 
     // Horizontal page strata lines (paper sheets)
     final pageLinePaint = Paint()
-      ..color = const Color(0xFFD97706).withOpacity(0.45)
+      ..color = const Color(0xFFD97706).withValues(alpha: 0.45)
       ..strokeWidth = 1.0;
     for (final f in [0.28, 0.44, 0.60, 0.76]) {
       final lineStart = Offset.lerp(centerVertex, centerBottomVertex, f)!;

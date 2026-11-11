@@ -476,7 +476,7 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: const Color(0xFF22C55E).withOpacity(0.18),
+                color: const Color(0xFF22C55E).withValues(alpha: 0.18),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: const Color(0xFF22C55E), width: 1.2),
               ),
@@ -543,7 +543,7 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
                             boxShadow: isSel
                                 ? [
                                     BoxShadow(
-                                      color: const Color(0xFF22C55E).withOpacity(0.3),
+                                      color: const Color(0xFF22C55E).withValues(alpha: 0.3),
                                       blurRadius: 8,
                                       offset: const Offset(0, 2),
                                     ),
@@ -607,7 +607,7 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
           border: Border.all(color: palette.border, width: 1.2),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.4),
+              color: Colors.black.withValues(alpha: 0.4),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -687,10 +687,10 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: accent.withOpacity(0.16),
+                      color: accent.withValues(alpha: 0.16),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: accent.withOpacity(0.4),
+                        color: accent.withValues(alpha: 0.4),
                         width: 1.2,
                       ),
                     ),
@@ -793,10 +793,10 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
       decoration: BoxDecoration(
-        color: palette.border.withOpacity(0.35),
+        color: palette.border.withValues(alpha: 0.35),
         borderRadius: BorderRadius.circular(5),
         border: Border.all(
-          color: palette.border.withOpacity(0.6),
+          color: palette.border.withValues(alpha: 0.6),
           width: 0.8,
         ),
       ),

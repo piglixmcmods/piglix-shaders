@@ -63,7 +63,7 @@ class LegalPage extends StatelessWidget {
                 child: Text(
                   '© 2026 Piglix Labs • All rights reserved',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.35),
+                    color: Colors.white.withValues(alpha: 0.35),
                     fontSize: 12,
                   ),
                 ),
@@ -138,7 +138,7 @@ class LegalPage extends StatelessWidget {
             Text(
               'Piglix Labs • Last updated: October 1, 2026',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.45),
+                color: Colors.white.withValues(alpha: 0.45),
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
@@ -162,7 +162,7 @@ class LegalPage extends StatelessWidget {
             Text(
               'Piglix Labs • Last updated: October 1, 2026',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.45),
+                color: Colors.white.withValues(alpha: 0.45),
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
@@ -186,7 +186,7 @@ class LegalPage extends StatelessWidget {
             Text(
               'Third-Party Software & Open-Source Projects',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.45),
+                color: Colors.white.withValues(alpha: 0.45),
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
@@ -242,15 +242,16 @@ class LegalPage extends StatelessWidget {
                 'The Application may request permission to access device storage solely for the purpose of exporting and saving generated shader .mcpack files directly to your device or Minecraft resource pack folder. We do not access, read, or modify any personal photos, private documents, or unrelated files.',
           ),
           _legalCard(
-            title: '3. Third-Party Advertising & Services',
+            title: '3. Zero Third-Party Advertising & Tracking',
             content:
-                'We may display advertisements to keep this application free for everyone. We use third-party advertising partners such as Google AdMob.\n\n'
-                'These ad networks may collect anonymized device identifiers or ad interaction data according to their own privacy policies. For more info: https://policies.google.com/privacy',
+                'Shader Generator for MCPE does NOT contain any third-party advertising SDKs, marketing trackers, or external analytics services.\n\n'
+                'The application operates 100% offline on your device and does not transmit data over the Internet.',
           ),
           _legalCard(
-            title: '4. Children\'s Privacy',
+            title: '4. Families & All-Audience Friendly',
             content:
-                'Our Application is intended for general audiences (ages 13 and above). We do not knowingly collect personal identifiable information from children under 13.',
+                'Our Application is designed for all audiences and entertainment gaming players of all ages, with no age restrictions.\n\n'
+                'Because the Application collects zero personal data, operates offline, and contains no advertisements, it fully complies with the Children\'s Online Privacy Protection Act (COPPA), GDPR-K, and Google Play Families Policies. Players of all ages can safely create, customize, and export shaders with complete privacy.',
           ),
           _legalCard(
             title: '5. Changes to This Policy',
@@ -309,8 +310,8 @@ class LegalPage extends StatelessWidget {
                 '• file_saver — MIT License\n'
                 '• file_picker — MIT License\n'
                 '• path_provider — BSD 3-Clause\n'
+                '• shared_preferences — BSD 3-Clause\n'
                 '• flutter_colorpicker — MIT License\n'
-                '• google_fonts — Apache 2.0\n'
                 '• uuid — MIT License',
           ),
         ];
@@ -331,7 +332,7 @@ class LegalPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: highlight
-              ? const Color(0xFF22C55E).withOpacity(0.6)
+              ? const Color(0xFF22C55E).withValues(alpha: 0.6)
               : const Color(0xFF1E293B),
           width: 1.2,
         ),
@@ -413,7 +414,7 @@ class AppDrawer extends StatelessWidget {
                   errorBuilder: (ctx, err, stack) => Image.asset(
                     'assets/hero_sunset.webp',
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
+                    errorBuilder: (context, error, stackTrace) => Container(
                       color: const Color(0xFF0E1722),
                     ),
                   ),
@@ -424,8 +425,8 @@ class AppDrawer extends StatelessWidget {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.black.withOpacity(0.40),
-                        const Color(0xFF080D14).withOpacity(0.55),
+                        Colors.black.withValues(alpha: 0.40),
+                        const Color(0xFF080D14).withValues(alpha: 0.55),
                         const Color(0xFF080D14),
                       ],
                       stops: const [0.0, 0.45, 1.0],
@@ -444,10 +445,10 @@ class AppDrawer extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF0E1722).withOpacity(0.85),
+                              color: const Color(0xFF0E1722).withValues(alpha: 0.85),
                               borderRadius: BorderRadius.circular(6),
                               border: Border.all(
-                                color: const Color(0xFF22C55E).withOpacity(0.4),
+                                color: const Color(0xFF22C55E).withValues(alpha: 0.4),
                                 width: 1,
                               ),
                             ),
@@ -482,7 +483,7 @@ class AppDrawer extends StatelessWidget {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: const Color(0xFF0E1722).withOpacity(0.75),
+                                color: const Color(0xFF0E1722).withValues(alpha: 0.75),
                                 shape: BoxShape.circle,
                                 border: Border.all(color: Colors.white24, width: 1),
                               ),
@@ -509,7 +510,7 @@ class AppDrawer extends StatelessWidget {
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFF22C55E).withOpacity(0.45),
+                                  color: const Color(0xFF22C55E).withValues(alpha: 0.45),
                                   blurRadius: 16,
                                   spreadRadius: 1,
                                 ),
@@ -729,8 +730,8 @@ class AppDrawer extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(12),
-          splashColor: iconColor.withOpacity(0.15),
-          highlightColor: iconColor.withOpacity(0.08),
+          splashColor: iconColor.withValues(alpha: 0.15),
+          highlightColor: iconColor.withValues(alpha: 0.08),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             child: Row(
@@ -739,9 +740,9 @@ class AppDrawer extends StatelessWidget {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: iconColor.withOpacity(0.12),
+                    color: iconColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(9),
-                    border: Border.all(color: iconColor.withOpacity(0.3), width: 1),
+                    border: Border.all(color: iconColor.withValues(alpha: 0.3), width: 1),
                   ),
                   child: Icon(icon, color: iconColor, size: 19),
                 ),

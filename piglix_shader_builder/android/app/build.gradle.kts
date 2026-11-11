@@ -3,8 +3,19 @@ import java.io.FileInputStream
 
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+var hasReleaseSigning = false
+
+val envStorePath = System.getenv("ANDROID_KEYSTORE_PATH")
+if (!envStorePath.isNullOrEmpty() && file(envStorePath).exists()) {
+    hasReleaseSigning = true
+} else if (keystorePropertiesFile.exists()) {
+    try {
+        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+        val storePath = keystoreProperties["storeFile"] as String?
+        if (storePath != null && file(storePath).exists()) {
+            hasReleaseSigning = true
+        }
+    } catch (_: Exception) {}
 }
 
 plugins {
@@ -25,10 +36,13 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String?
-            keyPassword = keystoreProperties["keyPassword"] as String?
-            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-            storePassword = keystoreProperties["storePassword"] as String?
+            if (hasReleaseSigning) {
+                keyAlias = System.getenv("ANDROID_KEY_ALIAS") ?: (keystoreProperties["keyAlias"] as String?)
+                keyPassword = System.getenv("ANDROID_KEY_PASSWORD") ?: (keystoreProperties["keyPassword"] as String?)
+                val storePath = System.getenv("ANDROID_KEYSTORE_PATH") ?: (keystoreProperties["storeFile"] as String?)
+                storeFile = storePath?.let { file(it) }
+                storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: (keystoreProperties["storePassword"] as String?)
+            }
         }
     }
 
@@ -42,7 +56,17 @@ android {
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            } else {
+                signingConfig = signingConfigs.getByName("debug")
+            }
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 }

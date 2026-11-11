@@ -30,9 +30,9 @@ void main() {
     await tester.pump();
 
     // Verify initial active tab is Morning / Dawn
-    expect(find.text('Dawn Sun Size'), findsOneWidget);
-    expect(find.text('Dawn Fog Density'), findsOneWidget);
-    expect(find.text('Sunrise Ray Glow'), findsOneWidget);
+    expect(find.text('Rising Sun Scale'), findsOneWidget);
+    expect(find.text('Morning Horizon Fog'), findsOneWidget);
+    expect(find.text('Sunrise God Rays'), findsOneWidget);
 
     // Verify redundant segment bar pills are NOT present
     expect(find.text('🌅 Dawn'), findsNothing);
@@ -46,15 +46,15 @@ void main() {
     await tester.tap(nightTile);
     await tester.pump();
 
-    // Verify Night context parameters: Moon Size, Night Brightness, Moonlight God Rays
-    expect(find.text('Moon Size'), findsOneWidget);
-    expect(find.text('Night Brightness'), findsOneWidget);
-    expect(find.text('Night Fog & Stars'), findsOneWidget);
-    expect(find.text('Moonlight God Rays'), findsOneWidget);
+    // Verify Night context parameters: Moon Scale, Night Vision Boost, Moonlight Beams
+    expect(find.text('Moon Scale'), findsOneWidget);
+    expect(find.text('Night Vision Boost'), findsOneWidget);
+    expect(find.text('Starry Sky & Night Fog'), findsOneWidget);
+    expect(find.text('Moonlight Beams (Rays)'), findsOneWidget);
     // Sun Size should NOT be shown during Night!
     expect(find.text('Sun Size'), findsNothing);
-    expect(find.text('Dawn Sun Size'), findsNothing);
-    expect(find.text('Midday Sun Size'), findsNothing);
+    expect(find.text('Rising Sun Scale'), findsNothing);
+    expect(find.text('Midday Sun Scale'), findsNothing);
 
     // Tap 'Evening' tile to switch to Evening context
     final eveningTile = find.text('Evening');
@@ -62,10 +62,10 @@ void main() {
     await tester.tap(eveningTile);
     await tester.pump();
 
-    // Verify Evening context parameters: Sunset Sun Size, Twilight Fog, Twilight Rays
-    expect(find.text('Sunset Sun Size'), findsOneWidget);
-    expect(find.text('Sunset Fog Density'), findsOneWidget);
-    expect(find.text('Twilight Rays Intensity'), findsOneWidget);
+    // Verify Evening context parameters: Sunset Sun Scale, Twilight Horizon Fog, Twilight God Rays
+    expect(find.text('Sunset Sun Scale'), findsOneWidget);
+    expect(find.text('Twilight Horizon Fog'), findsOneWidget);
+    expect(find.text('Twilight God Rays'), findsOneWidget);
 
     // Tap 'Noon' tile to switch to Noon context
     final noonTile = find.text('Noon');
@@ -73,10 +73,10 @@ void main() {
     await tester.tap(noonTile);
     await tester.pump();
 
-    // Verify Noon context parameters: Midday Sun Size, Midday Fog Density, Sunlight Illuminance
-    expect(find.text('Midday Sun Size'), findsOneWidget);
-    expect(find.text('Midday Fog Density'), findsOneWidget);
-    expect(find.text('Sunlight Illuminance'), findsOneWidget);
+    // Verify Noon context parameters: Midday Sun Scale, Overworld Fog Density, Daylight Brightness
+    expect(find.text('Midday Sun Scale'), findsOneWidget);
+    expect(find.text('Overworld Fog Density'), findsOneWidget);
+    expect(find.text('Daylight Brightness'), findsOneWidget);
   });
 
   testWidgets(
@@ -100,8 +100,8 @@ void main() {
       expect(find.text('Test Shader'), findsOneWidget);
       expect(find.text('Pack Icon'), findsOneWidget);
 
-      // 2. Verify Procedural Scene Engine Pill in Atmosphere Preview Banner
-      expect(find.text('REAL-TIME CODE ENGINE'), findsOneWidget);
+      // 2. Verify Atmosphere Preview Banner badge
+      expect(find.text('ATMOSPHERE PREVIEW'), findsOneWidget);
 
       // 3. Verify Morning Warm Sunrise Orange (#FFA040) Color Badge Button
       expect(find.text('#FFA040'), findsOneWidget);
@@ -115,6 +115,55 @@ void main() {
       // Verify Color Picker dialog opened in ONE tap (no double click needed)
       expect(find.text('COLOR CRAFTING'), findsOneWidget);
       expect(find.text('CURATED MORNING PALETTE'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'MinecraftColorTile long-press and re-tap open color crafter, and top bar ? opens guide',
+    (WidgetTester tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 1200));
+
+      await tester.pumpWidget(const PiglixProApp());
+      await tester.pump();
+
+      // Verify no onboarding dialog is shown automatically at startup
+      expect(find.text('WELCOME TO PIGLIX SHADER BUILDER'), findsNothing);
+
+      // Tap help / guide ? icon button in top bar to open guide
+      final helpButton = find.byIcon(Icons.help_outline_rounded);
+      expect(helpButton, findsOneWidget);
+      await tester.tap(helpButton);
+      await tester.pump(const Duration(milliseconds: 600));
+
+      // Guide dialog should now be visible
+      expect(find.text('WELCOME TO PIGLIX SHADER BUILDER'), findsOneWidget);
+      // Close guide bottom sheet
+      Navigator.pop(
+        tester.element(find.text('WELCOME TO PIGLIX SHADER BUILDER')),
+      );
+      await tester.pump(const Duration(milliseconds: 600));
+      expect(find.text('WELCOME TO PIGLIX SHADER BUILDER'), findsNothing);
+
+      // Open editor directly via widget
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: ShaderEditorScreen(
+            uploadedShaderBytes: null,
+            uploadedShaderName: null,
+            uploadedLogoBytes: null,
+            shaderName: 'Test Shader',
+          ),
+        ),
+      );
+      await tester.pump();
+
+      // Long press on Noon tile to open color picker directly
+      final noonTile = find.text('Noon');
+      expect(noonTile, findsOneWidget);
+      await tester.longPress(noonTile);
+      await tester.pumpAndSettle();
+      expect(find.text('COLOR CRAFTING'), findsOneWidget);
+      expect(find.text('NOON'), findsOneWidget);
     },
   );
 }

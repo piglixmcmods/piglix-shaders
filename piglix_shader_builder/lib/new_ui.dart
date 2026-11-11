@@ -20,7 +20,6 @@ import 'tab_art_data.dart';
 import 'hero_sunset_bytes.dart';
 import 'theme_controller.dart';
 import 'shader_presets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'io_stub.dart' if (dart.library.io) 'io_real.dart';
 
 Archive _decodeZipBytesWorker(List<int> bytes) =>
@@ -199,20 +198,6 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkFirstRunOnboarding();
-    });
-  }
-
-  Future<void> _checkFirstRunOnboarding() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final hasSeen = prefs.getBool('piglix_has_seen_onboarding_v1') ?? false;
-      if (!hasSeen && mounted) {
-        await prefs.setBool('piglix_has_seen_onboarding_v1', true);
-        _showWelcomeOnboardingSheet();
-      }
-    } catch (_) {}
   }
 
   void _showWelcomeOnboardingSheet() {
@@ -224,111 +209,113 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         side: BorderSide(color: Color(0xFF1E293B)),
       ),
-      builder: (ctx) => Padding(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.white24,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Container(
-                  width: 36,
-                  height: 36,
+      builder: (ctx) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF22C55E).withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: const Color(0xFF22C55E),
-                      width: 1.2,
-                    ),
-                  ),
-                  alignment: Alignment.center,
-                  child: const AnimatedMinecraftIcon(
-                    type: VoxelIconType.grassBlock,
-                    size: 22,
+                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                const SizedBox(width: 12),
-                const Expanded(
-                  child: Text(
-                    'WELCOME TO PIGLIX SHADER BUILDER',
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF22C55E).withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: const Color(0xFF22C55E),
+                        width: 1.2,
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    child: const AnimatedMinecraftIcon(
+                      type: VoxelIconType.grassBlock,
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Text(
+                      'WELCOME TO PIGLIX SHADER BUILDER',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'PixelifySans',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Create, customize, and compile official Deferred PBR Shaders for Minecraft Bedrock on Android:',
+                style: TextStyle(
+                  color: Color(0xFF94A3B8),
+                  fontSize: 13,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 14),
+              _onboardingStepCard(
+                icon: Icons.palette_outlined,
+                title: '1. Customize Visual Parameters',
+                desc:
+                    'Fine-tune time-of-day sky colors, sun/moon size, water caustics, and volumetric fog.',
+              ),
+              const SizedBox(height: 10),
+              _onboardingStepCard(
+                icon: Icons.archive_outlined,
+                title: '2. Compile to .MCPACK',
+                desc:
+                    'Piglix Engine bundles your parameters into a standard Minecraft resource pack in the background.',
+              ),
+              const SizedBox(height: 10),
+              _onboardingStepCard(
+                icon: Icons.play_arrow_outlined,
+                title: '3. Enable in Minecraft Experiments',
+                desc:
+                    'Import with 1-tap, then turn on "Render Dragon Features for Creators" in Minecraft World Settings!',
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                height: 46,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF22C55E),
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text(
+                    'START CREATING SHADERS',
                     style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'PixelifySans',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.5,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 13,
+                      letterSpacing: 0.8,
                     ),
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Create, customize, and compile official Deferred PBR Shaders for Minecraft Bedrock on Android:',
-              style: TextStyle(
-                color: Color(0xFF94A3B8),
-                fontSize: 13,
-                height: 1.4,
               ),
-            ),
-            const SizedBox(height: 14),
-            _onboardingStepCard(
-              icon: Icons.palette_outlined,
-              title: '1. Customize Visual Parameters',
-              desc:
-                  'Fine-tune time-of-day sky colors, sun/moon size, water caustics, and volumetric fog.',
-            ),
-            const SizedBox(height: 10),
-            _onboardingStepCard(
-              icon: Icons.archive_outlined,
-              title: '2. Compile to .MCPACK',
-              desc:
-                  'Piglix Engine bundles your parameters into a standard Minecraft resource pack in the background.',
-            ),
-            const SizedBox(height: 10),
-            _onboardingStepCard(
-              icon: Icons.play_arrow_outlined,
-              title: '3. Enable in Minecraft Experiments',
-              desc:
-                  'Import with 1-tap, then turn on "Render Dragon Features for Creators" in Minecraft World Settings!',
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              height: 46,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF22C55E),
-                  foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text(
-                  'START CREATING SHADERS',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 13,
-                    letterSpacing: 0.8,
-                  ),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -1275,8 +1262,38 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
               ],
             ),
           ),
-          // Balancer on right so title remains centered
-          const SizedBox(width: 42),
+          // Help / Guide Button on right (Opens onboarding guide on click)
+          GestureDetector(
+            onTap: _showWelcomeOnboardingSheet,
+            child: Tooltip(
+              message: 'How to create & install shaders',
+              child: CustomPaint(
+                painter: _PixelatedCardPainter(
+                  fillColor: palette.card,
+                  borderColor: const Color(0xFF22C55E),
+                  borderWidth: 1.5,
+                  step: s,
+                  hasShadow: true,
+                ),
+                foregroundPainter: _PixelatedBorderPainter(
+                  borderColor: const Color(0xFF22C55E),
+                  borderWidth: 1.5,
+                  step: s,
+                ),
+                child: const SizedBox(
+                  width: 42,
+                  height: 42,
+                  child: Center(
+                    child: Icon(
+                      Icons.help_outline_rounded,
+                      color: Color(0xFF22C55E),
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -2529,6 +2546,7 @@ class _MinecraftColorTileState extends State<MinecraftColorTile>
     with SingleTickerProviderStateMixin {
   late final AnimationController _pressCtrl;
   late final Animation<double> _scaleAnim;
+  DateTime? _lastTapTime;
 
   @override
   void initState() {
@@ -2552,6 +2570,25 @@ class _MinecraftColorTileState extends State<MinecraftColorTile>
     super.dispose();
   }
 
+  void _handleCardTap() {
+    final now = DateTime.now();
+    final isDouble =
+        _lastTapTime != null &&
+        now.difference(_lastTapTime!) < const Duration(milliseconds: 350);
+    _lastTapTime = now;
+
+    if (isDouble || widget.isSelected) {
+      if (widget.onColorPick != null) {
+        HapticFeedback.selectionClick();
+        widget.onColorPick!();
+      } else {
+        widget.onTap();
+      }
+    } else {
+      widget.onTap();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = widget.color;
@@ -2563,9 +2600,18 @@ class _MinecraftColorTileState extends State<MinecraftColorTile>
       onTapDown: (_) => _pressCtrl.forward(),
       onTapUp: (_) {
         _pressCtrl.reverse();
-        widget.onTap();
+        _handleCardTap();
       },
       onTapCancel: () => _pressCtrl.reverse(),
+      onLongPress: () {
+        _pressCtrl.reverse();
+        HapticFeedback.mediumImpact();
+        if (widget.onColorPick != null) {
+          widget.onColorPick!();
+        } else {
+          widget.onTap();
+        }
+      },
       behavior: HitTestBehavior.opaque,
       child: ScaleTransition(
         scale: _scaleAnim,
@@ -2635,7 +2681,14 @@ class _MinecraftColorTileState extends State<MinecraftColorTile>
             const SizedBox(height: 4),
             // Dedicated interactive Color Badge Button (Single-tap to select & edit color!)
             GestureDetector(
-              onTap: widget.onColorPick ?? widget.onTap,
+              onTap: () {
+                HapticFeedback.selectionClick();
+                if (widget.onColorPick != null) {
+                  widget.onColorPick!();
+                } else {
+                  widget.onTap();
+                }
+              },
               behavior: HitTestBehavior.opaque,
               child: Container(
                 padding: const EdgeInsets.symmetric(
@@ -7224,6 +7277,7 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
   Widget _buildMinecraftSlider({
     required VoxelIconType icon,
     required String title,
+    String? subtitle,
     required double value,
     required double min,
     required double max,
@@ -7266,15 +7320,32 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: titleColor,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 13.5,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: titleColor,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 13.5,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 1.5),
+                      Text(
+                        subtitle,
+                        style: const TextStyle(
+                          color: Color(0xFF94A3B8),
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
+              const SizedBox(width: 6),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -7431,6 +7502,7 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
   Widget _buildMinecraftSegmented({
     required VoxelIconType icon,
     required String title,
+    String? subtitle,
     required List<String> items,
     required String selected,
     required Color activeColor,
@@ -7449,12 +7521,30 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 colorOverride: activeColor,
               ),
               const SizedBox(width: 10),
-              Text(
-                title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 13,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 13,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 1.5),
+                      Text(
+                        subtitle,
+                        style: const TextStyle(
+                          color: Color(0xFF94A3B8),
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
             ],
@@ -7755,33 +7845,19 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
 
     Color activeSky;
     double currentFog;
-    VoxelIconType badgeIcon;
-    String statusText;
 
     if (isNight) {
       activeSky = nightColor;
       currentFog = nightFogDensity;
-      badgeIcon = VoxelIconType.moon;
-      statusText =
-          'NIGHT • MOON ${moonSize.toStringAsFixed(1)}x • BRIGHTNESS ${nightVision.toStringAsFixed(1)}x • FOG ${nightFogDensity.toStringAsFixed(1)}x';
     } else if (isMorning) {
       activeSky = morningColor;
       currentFog = morningFogDensity;
-      badgeIcon = VoxelIconType.sun;
-      statusText =
-          'DAWN • SUN ${sunSizeMorning.toStringAsFixed(1)}x • FOG ${morningFogDensity.toStringAsFixed(1)}x • RAYS ${morningRayIntensity.toStringAsFixed(1)}x';
     } else if (isEvening) {
       activeSky = eveningColor;
       currentFog = eveningFogDensity;
-      badgeIcon = VoxelIconType.sun;
-      statusText =
-          'SUNSET • SUN ${sunSizeEvening.toStringAsFixed(1)}x • FOG ${eveningFogDensity.toStringAsFixed(1)}x • RAYS ${eveningRayIntensity.toStringAsFixed(1)}x';
     } else {
       activeSky = noonColor;
       currentFog = fogDensity;
-      badgeIcon = VoxelIconType.sun;
-      statusText =
-          'NOON • SUN ${sunSize.toStringAsFixed(1)}x • FOG ${fogDensity.toStringAsFixed(1)}x • LIGHT ${lightIntensity.toStringAsFixed(1)}x';
     }
 
     final curTheme = _activeTabTheme;
@@ -7835,22 +7911,29 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               ),
             ),
 
-            // 2. Real-Time Procedural Engine Pill (Top Right)
+            // 2. Streamlined Single Top-Corner Badge
             Positioned(
-              right: 12,
+              right: 10,
               top: 10,
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 7,
-                  vertical: 2.5,
+                  horizontal: 8,
+                  vertical: 3.5,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xCC080D14),
+                  color: const Color(0xE6080D14),
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                    color: curTheme.primary.withValues(alpha: 0.40),
-                    width: 0.9,
+                    color: curTheme.primary.withValues(alpha: 0.50),
+                    width: 1.0,
                   ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black54,
+                      blurRadius: 4,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -7869,54 +7952,14 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                         ],
                       ),
                     ),
-                    const SizedBox(width: 4.5),
-                    Text(
-                      'REAL-TIME CODE ENGINE',
-                      style: TextStyle(
-                        color: curTheme.primary,
-                        fontSize: 8.0,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.6,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // 3. Live Status Badge (Bottom Left)
-            Positioned(
-              left: 12,
-              bottom: 8,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 3.5,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xCC080D14),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(
-                    color: curTheme.primary.withValues(alpha: 0.5),
-                    width: 1.0,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AnimatedMinecraftIcon(
-                      type: badgeIcon,
-                      size: 12,
-                      colorOverride: curTheme.primary,
-                    ),
                     const SizedBox(width: 5),
                     Text(
-                      statusText,
+                      'ATMOSPHERE PREVIEW',
                       style: TextStyle(
                         color: curTheme.primary,
-                        fontSize: 9.5,
+                        fontSize: 8.5,
                         fontWeight: FontWeight.w900,
-                        letterSpacing: 0.6,
+                        letterSpacing: 0.8,
                       ),
                     ),
                   ],
@@ -7989,45 +8032,55 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 ),
               ),
             ),
-            // 2. Torch Icon overlay
-            const Positioned(
-              right: 56,
-              bottom: 38,
-              child: AnimatedMinecraftIcon(type: VoxelIconType.torch, size: 24),
-            ),
-            // 7. Status badge
+            // 2. Streamlined Single Top-Corner Badge
             Positioned(
-              left: 12,
-              bottom: 8,
+              right: 10,
+              top: 10,
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 8,
                   vertical: 3.5,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xCC080D14),
+                  color: const Color(0xE6080D14),
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                    color: curTheme.primary.withValues(alpha: 0.5),
+                    color: curTheme.primary.withValues(alpha: 0.50),
                     width: 1.0,
                   ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black54,
+                      blurRadius: 4,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AnimatedMinecraftIcon(
-                      type: VoxelIconType.lantern,
-                      size: 12,
-                      colorOverride: curTheme.primary,
+                    Container(
+                      width: 5,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: curTheme.primary,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: curTheme.primary.withValues(alpha: 0.8),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      'LIGHT ${lightIntensity.toStringAsFixed(1)}x • TORCH ${blockLightIntensity.toStringAsFixed(1)}x • SHADOWS: $shadowQuality',
+                      'LIGHTING & TORCH PREVIEW',
                       style: TextStyle(
                         color: curTheme.primary,
-                        fontSize: 9.5,
+                        fontSize: 8.5,
                         fontWeight: FontWeight.w900,
-                        letterSpacing: 0.6,
+                        letterSpacing: 0.8,
                       ),
                     ),
                   ],
@@ -8078,39 +8131,55 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 ),
               ),
             ),
-            // 2. Badge
+            // 2. Streamlined Single Top-Corner Badge
             Positioned(
-              left: 12,
-              bottom: 8,
+              right: 10,
+              top: 10,
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 8,
                   vertical: 3.5,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xCC080D14),
+                  color: const Color(0xE6080D14),
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                    color: curTheme.primary.withValues(alpha: 0.5),
+                    color: curTheme.primary.withValues(alpha: 0.50),
                     width: 1.0,
                   ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black54,
+                      blurRadius: 4,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AnimatedMinecraftIcon(
-                      type: VoxelIconType.rainCloud,
-                      size: 12,
-                      colorOverride: curTheme.primary,
+                    Container(
+                      width: 5,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: curTheme.primary,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: curTheme.primary.withValues(alpha: 0.8),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      'PBR: ${enablePBR ? 'ON' : 'OFF'} • METAL ${(globalMetalness * 100).round()}% • TONE: $toneMapFilter',
+                      'WEATHER & RTX PREVIEW',
                       style: TextStyle(
                         color: curTheme.primary,
-                        fontSize: 9.5,
+                        fontSize: 8.5,
                         fontWeight: FontWeight.w900,
-                        letterSpacing: 0.6,
+                        letterSpacing: 0.8,
                       ),
                     ),
                   ],
@@ -8161,39 +8230,55 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 ),
               ),
             ),
-            // 2. Status badge
+            // 2. Streamlined Single Top-Corner Badge
             Positioned(
-              left: 12,
-              bottom: 8,
+              right: 10,
+              top: 10,
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 8,
                   vertical: 3.5,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xCC080D14),
+                  color: const Color(0xE6080D14),
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                    color: curTheme.primary.withValues(alpha: 0.5),
+                    color: curTheme.primary.withValues(alpha: 0.50),
                     width: 1.0,
                   ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black54,
+                      blurRadius: 4,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AnimatedMinecraftIcon(
-                      type: VoxelIconType.waves,
-                      size: 12,
-                      colorOverride: curTheme.primary,
+                    Container(
+                      width: 5,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: curTheme.primary,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: curTheme.primary.withValues(alpha: 0.8),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      'WATER: $waterQuality • SPEED ${windSpeed.toStringAsFixed(1)}x • CAUSTICS: ${underwaterCaustics ? 'ON' : 'OFF'}',
+                      'WATER & OCEAN PREVIEW',
                       style: TextStyle(
                         color: curTheme.primary,
-                        fontSize: 9.5,
+                        fontSize: 8.5,
                         fontWeight: FontWeight.w900,
-                        letterSpacing: 0.6,
+                        letterSpacing: 0.8,
                       ),
                     ),
                   ],
@@ -8217,7 +8302,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       return [
         _buildMinecraftSlider(
           icon: VoxelIconType.sun,
-          title: 'Dawn Sun Size',
+          title: 'Rising Sun Scale',
+          subtitle: 'Size of the square sun on the morning horizon',
           value: sunSizeMorning,
           min: 0.0,
           max: 2.0,
@@ -8235,7 +8321,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         _buildMinecraftSlider(
           icon: VoxelIconType.cloud,
-          title: 'Dawn Fog Density',
+          title: 'Morning Horizon Fog',
+          subtitle: 'Subtle morning mist across mountains',
           value: morningFogDensity,
           min: 0.0,
           max: 2.0,
@@ -8253,7 +8340,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         _buildMinecraftSlider(
           icon: VoxelIconType.sun,
-          title: 'Sunrise Ray Glow',
+          title: 'Sunrise God Rays',
+          subtitle: 'Volumetric light shafts beaming through clouds',
           value: morningRayIntensity,
           min: 0.0,
           max: 2.0,
@@ -8271,7 +8359,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         _buildMinecraftSegmented(
           icon: VoxelIconType.cloud,
-          title: 'Clouds Style',
+          title: 'Minecraft Cloud Shape',
+          subtitle: 'Choose cloud depth style in the sky',
           items: const ['Realistic 3D', 'Volumetric', 'Flat 2D'],
           selected: cloudType,
           activeColor: tabAccent,
@@ -8282,7 +8371,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       return [
         _buildMinecraftSlider(
           icon: VoxelIconType.sun,
-          title: 'Sunset Sun Size',
+          title: 'Sunset Sun Scale',
+          subtitle: 'Size of the golden setting sun',
           value: sunSizeEvening,
           min: 0.0,
           max: 2.0,
@@ -8300,7 +8390,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         _buildMinecraftSlider(
           icon: VoxelIconType.cloud,
-          title: 'Sunset Fog Density',
+          title: 'Twilight Horizon Fog',
+          subtitle: 'Warm atmospheric dusk fog across the landscape',
           value: eveningFogDensity,
           min: 0.0,
           max: 2.0,
@@ -8318,7 +8409,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         _buildMinecraftSlider(
           icon: VoxelIconType.torch,
-          title: 'Twilight Rays Intensity',
+          title: 'Twilight God Rays',
+          subtitle: 'Dramatic golden light shafts across the evening sky',
           value: eveningRayIntensity,
           min: 0.0,
           max: 2.0,
@@ -8336,7 +8428,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         _buildMinecraftSegmented(
           icon: VoxelIconType.cloud,
-          title: 'Clouds Style',
+          title: 'Minecraft Cloud Shape',
+          subtitle: 'Choose cloud depth style in the sky',
           items: const ['Realistic 3D', 'Volumetric', 'Flat 2D'],
           selected: cloudType,
           activeColor: tabAccent,
@@ -8347,7 +8440,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       return [
         _buildMinecraftSlider(
           icon: VoxelIconType.moon,
-          title: 'Moon Size',
+          title: 'Moon Scale',
+          subtitle: 'Size of the glowing moon disc at midnight',
           value: moonSize,
           min: 0.0,
           max: 2.0,
@@ -8365,7 +8459,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         _buildMinecraftSlider(
           icon: VoxelIconType.moon,
-          title: 'Night Brightness',
+          title: 'Night Vision Boost',
+          subtitle: 'Brighten pitch-black caves & nights without potions',
           value: nightVision,
           min: 0.0,
           max: 2.0,
@@ -8383,7 +8478,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         _buildMinecraftSlider(
           icon: VoxelIconType.cloud,
-          title: 'Night Fog & Stars',
+          title: 'Starry Sky & Night Fog',
+          subtitle: 'Cosmic night atmosphere and horizon haze',
           value: nightFogDensity,
           min: 0.0,
           max: 2.0,
@@ -8401,7 +8497,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         _buildMinecraftSlider(
           icon: VoxelIconType.lantern,
-          title: 'Moonlight God Rays',
+          title: 'Moonlight Beams (Rays)',
+          subtitle: 'Luminous blue light shafts streaming down at night',
           value: moonRayIntensity,
           min: 0.0,
           max: 2.0,
@@ -8419,7 +8516,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         _buildMinecraftSegmented(
           icon: VoxelIconType.cloud,
-          title: 'Clouds Style',
+          title: 'Minecraft Cloud Shape',
+          subtitle: 'Choose cloud depth style in the sky',
           items: const ['Realistic 3D', 'Volumetric', 'Flat 2D'],
           selected: cloudType,
           activeColor: tabAccent,
@@ -8431,7 +8529,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       return [
         _buildMinecraftSlider(
           icon: VoxelIconType.sun,
-          title: 'Midday Sun Size',
+          title: 'Midday Sun Scale',
+          subtitle: 'Scale of the midday overhead sun',
           value: sunSize,
           min: 0.0,
           max: 2.0,
@@ -8449,7 +8548,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         _buildMinecraftSlider(
           icon: VoxelIconType.cloud,
-          title: 'Midday Fog Density',
+          title: 'Overworld Fog Density',
+          subtitle: 'Atmospheric distance fog across biomes',
           value: fogDensity,
           min: 0.0,
           max: 2.0,
@@ -8467,7 +8567,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         _buildMinecraftSlider(
           icon: VoxelIconType.sun,
-          title: 'Sunlight Illuminance',
+          title: 'Daylight Brightness',
+          subtitle: 'Natural outdoor sunlight intensity',
           value: lightIntensity,
           min: 0.0,
           max: 2.0,
@@ -8485,7 +8586,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         _buildMinecraftSegmented(
           icon: VoxelIconType.cloud,
-          title: 'Clouds Style',
+          title: 'Minecraft Cloud Shape',
+          subtitle: 'Choose cloud depth style in the sky',
           items: const ['Realistic 3D', 'Volumetric', 'Flat 2D'],
           selected: cloudType,
           activeColor: tabAccent,
@@ -8719,7 +8821,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 // Light Intensity Slider
                 _buildMinecraftSlider(
                   icon: VoxelIconType.lightbulb,
-                  title: 'Light Intensity',
+                  title: 'Sunlight & Daylight Brightness',
+                  subtitle:
+                      'Natural outdoor sunlight illuminance across biomes',
                   value: lightIntensity,
                   min: 0.0,
                   max: 2.0,
@@ -8739,7 +8843,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 // Block Light Intensity Slider
                 _buildMinecraftSlider(
                   icon: VoxelIconType.goldBlock,
-                  title: 'Block Light Intensity',
+                  title: 'Torch & Lantern Glow',
+                  subtitle:
+                      'Luminance emitted by torches, lanterns, campfire & glowstone',
                   value: blockLightIntensity,
                   min: 0.0,
                   max: 2.0,
@@ -8759,7 +8865,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 // Shadow Quality Segmented Selector
                 _buildMinecraftSegmented(
                   icon: VoxelIconType.mountain,
-                  title: 'Shadow Quality',
+                  title: 'Shadow Softness & Depth',
+                  subtitle:
+                      'Real-time contact shadow filtering for trees & blocks',
                   items: ['Off', 'Low', 'High', 'Ultra'],
                   selected: shadowQuality,
                   activeColor: tabAccent,
@@ -8770,8 +8878,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 // Point Light Shadows Toggle
                 _buildMinecraftToggle(
                   icon: VoxelIconType.torch,
-                  title: 'Point Light Shadows',
-                  subtitle: 'Enable shadows for light sources',
+                  title: 'Torch Shadows',
+                  subtitle:
+                      'Dynamic shadows cast from handheld torches & lanterns',
                   value: enablePointLightShadows,
                   activeColor: tabAccent,
                   onChanged: (v) => enablePointLightShadows = v,
@@ -8786,6 +8895,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 _buildMinecraftSegmented(
                   icon: VoxelIconType.lantern,
                   title: 'Volumetric Fog Profile',
+                  subtitle:
+                      'Atmospheric depth profile for realistic light beam scattering',
                   items: const ['Cinematic', 'Balanced', 'Low End'],
                   selected: volumetricFogProfile,
                   activeColor: tabAccent,
@@ -8976,7 +9087,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 // Wind & Wave Speed Slider
                 _buildMinecraftSlider(
                   icon: VoxelIconType.waves,
-                  title: 'Wind & Wave Speed',
+                  title: 'Ocean Wave Ripples',
+                  subtitle:
+                      'Speed of animated surface ripples across oceans and rivers',
                   value: windSpeed,
                   min: 0.0,
                   max: 2.0,
@@ -8996,7 +9109,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 // Water Quality Segmented
                 _buildMinecraftSegmented(
                   icon: VoxelIconType.diamond,
-                  title: 'Water Quality',
+                  title: 'Water Crystal Clarity',
+                  subtitle:
+                      'Real-time Fresnel reflection, subsurface scattering & depth',
                   items: ['Low', 'Medium', 'High', 'Ultra'],
                   selected: waterQuality,
                   activeColor: tabAccent,
@@ -9007,8 +9122,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 // Underwater Caustics Toggle
                 _buildMinecraftToggle(
                   icon: VoxelIconType.caustics,
-                  title: 'Underwater Caustics',
-                  subtitle: 'Animated light patterns on river and ocean floors',
+                  title: 'Underwater Sun Rays (Caustics)',
+                  subtitle:
+                      'Dancing sunlight caustic rays projected onto riverbeds and sea floors',
                   value: underwaterCaustics,
                   activeColor: tabAccent,
                   onChanged: (v) => underwaterCaustics = v,
@@ -9088,15 +9204,15 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   title: '',
                   tiles: [
                     _colorRow(
-                      'Rain Fog',
-                      'Atmospheric haze during rain',
+                      'Storm Cloud Fog',
+                      'Atmospheric dense fog during rain',
                       rainFogColor,
                       (c) => rainFogColor = c,
                       iconType: ShaderIconType.rainFog,
                     ),
                     _colorRow(
-                      'Rain Water',
-                      'Water color during rain',
+                      'Storm Weather Tint',
+                      'Overcast dark sky and puddle reflections',
                       rainWaterColor,
                       (c) => rainWaterColor = c,
                       iconType: ShaderIconType.rainWater,
@@ -9127,7 +9243,7 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'SURFACE & MATERIALS',
+                            'MINECRAFT RTX & SURFACE PBR',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,
@@ -9136,7 +9252,7 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                             ),
                           ),
                           Text(
-                            'Real-time reflections, bump maps, and waving flora.',
+                            'Ray-traced reflections, relief bump maps, and waving flora.',
                             style: TextStyle(
                               color: Colors.white54,
                               fontSize: 11,
@@ -9149,12 +9265,86 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 ),
                 const SizedBox(height: 14),
 
+                // Minecraft RTX & PBR Master Toggle Banner Card
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: enablePBR
+                        ? const Color(0xFF132A1C)
+                        : const Color(0xFF0F172A),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: enablePBR
+                          ? const Color(0xFF22C55E)
+                          : const Color(0xFF334155),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: enablePBR
+                              ? const Color(0xFF22C55E)
+                              : Colors.black54,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Text(
+                          enablePBR ? 'RTX ON' : 'RTX OFF',
+                          style: TextStyle(
+                            color: enablePBR ? Colors.black : Colors.white60,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 10.5,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Minecraft RTX Deferred Engine',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                                fontSize: 13,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              enablePBR
+                                  ? 'Active: Ray-traced illumination, specular materials & physical bump relief are bundled into pack.'
+                                  : 'Standard Bedrock shading. Toggle ON to enable full PBR ray-tracing for Bedrock.',
+                              style: const TextStyle(
+                                color: Color(0xFF94A3B8),
+                                fontSize: 10.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Switch(
+                        value: enablePBR,
+                        activeThumbColor: const Color(0xFF22C55E),
+                        onChanged: (v) => setState(() => enablePBR = v),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+
                 // World Reflections Toggle
                 _buildMinecraftToggle(
                   icon: VoxelIconType.cubeMirror,
-                  title: 'World Reflections',
+                  title: 'Ray-Traced Screen Reflections',
                   subtitle:
-                      'Real-time reflections of sky and surrounding blocks',
+                      'Realistic reflections of sky, clouds and blocks on wet surfaces and ice',
                   value: worldReflectionsEnabled,
                   activeColor: tabAccent,
                   onChanged: (v) => worldReflectionsEnabled = v,
@@ -9168,8 +9358,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 // PBR Bump Mapping Toggle
                 _buildMinecraftToggle(
                   icon: VoxelIconType.pbrLayers,
-                  title: 'PBR Bump Mapping',
-                  subtitle: 'Normal and roughness relief depth on all blocks',
+                  title: 'Block Surface Textures (Bump Maps)',
+                  subtitle:
+                      '3D normal relief depth for stone bricks, ores, cobblestone & wood',
                   value: enablePBR,
                   activeColor: tabAccent,
                   onChanged: (v) => enablePBR = v,
@@ -9183,7 +9374,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 // Global Metalness Slider
                 _buildMinecraftSlider(
                   icon: VoxelIconType.pearl,
-                  title: 'Global Metalness',
+                  title: 'Metallic Specular Shine',
+                  subtitle:
+                      'Glint, gloss and reflectivity on iron, gold, diamond & armor',
                   value: globalMetalness,
                   min: 0.0,
                   max: 1.0,
@@ -9203,9 +9396,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 // Waving Foliage Toggle
                 _buildMinecraftToggle(
                   icon: VoxelIconType.grassBlock,
-                  title: 'Waving Foliage',
+                  title: 'Wind-Blowing Leaves & Grass',
                   subtitle:
-                      'Wind-swaying animation for leaves, grass, crops & vines',
+                      'Realistic breeze swaying on leaves, tall grass, crops & vines',
                   value: wavingFoliage,
                   activeColor: tabAccent,
                   onChanged: (v) => wavingFoliage = v,
@@ -9219,7 +9412,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   ),
                   _buildMinecraftSlider(
                     icon: VoxelIconType.waves,
-                    title: 'Foliage Wave Intensity',
+                    title: 'Wind Sway Speed',
+                    subtitle:
+                        'Speed and gust strength of the foliage wind animation',
                     value: foliageWaveSpeed,
                     min: 0.2,
                     max: 2.0,
@@ -11174,20 +11369,27 @@ class _CompileProgressDialog extends StatefulWidget {
   State<_CompileProgressDialog> createState() => _CompileProgressDialogState();
 }
 
-class _CompileProgressDialogState extends State<_CompileProgressDialog> {
-  final ValueNotifier<double> progressN = ValueNotifier<double>(0.1);
+class _CompileProgressDialogState extends State<_CompileProgressDialog>
+    with SingleTickerProviderStateMixin {
+  final ValueNotifier<double> progressN = ValueNotifier<double>(0.05);
   final ValueNotifier<String> statusN = ValueNotifier<String>(
-    'Initializing Piglix Engine...',
+    'Crafting Minecraft Shader...',
   );
+  late final AnimationController _pulseCtrl;
 
   @override
   void initState() {
     super.initState();
+    _pulseCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..repeat(reverse: true);
     widget.onCompile(progressN, statusN);
   }
 
   @override
   void dispose() {
+    _pulseCtrl.dispose();
     progressN.dispose();
     statusN.dispose();
     super.dispose();
@@ -11196,55 +11398,252 @@ class _CompileProgressDialogState extends State<_CompileProgressDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: const Color(0xFF0E1722),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-        side: const BorderSide(color: Color(0xFF1E293B)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 24),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0C131D),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFF22C55E), width: 2.0),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF22C55E).withValues(alpha: 0.25),
+              blurRadius: 28,
+              spreadRadius: 2,
+            ),
+            const BoxShadow(
+              color: Colors.black87,
+              blurRadius: 18,
+              offset: Offset(0, 8),
+            ),
+          ],
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const AnimatedMinecraftIcon(
-              type: VoxelIconType.grassBlock,
-              size: 48,
+            // 1. Pulsing Beacon Glow & Animated Minecraft Icon
+            AnimatedBuilder(
+              animation: _pulseCtrl,
+              builder: (context, child) {
+                final scale = 1.0 + (_pulseCtrl.value * 0.08);
+                return Transform.scale(
+                  scale: scale,
+                  child: Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xFF22C55E).withValues(alpha: 0.15),
+                      border: Border.all(
+                        color: const Color(0xFF22C55E).withValues(alpha: 0.8),
+                        width: 2.0,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(
+                            0xFF22C55E,
+                          ).withValues(alpha: 0.35 + (_pulseCtrl.value * 0.35)),
+                          blurRadius: 18 + (_pulseCtrl.value * 12),
+                        ),
+                      ],
+                    ),
+                    alignment: Alignment.center,
+                    child: const AnimatedMinecraftIcon(
+                      type: VoxelIconType.diamond,
+                      size: 34,
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 16),
+
+            // 2. Title & Status
             const Text(
-              'COMPILING SHADER',
+              'CRAFTING SHADER PACK',
               style: TextStyle(
-                fontWeight: FontWeight.w900,
-                letterSpacing: 2,
-                fontSize: 16,
+                fontFamily: 'PixelifySans',
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.2,
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 14),
-            ValueListenableBuilder<double>(
-              valueListenable: progressN,
-              builder: (context, v, child) => ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: LinearProgressIndicator(
-                  value: v,
-                  backgroundColor: Colors.black45,
-                  color: const Color(0xFF22C55E),
-                  minHeight: 8,
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 6),
             ValueListenableBuilder<String>(
               valueListenable: statusN,
               builder: (context, s, child) => Text(
                 s,
-                style: const TextStyle(color: Colors.white60, fontSize: 12),
                 textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Color(0xFF94A3B8),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
+            ),
+            const SizedBox(height: 18),
+
+            // 3. Smooth Tween Progress Bar + Percentage
+            ValueListenableBuilder<double>(
+              valueListenable: progressN,
+              builder: (context, targetProgress, child) {
+                return TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 0.0, end: targetProgress),
+                  duration: const Duration(milliseconds: 350),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, animatedValue, _) {
+                    final pct = (animatedValue * 100).clamp(0, 100).toInt();
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'PIGLIX ENGINE PROGRESS',
+                              style: TextStyle(
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.8,
+                                color: Color(0xFF64748B),
+                              ),
+                            ),
+                            Text(
+                              '$pct%',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w900,
+                                fontFamily: 'monospace',
+                                color: Color(0xFF22C55E),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Container(
+                          height: 12,
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF06090E),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: const Color(0xFF1E293B),
+                              width: 1.2,
+                            ),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: Stack(
+                              children: [
+                                FractionallySizedBox(
+                                  widthFactor: animatedValue.clamp(0.02, 1.0),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color(0xFF16A34A),
+                                          Color(0xFF22C55E),
+                                          Color(0xFF4ADE80),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+            const SizedBox(height: 18),
+
+            // 4. Multi-Step Minecraft Compilation Stages
+            ValueListenableBuilder<double>(
+              valueListenable: progressN,
+              builder: (context, currentP, child) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF070B11),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: const Color(0xFF162130)),
+                  ),
+                  child: Column(
+                    children: [
+                      _buildStageItem(
+                        '1. Atmosphere & Fog Definition',
+                        currentP >= 0.35,
+                        currentP < 0.35,
+                      ),
+                      const SizedBox(height: 6),
+                      _buildStageItem(
+                        '2. Deferred Lighting & Shadows',
+                        currentP >= 0.60,
+                        currentP >= 0.35 && currentP < 0.60,
+                      ),
+                      const SizedBox(height: 6),
+                      _buildStageItem(
+                        '3. PBR Ray-Tracing & Water Engine',
+                        currentP >= 0.85,
+                        currentP >= 0.60 && currentP < 0.85,
+                      ),
+                      const SizedBox(height: 6),
+                      _buildStageItem(
+                        '4. Packing .MCPACK Bedrock Archive',
+                        currentP >= 1.0,
+                        currentP >= 0.85 && currentP < 1.0,
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildStageItem(String title, bool isDone, bool isActive) {
+    return Row(
+      children: [
+        Icon(
+          isDone
+              ? Icons.check_circle_rounded
+              : (isActive
+                    ? Icons.radio_button_checked_rounded
+                    : Icons.radio_button_off_rounded),
+          size: 14,
+          color: isDone
+              ? const Color(0xFF22C55E)
+              : (isActive ? const Color(0xFF38BDF8) : Colors.white24),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 10.5,
+              fontWeight: isDone || isActive
+                  ? FontWeight.w700
+                  : FontWeight.w500,
+              color: isDone
+                  ? Colors.white
+                  : (isActive ? const Color(0xFF38BDF8) : Colors.white38),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

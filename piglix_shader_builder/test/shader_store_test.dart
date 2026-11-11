@@ -107,17 +107,28 @@ void main() {
             'type': 'resources',
             'uuid': moduleUuid,
             'version': [1, 0, 0],
-          }
+          },
         ],
         'capabilities': ['pbr'],
         'subpacks': [
-          {'folder_name': '32x', 'name': '32x HD Texture Resolution', 'memory_tier': 2},
-          {'folder_name': '16x', 'name': '16x Standard Texture Resolution', 'memory_tier': 3},
+          {
+            'folder_name': '32x',
+            'name': '32x HD Texture Resolution',
+            'memory_tier': 2,
+          },
+          {
+            'folder_name': '16x',
+            'name': '16x Standard Texture Resolution',
+            'memory_tier': 3,
+          },
         ],
       };
 
       // Verify UUID syntax (RFC 4122 v4)
-      final uuidRegex = RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$', caseSensitive: false);
+      final uuidRegex = RegExp(
+        r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+        caseSensitive: false,
+      );
       expect(uuidRegex.hasMatch(packUuid), true);
       expect(uuidRegex.hasMatch(moduleUuid), true);
       expect(packUuid != moduleUuid, true);

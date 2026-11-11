@@ -12,8 +12,9 @@ void main() {
     expect(find.text('PACK ICON'), findsOneWidget);
   });
 
-  testWidgets('ShaderEditorScreen context-aware parameters and dark theme test',
-      (WidgetTester tester) async {
+  testWidgets('ShaderEditorScreen context-aware parameters and dark theme test', (
+    WidgetTester tester,
+  ) async {
     await tester.binding.setSurfaceSize(const Size(800, 1200));
 
     await tester.pumpWidget(
@@ -78,40 +79,42 @@ void main() {
     expect(find.text('Sunlight Illuminance'), findsOneWidget);
   });
 
-  testWidgets('ShaderEditorScreen top bar spacing, warm orange morning palette and 1-tap color badge test',
-      (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(800, 1200));
+  testWidgets(
+    'ShaderEditorScreen top bar spacing, warm orange morning palette and 1-tap color badge test',
+    (WidgetTester tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 1200));
 
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: ShaderEditorScreen(
-          uploadedShaderBytes: null,
-          uploadedShaderName: null,
-          uploadedLogoBytes: null,
-          shaderName: 'Test Shader',
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: ShaderEditorScreen(
+            uploadedShaderBytes: null,
+            uploadedShaderName: null,
+            uploadedLogoBytes: null,
+            shaderName: 'Test Shader',
+          ),
         ),
-      ),
-    );
-    await tester.pump();
+      );
+      await tester.pump();
 
-    // 1. Verify Top Bar Spacing: Shader Name and Pack Icon are both present
-    expect(find.text('Test Shader'), findsOneWidget);
-    expect(find.text('Pack Icon'), findsOneWidget);
+      // 1. Verify Top Bar Spacing: Shader Name and Pack Icon are both present
+      expect(find.text('Test Shader'), findsOneWidget);
+      expect(find.text('Pack Icon'), findsOneWidget);
 
-    // 2. Verify Procedural Scene Engine Pill in Atmosphere Preview Banner
-    expect(find.text('REAL-TIME CODE ENGINE'), findsOneWidget);
+      // 2. Verify Procedural Scene Engine Pill in Atmosphere Preview Banner
+      expect(find.text('REAL-TIME CODE ENGINE'), findsOneWidget);
 
-    // 3. Verify Morning Warm Sunrise Orange (#FFA040) Color Badge Button
-    expect(find.text('#FFA040'), findsOneWidget);
+      // 3. Verify Morning Warm Sunrise Orange (#FFA040) Color Badge Button
+      expect(find.text('#FFA040'), findsOneWidget);
 
-    // 4. Tap the Morning color badge button to test 1-tap color picker opening
-    final morningBadge = find.text('#FFA040');
-    expect(morningBadge, findsOneWidget);
-    await tester.tap(morningBadge);
-    await tester.pumpAndSettle();
+      // 4. Tap the Morning color badge button to test 1-tap color picker opening
+      final morningBadge = find.text('#FFA040');
+      expect(morningBadge, findsOneWidget);
+      await tester.tap(morningBadge);
+      await tester.pumpAndSettle();
 
-    // Verify Color Picker dialog opened in ONE tap (no double click needed)
-    expect(find.text('COLOR CRAFTING'), findsOneWidget);
-    expect(find.text('CURATED MORNING PALETTE'), findsOneWidget);
-  });
+      // Verify Color Picker dialog opened in ONE tap (no double click needed)
+      expect(find.text('COLOR CRAFTING'), findsOneWidget);
+      expect(find.text('CURATED MORNING PALETTE'), findsOneWidget);
+    },
+  );
 }

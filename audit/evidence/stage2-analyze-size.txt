@@ -1,0 +1,76 @@
+Running Gradle task 'assembleRelease'...                        
+Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 7108 bytes (99.6% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
+Running Gradle task 'assembleRelease'...                           20.5s
+✓ Built build/app/outputs/flutter-apk/app-release.apk (26.5MB)
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+app-release.apk (total compressed)                                         25 MB
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  META-INF/
+    androidx                                                               10 KB
+  assets/
+    flutter_assets                                                          6 MB
+  classes.dex                                                             584 KB
+  lib/
+    arm64-v8a                                                              18 MB
+    Dart AOT symbols accounted decompressed size                            7 MB
+      package:flutter                                                       3 MB
+      package:piglix_shader_builder                                         1 MB
+      dart:mixin_deduplication                                            288 KB
+      dart:core                                                           278 KB
+      dart:ui                                                             233 KB
+      dart:typed_data                                                     197 KB
+      package:archive                                                     104 KB
+      dart:async                                                           76 KB
+      dart:collection                                                      70 KB
+      package:material_color_utilities                                     68 KB
+      dart:io                                                              65 KB
+      dart:convert                                                         48 KB
+      package:flutter_colorpicker/
+        src                                                                45 KB
+      package:jni                                                          38 KB
+      package:vector_math/
+        vector_math_64.dart                                                37 KB
+      package:characters                                                   37 KB
+      dart:isolate                                                         23 KB
+      package:path                                                         15 KB
+      package:file_saver                                                   14 KB
+      dart:ffi                                                             13 KB
+    armeabi-v7a                                                            84 KB
+    x86_64                                                                120 KB
+  kotlin/
+    collections                                                             2 KB
+    concurrent                                                              1 KB
+    kotlin.kotlin_builtins                                                  5 KB
+    ranges                                                                  1 KB
+    reflect                                                                 1 KB
+  AndroidManifest.xml                                                       2 KB
+  res/
+    1I.9.png                                                                2 KB
+    1J.9.png                                                                2 KB
+    9w.png                                                                  6 KB
+    FS.png                                                                 22 KB
+    G2.9.png                                                                1 KB
+    IX.9.png                                                                2 KB
+    KL.png                                                                  1 KB
+    Li.9.png                                                                2 KB
+    MF.9.png                                                                3 KB
+    NA.9.png                                                                2 KB
+    RJ.png                                                                 46 KB
+    bn.png                                                                  1 KB
+    color-v23                                                               2 KB
+    dO.xml                                                                  1 KB
+    gK.png                                                                  2 KB
+    h7.9.png                                                                1 KB
+    io.9.png                                                                1 KB
+    nf.png                                                                  1 KB
+    o-.png                                                                 78 KB
+    qD.9.png                                                                3 KB
+    rj.9.png                                                                1 KB
+    yn.png                                                                 13 KB
+    zV.9.png                                                                2 KB
+  resources.arsc                                                           88 KB
+▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+A summary of your APK analysis can be found at: /Users/sopanvijaypatil/.flutter-devtools/apk-code-size-analysis_01.json
+
+To analyze your app size in Dart DevTools, run the following command:
+dart devtools --appSizeBase=/Users/sopanvijaypatil/.flutter-devtools/apk-code-size-analysis_01.json

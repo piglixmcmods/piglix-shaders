@@ -23,8 +23,10 @@ import 'shader_presets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'io_stub.dart' if (dart.library.io) 'io_real.dart';
 
-Archive _decodeZipBytesWorker(List<int> bytes) => ZipDecoder().decodeBytes(bytes);
-List<int> _encodeZipArchiveWorker(Archive archive) => ZipEncoder().encode(archive);
+Archive _decodeZipBytesWorker(List<int> bytes) =>
+    ZipDecoder().decodeBytes(bytes);
+List<int> _encodeZipArchiveWorker(Archive archive) =>
+    ZipEncoder().encode(archive);
 
 // ─── OBSIDIAN & EMERALD PALETTE (MATCHING HOME SCREEN) ────────────────────────
 const _green = Color(0xFF22C55E);
@@ -34,7 +36,7 @@ extension _ColorLegacyExt on Color {
   int get greenInt => (g * 255.0).round().clamp(0, 255);
   int get blueInt => (b * 255.0).round().clamp(0, 255);
 }
-       // Vibrant emerald green accent
+// Vibrant emerald green accent
 
 // ─── SPARKLE STARS LOGO (Detailed 3-Star Vector Icon matching screenshot) ───
 class SparkleStarsPainter extends CustomPainter {
@@ -51,10 +53,30 @@ class SparkleStarsPainter extends CustomPainter {
     final double rIn = radius * 0.22; // Inward curved concave pinch
 
     path.moveTo(center.dx, center.dy - radius);
-    path.quadraticBezierTo(center.dx + rIn, center.dy - rIn, center.dx + radius, center.dy);
-    path.quadraticBezierTo(center.dx + rIn, center.dy + rIn, center.dx, center.dy + radius);
-    path.quadraticBezierTo(center.dx - rIn, center.dy + rIn, center.dx - radius, center.dy);
-    path.quadraticBezierTo(center.dx - rIn, center.dy - rIn, center.dx, center.dy - radius);
+    path.quadraticBezierTo(
+      center.dx + rIn,
+      center.dy - rIn,
+      center.dx + radius,
+      center.dy,
+    );
+    path.quadraticBezierTo(
+      center.dx + rIn,
+      center.dy + rIn,
+      center.dx,
+      center.dy + radius,
+    );
+    path.quadraticBezierTo(
+      center.dx - rIn,
+      center.dy + rIn,
+      center.dx - radius,
+      center.dy,
+    );
+    path.quadraticBezierTo(
+      center.dx - rIn,
+      center.dy - rIn,
+      center.dx,
+      center.dy - radius,
+    );
     path.close();
 
     canvas.drawPath(path, paint);
@@ -117,9 +139,11 @@ class SparkleStarsIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size(size, size),
-      painter: SparkleStarsPainter(color: color, glow: glow),
+    return RepaintBoundary(
+      child: CustomPaint(
+        size: Size(size, size),
+        painter: SparkleStarsPainter(color: color, glow: glow),
+      ),
     );
   }
 }
@@ -154,8 +178,9 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
   String? _uploadedLogoName;
 
   // Shader configuration
-  final TextEditingController _shaderNameCtrl =
-      TextEditingController(text: 'Piglix Shader');
+  final TextEditingController _shaderNameCtrl = TextEditingController(
+    text: 'Piglix Shader',
+  );
 
   final List<String> _namePresets = [
     'Piglix Shader',
@@ -224,10 +249,16 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                   decoration: BoxDecoration(
                     color: const Color(0xFF22C55E).withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: const Color(0xFF22C55E), width: 1.2),
+                    border: Border.all(
+                      color: const Color(0xFF22C55E),
+                      width: 1.2,
+                    ),
                   ),
                   alignment: Alignment.center,
-                  child: const AnimatedMinecraftIcon(type: VoxelIconType.grassBlock, size: 22),
+                  child: const AnimatedMinecraftIcon(
+                    type: VoxelIconType.grassBlock,
+                    size: 22,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 const Expanded(
@@ -247,25 +278,32 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
             const SizedBox(height: 16),
             const Text(
               'Create, customize, and compile official Deferred PBR Shaders for Minecraft Bedrock on Android:',
-              style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13, height: 1.4),
+              style: TextStyle(
+                color: Color(0xFF94A3B8),
+                fontSize: 13,
+                height: 1.4,
+              ),
             ),
             const SizedBox(height: 14),
             _onboardingStepCard(
               icon: Icons.palette_outlined,
               title: '1. Customize Visual Parameters',
-              desc: 'Fine-tune time-of-day sky colors, sun/moon size, water caustics, and volumetric fog.',
+              desc:
+                  'Fine-tune time-of-day sky colors, sun/moon size, water caustics, and volumetric fog.',
             ),
             const SizedBox(height: 10),
             _onboardingStepCard(
               icon: Icons.archive_outlined,
               title: '2. Compile to .MCPACK',
-              desc: 'Piglix Engine bundles your parameters into a standard Minecraft resource pack in the background.',
+              desc:
+                  'Piglix Engine bundles your parameters into a standard Minecraft resource pack in the background.',
             ),
             const SizedBox(height: 10),
             _onboardingStepCard(
               icon: Icons.play_arrow_outlined,
               title: '3. Enable in Minecraft Experiments',
-              desc: 'Import with 1-tap, then turn on "Render Dragon Features for Creators" in Minecraft World Settings!',
+              desc:
+                  'Import with 1-tap, then turn on "Render Dragon Features for Creators" in Minecraft World Settings!',
             ),
             const SizedBox(height: 20),
             SizedBox(
@@ -275,12 +313,18 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF22C55E),
                   foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
                 onPressed: () => Navigator.pop(ctx),
                 child: const Text(
                   'START CREATING SHADERS',
-                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13, letterSpacing: 0.8),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 13,
+                    letterSpacing: 0.8,
+                  ),
                 ),
               ),
             ),
@@ -313,12 +357,20 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
               children: [
                 Text(
                   title,
-                  style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: 3),
                 Text(
                   desc,
-                  style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 11.5, height: 1.35),
+                  style: const TextStyle(
+                    color: Color(0xFF94A3B8),
+                    fontSize: 11.5,
+                    height: 1.35,
+                  ),
                 ),
               ],
             ),
@@ -338,7 +390,8 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
       if (_pulseCtrl.isAnimating) {
         _pulseCtrl.stop();
       }
@@ -452,11 +505,17 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
       final bytes = await f.readAsBytes();
       if (bytes.isEmpty) return;
 
-      final baseName = f.name.replaceAll(RegExp(r'\.(mcpack|zip)$', caseSensitive: false), '');
+      final baseName = f.name.replaceAll(
+        RegExp(r'\.(mcpack|zip)$', caseSensitive: false),
+        '',
+      );
 
       // Parse the zip and extract values from JSONs, manifest title, and pack_icon.png
       final archive = await compute(_decodeZipBytesWorker, bytes);
-      final parsed = _parseShaderPackFromArchive(archive, baseName.isEmpty ? 'Imported Shader' : baseName);
+      final parsed = _parseShaderPackFromArchive(
+        archive,
+        baseName.isEmpty ? 'Imported Shader' : baseName,
+      );
       final finalName = parsed.manifestPackName ?? parsed.preset.name;
 
       setState(() {
@@ -489,7 +548,10 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
   }
 
   /// Parse an uploaded .mcpack/.zip and extract configuration values into a ShaderPresetConfig.
-  _ParsedShaderPack _parseShaderPackFromArchive(Archive archive, String packName) {
+  _ParsedShaderPack _parseShaderPackFromArchive(
+    Archive archive,
+    String packName,
+  ) {
     final fileMap = <String, List<int>>{};
 
     // Detect if archive has a single top-level folder prefix (e.g. PackFolder/manifest.json)
@@ -501,12 +563,25 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
       if (slashIdx != -1) {
         final candidate = first.substring(0, slashIdx + 1);
         const standardDirs = [
-          'atmospherics/', 'biomes/', 'fogs/', 'lighting/', 'local_lighting/',
-          'point_lights/', 'water/', 'color_grading/', 'textures/', 'subpacks/',
-          'pbr/', 'shadows/', 'particles/', 'materials/'
+          'atmospherics/',
+          'biomes/',
+          'fogs/',
+          'lighting/',
+          'local_lighting/',
+          'point_lights/',
+          'water/',
+          'color_grading/',
+          'textures/',
+          'subpacks/',
+          'pbr/',
+          'shadows/',
+          'particles/',
+          'materials/',
         ];
         if (!standardDirs.any((d) => candidate.startsWith(d))) {
-          if (nonDirFiles.every((f) => f.name.replaceAll('\\', '/').startsWith(candidate))) {
+          if (nonDirFiles.every(
+            (f) => f.name.replaceAll('\\', '/').startsWith(candidate),
+          )) {
             prefix = candidate;
           }
         }
@@ -535,9 +610,13 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
         final raw = utf8.decode(fileMap['manifest.json']!);
         final m = jsonDecode(raw) as Map<String, dynamic>;
         final header = m['header'] as Map<String, dynamic>?;
-        if (header != null && header['name'] is String && (header['name'] as String).trim().isNotEmpty) {
+        if (header != null &&
+            header['name'] is String &&
+            (header['name'] as String).trim().isNotEmpty) {
           final hName = (header['name'] as String).trim();
-          final clean = hName.replaceAll(RegExp(r'§[0-9a-fk-or]', caseSensitive: false), '').trim();
+          final clean = hName
+              .replaceAll(RegExp(r'§[0-9a-fk-or]', caseSensitive: false), '')
+              .trim();
           if (clean.isNotEmpty) manifestName = clean;
         }
       } catch (_) {}
@@ -583,8 +662,12 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
 
     Color parseColorArray(List<dynamic> arr) {
       if (arr.length >= 3) {
-        return Color.fromARGB(255, (arr[0] as num).toInt().clamp(0, 255),
-            (arr[1] as num).toInt().clamp(0, 255), (arr[2] as num).toInt().clamp(0, 255));
+        return Color.fromARGB(
+          255,
+          (arr[0] as num).toInt().clamp(0, 255),
+          (arr[1] as num).toInt().clamp(0, 255),
+          (arr[2] as num).toInt().clamp(0, 255),
+        );
       }
       return const Color(0xFF888888);
     }
@@ -608,7 +691,8 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
         try {
           final raw = cleanJsonStr(utf8.decode(fileMap[key]!));
           final data = jsonDecode(raw) as Map<String, dynamic>;
-          final atm = data['minecraft:atmosphere_settings'] as Map<String, dynamic>?;
+          final atm =
+              data['minecraft:atmosphere_settings'] as Map<String, dynamic>?;
           if (atm != null) {
             final zenith = atm['sky_zenith_color'];
             if (zenith is Map) {
@@ -652,7 +736,8 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
         try {
           final raw = cleanJsonStr(utf8.decode(fileMap[key]!));
           final data = jsonDecode(raw) as Map<String, dynamic>;
-          final ls = data['minecraft:lighting_settings'] as Map<String, dynamic>?;
+          final ls =
+              data['minecraft:lighting_settings'] as Map<String, dynamic>?;
           if (ls != null && ls['directional_lights'] != null) {
             final dl = ls['directional_lights'] as Map<String, dynamic>;
             final orb = dl['orbital'] as Map<String, dynamic>?;
@@ -708,15 +793,21 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
     }
 
     // ── Parse point_lights or local_lighting for torch color ──
-    for (final key in ['point_lights/global.json', 'local_lighting/local_lighting.json']) {
+    for (final key in [
+      'point_lights/global.json',
+      'local_lighting/local_lighting.json',
+    ]) {
       if (fileMap.containsKey(key)) {
         try {
           final raw = cleanJsonStr(utf8.decode(fileMap[key]!));
           final data = jsonDecode(raw) as Map<String, dynamic>;
-          final colors = (data['minecraft:point_light_settings']?['colors'] ??
-              data['minecraft:local_light_settings']?['colors']) as Map<String, dynamic>?;
+          final colors =
+              (data['minecraft:point_light_settings']?['colors'] ??
+                      data['minecraft:local_light_settings']?['colors'])
+                  as Map<String, dynamic>?;
           if (colors != null) {
-            final torchHex = colors['minecraft:torch'] ?? colors['minecraft:lantern'];
+            final torchHex =
+                colors['minecraft:torch'] ?? colors['minecraft:lantern'];
             if (torchHex is String) {
               torchC = parseHexColor(torchHex);
             }
@@ -761,7 +852,8 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
           }
           final comps = bio['components'] as Map<String, dynamic>?;
           if (comps != null) {
-            final wa = comps['minecraft:water_appearance'] as Map<String, dynamic>?;
+            final wa =
+                comps['minecraft:water_appearance'] as Map<String, dynamic>?;
             if (wa != null && wa['surface_color'] is String) {
               waterC = parseHexColor(wa['surface_color'] as String);
             }
@@ -806,7 +898,11 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
               if (mc != null && mc['cloud'] != null) {
                 final scattering = mc['cloud']['scattering'];
                 if (scattering is List && scattering.length >= 3) {
-                  final avg = ((scattering[0] as num) + (scattering[1] as num) + (scattering[2] as num)) / 3.0;
+                  final avg =
+                      ((scattering[0] as num) +
+                          (scattering[1] as num) +
+                          (scattering[2] as num)) /
+                      3.0;
                   if (avg > 0.03) {
                     cloudTp = 'Realistic 3D';
                   } else if (avg > 0.005) {
@@ -824,12 +920,16 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
     }
 
     // ── Parse color_grading/*.json for tone mapping & saturation ──
-    for (final key in ['color_grading/color_grading.json', 'color_grading/pale_color_grading.json']) {
+    for (final key in [
+      'color_grading/color_grading.json',
+      'color_grading/pale_color_grading.json',
+    ]) {
       if (fileMap.containsKey(key)) {
         try {
           final raw = cleanJsonStr(utf8.decode(fileMap[key]!));
           final data = jsonDecode(raw) as Map<String, dynamic>;
-          final cgs = data['minecraft:color_grading_settings'] as Map<String, dynamic>?;
+          final cgs =
+              data['minecraft:color_grading_settings'] as Map<String, dynamic>?;
           if (cgs != null) {
             final tm = cgs['tone_mapping'] as Map<String, dynamic>?;
             if (tm != null) {
@@ -868,7 +968,10 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
               }
               final gainArr = mid['gain'];
               if (gainArr is List && gainArr.isNotEmpty) {
-                autoExp = ((gainArr[0] as num).toDouble() / 1.05).clamp(0.4, 2.5);
+                autoExp = ((gainArr[0] as num).toDouble() / 1.05).clamp(
+                  0.4,
+                  2.5,
+                );
               }
             }
           }
@@ -940,7 +1043,9 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
             fontSize: 13,
           ),
         ),
-        backgroundColor: isError ? const Color(0xFF5D1E1E) : const Color(0xFF262422),
+        backgroundColor: isError
+            ? const Color(0xFF5D1E1E)
+            : const Color(0xFF262422),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -959,115 +1064,115 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
     final palette = AppPalette(true);
     return Scaffold(
       key: _scaffoldKey,
-          backgroundColor: palette.bg,
-          drawerScrimColor: Colors.black.withValues(alpha: 0.72),
-          drawerEdgeDragWidth: 36,
-          drawer: _buildDrawer(context),
-          body: Stack(
-            children: [
-              // 1. Hero Sunset Landscape Background at the top
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                height: MediaQuery.of(context).size.height * 0.58,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.memory(
-                      kHeroSunsetBytes,
-                      fit: BoxFit.cover,
-                      errorBuilder: (ctx, err, stack) => Image.asset(
-                        'assets/hero_sunset.webp',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    // Gradient overlay fading into active background
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            palette.bannerOverlayTop,
-                            Colors.transparent,
-                            palette.bg.withValues(alpha: 0.75),
-                            palette.bg,
-                          ],
-                          stops: const [0.0, 0.35, 0.85, 1.0],
-                        ),
-                      ),
-                    ),
-                  ],
+      backgroundColor: palette.bg,
+      drawerScrimColor: Colors.black.withValues(alpha: 0.72),
+      drawerEdgeDragWidth: 36,
+      drawer: _buildDrawer(context),
+      body: Stack(
+        children: [
+          // 1. Hero Sunset Landscape Background at the top
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: MediaQuery.of(context).size.height * 0.58,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.memory(
+                  kHeroSunsetBytes,
+                  fit: BoxFit.cover,
+                  errorBuilder: (ctx, err, stack) =>
+                      Image.asset('assets/hero_sunset.webp', fit: BoxFit.cover),
                 ),
-              ),
-
-              // 2. Main Scrollable Content
-              SafeArea(
-                child: Column(
-                  children: [
-                    // Top App Bar: 3-line menu button on left + Piglix Studio title
-                    _buildTopBar(palette),
-
-                    // Static, properly-fitted content without scrolling
-                    Expanded(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          final avail = constraints.maxHeight;
-                          const baseContentHeight = 630.0;
-
-                          Widget buildStaticColumn({bool withSpacer = true}) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                mainAxisSize: withSpacer ? MainAxisSize.max : MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  if (withSpacer) const Spacer(),
-                                  _buildHeroTextSection(palette),
-                                  const SizedBox(height: 10),
-                                  _buildStartBuildingButton(),
-                                  const SizedBox(height: 10),
-                                  _buildQuickActionCards(palette),
-                                  const SizedBox(height: 10),
-                                  _buildEngineSection(palette),
-                                  const SizedBox(height: 10),
-                                  _buildShaderNameSection(palette),
-                                  const SizedBox(height: 16),
-                                  _buildUploadCards(palette),
-                                  const SizedBox(height: 10),
-                                ],
-                              ),
-                            );
-                          }
-
-                          if (avail < baseContentHeight) {
-                            return Center(
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.bottomCenter,
-                                child: SizedBox(
-                                  width: constraints.maxWidth,
-                                  height: baseContentHeight,
-                                  child: buildStaticColumn(withSpacer: false),
-                                ),
-                              ),
-                            );
-                          }
-
-                          return buildStaticColumn(withSpacer: true);
-                        },
-                      ),
+                // Gradient overlay fading into active background
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        palette.bannerOverlayTop,
+                        Colors.transparent,
+                        palette.bg.withValues(alpha: 0.75),
+                        palette.bg,
+                      ],
+                      stops: const [0.0, 0.35, 0.85, 1.0],
                     ),
-                    // Fixed Bottom Navigation Bar matching reference
-                    _buildBottomNavBar(palette),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        );
+
+          // 2. Main Scrollable Content
+          SafeArea(
+            child: Column(
+              children: [
+                // Top App Bar: 3-line menu button on left + Piglix Studio title
+                _buildTopBar(palette),
+
+                // Static, properly-fitted content without scrolling
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final avail = constraints.maxHeight;
+                      const baseContentHeight = 630.0;
+
+                      Widget buildStaticColumn({bool withSpacer = true}) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: withSpacer
+                                ? MainAxisSize.max
+                                : MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              if (withSpacer) const Spacer(),
+                              _buildHeroTextSection(palette),
+                              const SizedBox(height: 10),
+                              _buildStartBuildingButton(),
+                              const SizedBox(height: 10),
+                              _buildQuickActionCards(palette),
+                              const SizedBox(height: 10),
+                              _buildEngineSection(palette),
+                              const SizedBox(height: 10),
+                              _buildShaderNameSection(palette),
+                              const SizedBox(height: 16),
+                              _buildUploadCards(palette),
+                              const SizedBox(height: 10),
+                            ],
+                          ),
+                        );
+                      }
+
+                      if (avail < baseContentHeight) {
+                        return Center(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.bottomCenter,
+                            child: SizedBox(
+                              width: constraints.maxWidth,
+                              height: baseContentHeight,
+                              child: buildStaticColumn(withSpacer: false),
+                            ),
+                          ),
+                        );
+                      }
+
+                      return buildStaticColumn(withSpacer: true);
+                    },
+                  ),
+                ),
+                // Fixed Bottom Navigation Bar matching reference
+                _buildBottomNavBar(palette),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // 1. Top Bar: Hamburger button on Left + Centered Shader Generator Title + Theme Toggle
@@ -1124,7 +1229,11 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                         color: palette.textPrimary,
                         letterSpacing: -0.3,
                         shadows: const [
-                          Shadow(color: Colors.black87, blurRadius: 8, offset: Offset(0, 2)),
+                          Shadow(
+                            color: Colors.black87,
+                            blurRadius: 8,
+                            offset: Offset(0, 2),
+                          ),
                         ],
                       ),
                     ),
@@ -1136,7 +1245,11 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                         color: Color(0xFF22C55E),
                         letterSpacing: -0.3,
                         shadows: [
-                          Shadow(color: Colors.black87, blurRadius: 8, offset: Offset(0, 2)),
+                          Shadow(
+                            color: Colors.black87,
+                            blurRadius: 8,
+                            offset: Offset(0, 2),
+                          ),
                         ],
                       ),
                     ),
@@ -1151,7 +1264,11 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                     color: Color(0xFF64748B),
                     letterSpacing: 2.8,
                     shadows: [
-                      Shadow(color: Colors.black87, blurRadius: 4, offset: Offset(0, 1)),
+                      Shadow(
+                        color: Colors.black87,
+                        blurRadius: 4,
+                        offset: Offset(0, 1),
+                      ),
                     ],
                   ),
                 ),
@@ -1195,8 +1312,14 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
               ],
             ),
             children: [
-              TextSpan(text: 'Create\nStunning\n', style: TextStyle(color: palette.textPrimary)),
-              const TextSpan(text: 'Shaders\n', style: TextStyle(color: Color(0xFF22C55E))),
+              TextSpan(
+                text: 'Create\nStunning\n',
+                style: TextStyle(color: palette.textPrimary),
+              ),
+              const TextSpan(
+                text: 'Shaders\n',
+                style: TextStyle(color: Color(0xFF22C55E)),
+              ),
               TextSpan(
                 text: 'for MCPE',
                 style: TextStyle(
@@ -1248,10 +1371,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
               child: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [
-                      Color(0xFF22C55E),
-                      Color(0xFF16A34A),
-                    ],
+                    colors: [Color(0xFF22C55E), Color(0xFF16A34A)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -1261,7 +1381,10 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: const [
-                    AnimatedMinecraftIcon(type: VoxelIconType.pickaxe, size: 28),
+                    AnimatedMinecraftIcon(
+                      type: VoxelIconType.pickaxe,
+                      size: 28,
+                    ),
                     SizedBox(width: 12),
                     Text(
                       'START GENERATING',
@@ -1458,7 +1581,10 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
               child: Row(
                 children: [
-                  const AnimatedMinecraftIcon(type: VoxelIconType.grassBlock, size: 28),
+                  const AnimatedMinecraftIcon(
+                    type: VoxelIconType.grassBlock,
+                    size: 28,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -1491,7 +1617,11 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                       color: Color(0xFF22C55E),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.check_rounded, color: Colors.black, size: 16),
+                    child: const Icon(
+                      Icons.check_rounded,
+                      color: Colors.black,
+                      size: 16,
+                    ),
                   ),
                 ],
               ),
@@ -1558,7 +1688,10 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: 'Enter shader name...',
-                              hintStyle: TextStyle(color: palette.textMuted, fontSize: 13.0),
+                              hintStyle: TextStyle(
+                                color: palette.textMuted,
+                                fontSize: 13.0,
+                              ),
                               isDense: true,
                               contentPadding: EdgeInsets.zero,
                             ),
@@ -1573,7 +1706,8 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
             const SizedBox(width: 8),
             // Square reload button with exact matching height
             Tooltip(
-              message: 'Change shader name (Tap to roll, long-press to pick from list)',
+              message:
+                  'Change shader name (Tap to roll, long-press to pick from list)',
               child: GestureDetector(
                 onTap: _randomizeShaderName,
                 onLongPress: () {
@@ -1583,10 +1717,15 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                     builder: (ctx) => Container(
                       decoration: BoxDecoration(
                         color: palette.surface,
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(20),
+                        ),
                         border: Border.all(color: palette.border),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 16,
+                      ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1626,7 +1765,9 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                                 },
                                 selectedColor: const Color(0xFF22C55E),
                                 labelStyle: TextStyle(
-                                  color: isSel ? Colors.black : palette.textPrimary,
+                                  color: isSel
+                                      ? Colors.black
+                                      : palette.textPrimary,
                                   fontWeight: FontWeight.w800,
                                   fontSize: 12,
                                 ),
@@ -1719,7 +1860,9 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(4),
                         border: Border.all(
-                          color: hasLogo ? const Color(0xFF22C55E) : palette.border,
+                          color: hasLogo
+                              ? const Color(0xFF22C55E)
+                              : palette.border,
                           width: 1.2,
                         ),
                       ),
@@ -1727,7 +1870,11 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                       child: hasLogo
                           ? Image.memory(_uploadedLogoBytes!, fit: BoxFit.cover)
                           : Center(
-                              child: Icon(Icons.image_outlined, color: palette.textSecondary, size: 18),
+                              child: Icon(
+                                Icons.image_outlined,
+                                color: palette.textSecondary,
+                                size: 18,
+                              ),
                             ),
                     ),
                     const SizedBox(width: 12),
@@ -1737,7 +1884,9 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            hasLogo ? (_uploadedLogoName ?? 'Pack Icon') : 'Default Pack Icon',
+                            hasLogo
+                                ? (_uploadedLogoName ?? 'Pack Icon')
+                                : 'Default Pack Icon',
                             style: TextStyle(
                               color: palette.textPrimary,
                               fontSize: 13.0,
@@ -1748,8 +1897,13 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                           ),
                           const SizedBox(height: 1),
                           Text(
-                            hasLogo ? 'Tap to change 1:1 icon' : 'Tap to set custom 1:1 logo',
-                            style: TextStyle(color: palette.textSecondary, fontSize: 10.5),
+                            hasLogo
+                                ? 'Tap to change 1:1 icon'
+                                : 'Tap to set custom 1:1 logo',
+                            style: TextStyle(
+                              color: palette.textSecondary,
+                              fontSize: 10.5,
+                            ),
                           ),
                         ],
                       ),
@@ -1758,17 +1912,25 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                       width: 28,
                       height: 28,
                       decoration: BoxDecoration(
-                        color: hasLogo ? const Color(0xFF22C55E).withValues(alpha: 0.15) : Colors.transparent,
+                        color: hasLogo
+                            ? const Color(0xFF22C55E).withValues(alpha: 0.15)
+                            : Colors.transparent,
                         borderRadius: BorderRadius.circular(4),
                         border: Border.all(
-                          color: hasLogo ? const Color(0xFF22C55E) : palette.border,
+                          color: hasLogo
+                              ? const Color(0xFF22C55E)
+                              : palette.border,
                           width: 1.2,
                         ),
                       ),
                       alignment: Alignment.center,
                       child: Icon(
-                        hasLogo ? Icons.check_rounded : Icons.file_upload_outlined,
-                        color: hasLogo ? const Color(0xFF22C55E) : palette.textSecondary,
+                        hasLogo
+                            ? Icons.check_rounded
+                            : Icons.file_upload_outlined,
+                        color: hasLogo
+                            ? const Color(0xFF22C55E)
+                            : palette.textSecondary,
                         size: 16,
                       ),
                     ),
@@ -1789,9 +1951,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
       decoration: BoxDecoration(
         color: palette.surface,
-        border: Border(
-          top: BorderSide(color: palette.border, width: 1.0),
-        ),
+        border: Border(top: BorderSide(color: palette.border, width: 1.0)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -1815,11 +1975,18 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
               child: ClipPath(
                 clipper: _PixelatedClipper(s),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 8,
+                  ),
                   child: const Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.inventory_2_rounded, color: Colors.black, size: 22),
+                      Icon(
+                        Icons.inventory_2_rounded,
+                        color: Colors.black,
+                        size: 22,
+                      ),
                       SizedBox(height: 2),
                       Text(
                         'BUILDER',
@@ -1843,7 +2010,11 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.map_rounded, color: Color(0xFF60A5FA), size: 22),
+                const Icon(
+                  Icons.map_rounded,
+                  color: Color(0xFF60A5FA),
+                  size: 22,
+                ),
                 const SizedBox(height: 3),
                 Text(
                   'GALLERY',
@@ -1863,7 +2034,10 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const AnimatedMinecraftIcon(type: VoxelIconType.enchantedBook, size: 22),
+                const AnimatedMinecraftIcon(
+                  type: VoxelIconType.enchantedBook,
+                  size: 22,
+                ),
                 const SizedBox(height: 3),
                 Text(
                   'PRESETS',
@@ -1883,7 +2057,11 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.settings_rounded, color: palette.textSecondary, size: 22),
+                Icon(
+                  Icons.settings_rounded,
+                  color: palette.textSecondary,
+                  size: 22,
+                ),
                 const SizedBox(height: 3),
                 Text(
                   'SETTINGS',
@@ -1984,7 +2162,10 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                     Navigator.pop(context);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const LegalPage(type: LegalType.privacy)),
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            const LegalPage(type: LegalType.privacy),
+                      ),
                     );
                   },
                 ),
@@ -1997,7 +2178,9 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                     Navigator.pop(context);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const LegalPage(type: LegalType.terms)),
+                      MaterialPageRoute(
+                        builder: (_) => const LegalPage(type: LegalType.terms),
+                      ),
                     );
                   },
                 ),
@@ -2010,7 +2193,10 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                     Navigator.pop(context);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const LegalPage(type: LegalType.trademark)),
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            const LegalPage(type: LegalType.trademark),
+                      ),
                     );
                   },
                 ),
@@ -2023,7 +2209,10 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                     Navigator.pop(context);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const LegalPage(type: LegalType.licenses)),
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            const LegalPage(type: LegalType.licenses),
+                      ),
                     );
                   },
                 ),
@@ -2100,9 +2289,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
       height: 180 + topPadding,
       decoration: BoxDecoration(
         color: palette.surface,
-        border: Border(
-          bottom: BorderSide(color: palette.border, width: 1.2),
-        ),
+        border: Border(bottom: BorderSide(color: palette.border, width: 1.2)),
       ),
       child: Stack(
         fit: StackFit.expand,
@@ -2114,9 +2301,8 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
             errorBuilder: (ctx, err, stack) => Image.asset(
               'assets/hero_sunset.webp',
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                color: palette.surface,
-              ),
+              errorBuilder: (context, error, stackTrace) =>
+                  Container(color: palette.surface),
             ),
           ),
 
@@ -2155,7 +2341,9 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                         width: 32,
                         height: 32,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0E1722).withValues(alpha: 0.85),
+                          color: const Color(
+                            0xFF0E1722,
+                          ).withValues(alpha: 0.85),
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.white24, width: 1),
                         ),
@@ -2288,7 +2476,6 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
   }
 }
 
-
 enum ShaderIconType {
   morning,
   noon,
@@ -2353,9 +2540,10 @@ class _MinecraftColorTileState extends State<MinecraftColorTile>
       lowerBound: 0.0,
       upperBound: 1.0,
     );
-    _scaleAnim = Tween<double>(begin: 1.0, end: 0.94).animate(
-      CurvedAnimation(parent: _pressCtrl, curve: Curves.easeOut),
-    );
+    _scaleAnim = Tween<double>(
+      begin: 1.0,
+      end: 0.94,
+    ).animate(CurvedAnimation(parent: _pressCtrl, curve: Curves.easeOut));
   }
 
   @override
@@ -2368,7 +2556,8 @@ class _MinecraftColorTileState extends State<MinecraftColorTile>
   Widget build(BuildContext context) {
     final c = widget.color;
     final isSel = widget.isSelected;
-    final selBorderColor = widget.selectedBorderColor ?? const Color(0xFFE5A04A);
+    final selBorderColor =
+        widget.selectedBorderColor ?? const Color(0xFFE5A04A);
 
     return GestureDetector(
       onTapDown: (_) => _pressCtrl.forward(),
@@ -2405,20 +2594,22 @@ class _MinecraftColorTileState extends State<MinecraftColorTile>
                       ),
                   ],
                 ),
-                child: CustomPaint(
-                  painter: _MinecraftCardFramePainter(
-                    color: c,
-                    isSelected: isSel,
-                    selectedBorderColor: selBorderColor,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(3.5),
-                    child: ClipPath(
-                      clipper: _ChamferedCardClipper(),
-                      child: RealisticShaderIcon(
-                        type: widget.type,
-                        color: c,
-                        size: double.infinity,
+                child: RepaintBoundary(
+                  child: CustomPaint(
+                    painter: _MinecraftCardFramePainter(
+                      color: c,
+                      isSelected: isSel,
+                      selectedBorderColor: selBorderColor,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(3.5),
+                      child: ClipPath(
+                        clipper: _ChamferedCardClipper(),
+                        child: RealisticShaderIcon(
+                          type: widget.type,
+                          color: c,
+                          size: double.infinity,
+                        ),
                       ),
                     ),
                   ),
@@ -2434,7 +2625,9 @@ class _MinecraftColorTileState extends State<MinecraftColorTile>
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontWeight: FontWeight.w900,
-                color: widget.labelColor ?? (isSel ? selBorderColor : Colors.white),
+                color:
+                    widget.labelColor ??
+                    (isSel ? selBorderColor : Colors.white),
                 fontSize: 11.5,
                 letterSpacing: 0.4,
               ),
@@ -2445,9 +2638,14 @@ class _MinecraftColorTileState extends State<MinecraftColorTile>
               onTap: widget.onColorPick ?? widget.onTap,
               behavior: HitTestBehavior.opaque,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 4,
+                  vertical: 2.0,
+                ),
                 decoration: BoxDecoration(
-                  color: isSel ? c.withValues(alpha: 0.28) : const Color(0xFF131B2A),
+                  color: isSel
+                      ? c.withValues(alpha: 0.28)
+                      : const Color(0xFF131B2A),
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(
                     color: isSel ? selBorderColor : c.withValues(alpha: 0.65),
@@ -2564,10 +2762,7 @@ class _MinecraftCardFramePainter extends CustomPainter {
       ..close();
 
     // 1. Dark stone/graphite backing
-    canvas.drawPath(
-      outerPath,
-      Paint()..color = const Color(0xFF141916),
-    );
+    canvas.drawPath(outerPath, Paint()..color = const Color(0xFF141916));
 
     if (isSelected) {
       // 2. Selected Card: Glowing outer border matching tab theme!
@@ -2583,7 +2778,11 @@ class _MinecraftCardFramePainter extends CustomPainter {
       canvas.drawPath(
         outerPath,
         Paint()
-          ..color = Color.lerp(selectedBorderColor, Colors.white, 0.4)!.withValues(alpha: 0.65)
+          ..color = Color.lerp(
+            selectedBorderColor,
+            Colors.white,
+            0.4,
+          )!.withValues(alpha: 0.65)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.0,
       );
@@ -2640,7 +2839,10 @@ class MinecraftColorGrid extends StatelessWidget {
                   color: _green,
                   borderRadius: BorderRadius.circular(2),
                   boxShadow: [
-                    BoxShadow(color: _green.withValues(alpha: 0.6), blurRadius: 6),
+                    BoxShadow(
+                      color: _green.withValues(alpha: 0.6),
+                      blurRadius: 6,
+                    ),
                   ],
                 ),
                 margin: const EdgeInsets.only(right: 8),
@@ -2664,13 +2866,18 @@ class MinecraftColorGrid extends StatelessWidget {
         LayoutBuilder(
           builder: (context, c) {
             const cols = 4;
-            final spacing = gap ?? 8.0; // Proper spacing so cards don't touch and look clean
+            final spacing =
+                gap ??
+                8.0; // Proper spacing so cards don't touch and look clean
             final count = tiles.length;
 
             if (count == 0) return const SizedBox.shrink();
 
             // Uniform tile width across all tabs (2-card and 4-card grids match exactly)
-            final baseTileW = math.min((c.maxWidth - (cols - 1) * spacing) / cols, 82.0);
+            final baseTileW = math.min(
+              (c.maxWidth - (cols - 1) * spacing) / cols,
+              82.0,
+            );
             final tileW = baseTileW;
 
             final rows = <Widget>[];
@@ -2726,16 +2933,20 @@ class RealisticShaderIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     if (size == double.infinity) {
       return SizedBox.expand(
-        child: CustomPaint(
-          painter: _RealisticShaderPainter(type: type, color: color),
+        child: RepaintBoundary(
+          child: CustomPaint(
+            painter: _RealisticShaderPainter(type: type, color: color),
+          ),
         ),
       );
     }
     return SizedBox(
       width: size,
       height: size,
-      child: CustomPaint(
-        painter: _RealisticShaderPainter(type: type, color: color),
+      child: RepaintBoundary(
+        child: CustomPaint(
+          painter: _RealisticShaderPainter(type: type, color: color),
+        ),
       ),
     );
   }
@@ -2828,8 +3039,24 @@ class _RealisticShaderPainter extends CustomPainter {
     // 2. High morning voxel clouds
     final cloudLit = Color.lerp(Colors.white, c, 0.20)!;
     final cloudShadow = Color.lerp(const Color(0xFFFFCC80), c, 0.35)!;
-    _drawTieredVoxelCloud(canvas, w * 0.08, h * 0.12, w * 0.42, h * 0.08, cloudLit, cloudShadow);
-    _drawTieredVoxelCloud(canvas, w * 0.54, h * 0.18, w * 0.38, h * 0.07, cloudLit, cloudShadow);
+    _drawTieredVoxelCloud(
+      canvas,
+      w * 0.08,
+      h * 0.12,
+      w * 0.42,
+      h * 0.08,
+      cloudLit,
+      cloudShadow,
+    );
+    _drawTieredVoxelCloud(
+      canvas,
+      w * 0.54,
+      h * 0.18,
+      w * 0.38,
+      h * 0.07,
+      cloudLit,
+      cloudShadow,
+    );
 
     // 3. Distant soft mountain ridge on horizon
     final distHills = Color.lerp(const Color(0xFF7CB342), horizon, 0.40)!;
@@ -2839,19 +3066,53 @@ class _RealisticShaderPainter extends CustomPainter {
     final sunX = w * 0.32;
     final sunY = h * 0.44;
     final sunSize = w * 0.21;
-    _drawSquareSun(canvas, sunX, sunY, sunSize, c, defaultGlow: const Color(0xFFFFB300));
+    _drawSquareSun(
+      canvas,
+      sunX,
+      sunY,
+      sunSize,
+      c,
+      defaultGlow: const Color(0xFFFFB300),
+    );
 
     // 5. Rolling gentle Minecraft grass hills
-    final grassTop = Color.lerp(const Color(0xFF558B2F), const Color(0xFFFF9E3D), 0.15)!;
+    final grassTop = Color.lerp(
+      const Color(0xFF558B2F),
+      const Color(0xFFFF9E3D),
+      0.15,
+    )!;
     final dirtSide = const Color(0xFF4E342E);
     // Back hill
-    _drawVoxelBlock(canvas, 0, h * 0.52, w * 0.65, h * 0.10, grassTop, dirtSide);
+    _drawVoxelBlock(
+      canvas,
+      0,
+      h * 0.52,
+      w * 0.65,
+      h * 0.10,
+      grassTop,
+      dirtSide,
+    );
     // Main foreground hill
     _drawVoxelBlock(canvas, 0, h * 0.60, w, h * 0.40, grassTop, dirtSide);
-    _drawVoxelBlock(canvas, 0, h * 0.72, w * 0.75, h * 0.28, grassTop, dirtSide);
+    _drawVoxelBlock(
+      canvas,
+      0,
+      h * 0.72,
+      w * 0.75,
+      h * 0.28,
+      grassTop,
+      dirtSide,
+    );
 
     // 6. Classic Minecraft Oak Tree on the RIGHT hill in morning light
-    _drawMinecraftOakTree(canvas, w * 0.60, h * 0.36, w * 0.36, h * 0.38, grassTop);
+    _drawMinecraftOakTree(
+      canvas,
+      w * 0.60,
+      h * 0.36,
+      w * 0.36,
+      h * 0.38,
+      grassTop,
+    );
 
     // Morning golden light haze across the grass
     canvas.drawRect(
@@ -2890,8 +3151,24 @@ class _RealisticShaderPainter extends CustomPainter {
     // 3. Classic Fluffy White 3D Minecraft Cumulus Clouds
     final cloudLit = Colors.white;
     final cloudShadow = const Color(0xFFCFD8DC);
-    _drawTieredVoxelCloud(canvas, w * 0.06, h * 0.16, w * 0.45, h * 0.09, cloudLit, cloudShadow);
-    _drawTieredVoxelCloud(canvas, w * 0.52, h * 0.24, w * 0.42, h * 0.08, cloudLit, cloudShadow);
+    _drawTieredVoxelCloud(
+      canvas,
+      w * 0.06,
+      h * 0.16,
+      w * 0.45,
+      h * 0.09,
+      cloudLit,
+      cloudShadow,
+    );
+    _drawTieredVoxelCloud(
+      canvas,
+      w * 0.52,
+      h * 0.24,
+      w * 0.42,
+      h * 0.08,
+      cloudLit,
+      cloudShadow,
+    );
 
     // 4. Distant soft blue-green hills on horizon
     final distRidge = Color.lerp(const Color(0xFF64B5F6), c, 0.30)!;
@@ -2915,16 +3192,71 @@ class _RealisticShaderPainter extends CustomPainter {
     final grassTop = Color.lerp(const Color(0xFF4CAF50), c, 0.22)!;
     final dirtSide = const Color(0xFF4E342E);
     // Left Bank
-    _drawVoxelBlock(canvas, 0, h * 0.52, w * 0.36, h * 0.08, grassTop, dirtSide);
-    _drawVoxelBlock(canvas, 0, h * 0.60, w * 0.30, h * 0.10, grassTop, dirtSide);
-    _drawVoxelBlock(canvas, 0, h * 0.70, w * 0.24, h * 0.30, grassTop, dirtSide);
+    _drawVoxelBlock(
+      canvas,
+      0,
+      h * 0.52,
+      w * 0.36,
+      h * 0.08,
+      grassTop,
+      dirtSide,
+    );
+    _drawVoxelBlock(
+      canvas,
+      0,
+      h * 0.60,
+      w * 0.30,
+      h * 0.10,
+      grassTop,
+      dirtSide,
+    );
+    _drawVoxelBlock(
+      canvas,
+      0,
+      h * 0.70,
+      w * 0.24,
+      h * 0.30,
+      grassTop,
+      dirtSide,
+    );
     // Right Bank
-    _drawVoxelBlock(canvas, w * 0.62, h * 0.52, w * 0.38, h * 0.08, grassTop, dirtSide);
-    _drawVoxelBlock(canvas, w * 0.68, h * 0.60, w * 0.32, h * 0.10, grassTop, dirtSide);
-    _drawVoxelBlock(canvas, w * 0.74, h * 0.70, w * 0.26, h * 0.30, grassTop, dirtSide);
+    _drawVoxelBlock(
+      canvas,
+      w * 0.62,
+      h * 0.52,
+      w * 0.38,
+      h * 0.08,
+      grassTop,
+      dirtSide,
+    );
+    _drawVoxelBlock(
+      canvas,
+      w * 0.68,
+      h * 0.60,
+      w * 0.32,
+      h * 0.10,
+      grassTop,
+      dirtSide,
+    );
+    _drawVoxelBlock(
+      canvas,
+      w * 0.74,
+      h * 0.70,
+      w * 0.26,
+      h * 0.30,
+      grassTop,
+      dirtSide,
+    );
 
     // 7. Tall classic Minecraft Oak Tree on the LEFT bank
-    _drawMinecraftOakTree(canvas, w * 0.04, h * 0.30, w * 0.38, h * 0.40, grassTop);
+    _drawMinecraftOakTree(
+      canvas,
+      w * 0.04,
+      h * 0.30,
+      w * 0.38,
+      h * 0.40,
+      grassTop,
+    );
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -2951,8 +3283,24 @@ class _RealisticShaderPainter extends CustomPainter {
     // 2. Sunset-lit flat voxel clouds
     final cloudLit = Color.lerp(const Color(0xFFFF8A80), c, 0.35)!;
     final cloudShadow = Color.lerp(const Color(0xFF880E4F), c, 0.42)!;
-    _drawTieredVoxelCloud(canvas, w * 0.08, h * 0.14, w * 0.42, h * 0.07, cloudLit, cloudShadow);
-    _drawTieredVoxelCloud(canvas, w * 0.54, h * 0.22, w * 0.38, h * 0.06, cloudLit, cloudShadow);
+    _drawTieredVoxelCloud(
+      canvas,
+      w * 0.08,
+      h * 0.14,
+      w * 0.42,
+      h * 0.07,
+      cloudLit,
+      cloudShadow,
+    );
+    _drawTieredVoxelCloud(
+      canvas,
+      w * 0.54,
+      h * 0.22,
+      w * 0.38,
+      h * 0.06,
+      cloudLit,
+      cloudShadow,
+    );
 
     // 3. Layered distant mountain ridges against the sunset
     final ridgeFar = Color.lerp(const Color(0xFF5D2417), horizon, 0.30)!;
@@ -2962,17 +3310,56 @@ class _RealisticShaderPainter extends CustomPainter {
     final sunX = w * 0.48;
     final sunY = h * 0.48;
     final sunSize = w * 0.23;
-    _drawSquareSun(canvas, sunX, sunY, sunSize, c, defaultGlow: const Color(0xFFFFD600));
+    _drawSquareSun(
+      canvas,
+      sunX,
+      sunY,
+      sunSize,
+      c,
+      defaultGlow: const Color(0xFFFFD600),
+    );
 
     // 5. Rolling hills in warm evening sunset tone
     final grassEvening = Color.lerp(const Color(0xFF33691E), horizon, 0.35)!;
     final dirtEvening = const Color(0xFF3E2723);
-    _drawVoxelBlock(canvas, 0, h * 0.54, w, h * 0.46, grassEvening, dirtEvening);
-    _drawVoxelBlock(canvas, 0, h * 0.66, w * 0.85, h * 0.34, grassEvening, dirtEvening);
-    _drawVoxelBlock(canvas, 0, h * 0.78, w * 0.60, h * 0.22, grassEvening, dirtEvening);
+    _drawVoxelBlock(
+      canvas,
+      0,
+      h * 0.54,
+      w,
+      h * 0.46,
+      grassEvening,
+      dirtEvening,
+    );
+    _drawVoxelBlock(
+      canvas,
+      0,
+      h * 0.66,
+      w * 0.85,
+      h * 0.34,
+      grassEvening,
+      dirtEvening,
+    );
+    _drawVoxelBlock(
+      canvas,
+      0,
+      h * 0.78,
+      w * 0.60,
+      h * 0.22,
+      grassEvening,
+      dirtEvening,
+    );
 
     // 6. Classic Minecraft Oak Tree silhouetted on the RIGHT edge
-    _drawMinecraftOakTree(canvas, w * 0.60, h * 0.36, w * 0.36, h * 0.38, grassEvening, isSilhouette: true);
+    _drawMinecraftOakTree(
+      canvas,
+      w * 0.60,
+      h * 0.36,
+      w * 0.36,
+      h * 0.38,
+      grassEvening,
+      isSilhouette: true,
+    );
 
     // Warm golden hour sunlight cast across the hills
     canvas.drawRect(
@@ -3032,17 +3419,80 @@ class _RealisticShaderPainter extends CustomPainter {
     // 6. Dark nighttime stepped voxel grass banks
     final grassNight = Color.lerp(const Color(0xFF0E2218), c, 0.20)!;
     final dirtNight = const Color(0xFF181311);
-    _drawVoxelBlock(canvas, 0, h * 0.54, w * 0.36, h * 0.08, grassNight, dirtNight);
-    _drawVoxelBlock(canvas, 0, h * 0.62, w * 0.30, h * 0.10, grassNight, dirtNight);
-    _drawVoxelBlock(canvas, 0, h * 0.72, w * 0.24, h * 0.28, grassNight, dirtNight);
+    _drawVoxelBlock(
+      canvas,
+      0,
+      h * 0.54,
+      w * 0.36,
+      h * 0.08,
+      grassNight,
+      dirtNight,
+    );
+    _drawVoxelBlock(
+      canvas,
+      0,
+      h * 0.62,
+      w * 0.30,
+      h * 0.10,
+      grassNight,
+      dirtNight,
+    );
+    _drawVoxelBlock(
+      canvas,
+      0,
+      h * 0.72,
+      w * 0.24,
+      h * 0.28,
+      grassNight,
+      dirtNight,
+    );
 
-    _drawVoxelBlock(canvas, w * 0.60, h * 0.54, w * 0.40, h * 0.08, grassNight, dirtNight);
-    _drawVoxelBlock(canvas, w * 0.66, h * 0.62, w * 0.34, h * 0.10, grassNight, dirtNight);
-    _drawVoxelBlock(canvas, w * 0.72, h * 0.72, w * 0.28, h * 0.28, grassNight, dirtNight);
+    _drawVoxelBlock(
+      canvas,
+      w * 0.60,
+      h * 0.54,
+      w * 0.40,
+      h * 0.08,
+      grassNight,
+      dirtNight,
+    );
+    _drawVoxelBlock(
+      canvas,
+      w * 0.66,
+      h * 0.62,
+      w * 0.34,
+      h * 0.10,
+      grassNight,
+      dirtNight,
+    );
+    _drawVoxelBlock(
+      canvas,
+      w * 0.72,
+      h * 0.72,
+      w * 0.28,
+      h * 0.28,
+      grassNight,
+      dirtNight,
+    );
 
     // 7. Dark Minecraft spruce / pine tree on the left and oak on right
-    _drawMinecraftSpruceTree(canvas, w * 0.06, h * 0.36, w * 0.28, h * 0.38, grassNight);
-    _drawMinecraftOakTree(canvas, w * 0.68, h * 0.38, w * 0.30, h * 0.34, grassNight, isSilhouette: true);
+    _drawMinecraftSpruceTree(
+      canvas,
+      w * 0.06,
+      h * 0.36,
+      w * 0.28,
+      h * 0.38,
+      grassNight,
+    );
+    _drawMinecraftOakTree(
+      canvas,
+      w * 0.68,
+      h * 0.38,
+      w * 0.30,
+      h * 0.34,
+      grassNight,
+      isSilhouette: true,
+    );
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -3050,19 +3500,32 @@ class _RealisticShaderPainter extends CustomPainter {
   // ─────────────────────────────────────────────────────────────────────────
 
   /// Draws an authentic Minecraft Crescent Moon out of stepped pixel blocks
-  void _drawPixelCrescentMoon(Canvas canvas, double cx, double cy, double size, Color c) {
+  void _drawPixelCrescentMoon(
+    Canvas canvas,
+    double cx,
+    double cy,
+    double size,
+    Color c,
+  ) {
     // Outer moonlight radial aura
     canvas.drawCircle(
       Offset(cx, cy),
       size * 1.25,
       Paint()
-        ..shader = RadialGradient(
-          colors: [
-            Color.lerp(Colors.white, c, 0.35)!.withValues(alpha: 0.40),
-            Color.lerp(const Color(0xFF90CAF9), c, 0.45)!.withValues(alpha: 0.18),
-            Colors.transparent,
-          ],
-        ).createShader(Rect.fromCircle(center: Offset(cx, cy), radius: size * 1.25)),
+        ..shader =
+            RadialGradient(
+              colors: [
+                Color.lerp(Colors.white, c, 0.35)!.withValues(alpha: 0.40),
+                Color.lerp(
+                  const Color(0xFF90CAF9),
+                  c,
+                  0.45,
+                )!.withValues(alpha: 0.18),
+                Colors.transparent,
+              ],
+            ).createShader(
+              Rect.fromCircle(center: Offset(cx, cy), radius: size * 1.25),
+            ),
     );
 
     final moonColor = Color.lerp(Colors.white, c, 0.15)!;
@@ -3072,14 +3535,26 @@ class _RealisticShaderPainter extends CustomPainter {
 
     // 8x8 Pixel Grid definition for crescent moon facing left
     const pixelCoords = [
-      [3, 0], [4, 0],
-      [2, 1], [3, 1], [4, 1],
-      [1, 2], [2, 2], [3, 2],
-      [1, 3], [2, 3],
-      [1, 4], [2, 4],
-      [1, 5], [2, 5], [3, 5],
-      [2, 6], [3, 6], [4, 6],
-      [3, 7], [4, 7],
+      [3, 0],
+      [4, 0],
+      [2, 1],
+      [3, 1],
+      [4, 1],
+      [1, 2],
+      [2, 2],
+      [3, 2],
+      [1, 3],
+      [2, 3],
+      [1, 4],
+      [2, 4],
+      [1, 5],
+      [2, 5],
+      [3, 5],
+      [2, 6],
+      [3, 6],
+      [4, 6],
+      [3, 7],
+      [4, 7],
     ];
 
     final paint = Paint()..color = moonColor;
@@ -3092,7 +3567,10 @@ class _RealisticShaderPainter extends CustomPainter {
 
     // Soft pixel highlight in center
     final innerHighlight = Paint()..color = Colors.white;
-    canvas.drawRect(Rect.fromLTWH(startX + 2 * p, startY + 3 * p, p * 0.8, p * 2), innerHighlight);
+    canvas.drawRect(
+      Rect.fromLTWH(startX + 2 * p, startY + 3 * p, p * 0.8, p * 2),
+      innerHighlight,
+    );
   }
 
   /// Draws the square Minecraft Sun with radial bloom
@@ -3109,21 +3587,29 @@ class _RealisticShaderPainter extends CustomPainter {
       Offset(cx, cy),
       size * 1.75,
       Paint()
-        ..shader = RadialGradient(
-          colors: [
-            Colors.white.withValues(alpha: 0.95),
-            Color.lerp(defaultGlow, c, 0.45)!.withValues(alpha: 0.65),
-            c.withValues(alpha: 0.25),
-            Colors.transparent,
-          ],
-          stops: const [0.0, 0.35, 0.70, 1.0],
-        ).createShader(Rect.fromCircle(center: Offset(cx, cy), radius: size * 1.75)),
+        ..shader =
+            RadialGradient(
+              colors: [
+                Colors.white.withValues(alpha: 0.95),
+                Color.lerp(defaultGlow, c, 0.45)!.withValues(alpha: 0.65),
+                c.withValues(alpha: 0.25),
+                Colors.transparent,
+              ],
+              stops: const [0.0, 0.35, 0.70, 1.0],
+            ).createShader(
+              Rect.fromCircle(center: Offset(cx, cy), radius: size * 1.75),
+            ),
     );
 
     // Square Minecraft Sun glow frame
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(cx, cy), width: size * 1.15, height: size * 1.15),
-      Paint()..color = Color.lerp(defaultGlow, c, 0.40)!.withValues(alpha: 0.50),
+      Rect.fromCenter(
+        center: Offset(cx, cy),
+        width: size * 1.15,
+        height: size * 1.15,
+      ),
+      Paint()
+        ..color = Color.lerp(defaultGlow, c, 0.40)!.withValues(alpha: 0.50),
     );
 
     // Bright Square Minecraft Sun
@@ -3155,7 +3641,12 @@ class _RealisticShaderPainter extends CustomPainter {
     );
     // Inner stepped cloud puff
     canvas.drawRect(
-      Rect.fromLTWH(x + width * 0.20, y - height * 0.25, width * 0.50, height * 0.50),
+      Rect.fromLTWH(
+        x + width * 0.20,
+        y - height * 0.25,
+        width * 0.50,
+        height * 0.50,
+      ),
       Paint()..color = litColor.withValues(alpha: 0.95),
     );
   }
@@ -3170,16 +3661,26 @@ class _RealisticShaderPainter extends CustomPainter {
     Color leafBase, {
     bool isSilhouette = false,
   }) {
-    final trunkColor = isSilhouette ? const Color(0xFF1E1513) : const Color(0xFF4E342E);
-    final trunkGrain = isSilhouette ? const Color(0xFF140D0C) : const Color(0xFF3E2723);
+    final trunkColor = isSilhouette
+        ? const Color(0xFF1E1513)
+        : const Color(0xFF4E342E);
+    final trunkGrain = isSilhouette
+        ? const Color(0xFF140D0C)
+        : const Color(0xFF3E2723);
 
     // 1. Trunk
     final trunkW = width * 0.18;
     final trunkH = height * 0.50;
     final trunkX = x + width * 0.41;
     final trunkY = y + height * 0.50;
-    canvas.drawRect(Rect.fromLTWH(trunkX, trunkY, trunkW, trunkH), Paint()..color = trunkColor);
-    canvas.drawRect(Rect.fromLTWH(trunkX + 2, trunkY, trunkW * 0.35, trunkH), Paint()..color = trunkGrain);
+    canvas.drawRect(
+      Rect.fromLTWH(trunkX, trunkY, trunkW, trunkH),
+      Paint()..color = trunkColor,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(trunkX + 2, trunkY, trunkW * 0.35, trunkH),
+      Paint()..color = trunkGrain,
+    );
 
     // 2. Leaf Layers
     final leafHighlight = isSilhouette
@@ -3238,9 +3739,15 @@ class _RealisticShaderPainter extends CustomPainter {
     Color botShadow,
   ) {
     // Bottom shadow band
-    canvas.drawRect(Rect.fromLTWH(x, y + h * 0.55, w, h * 0.45), Paint()..color = botShadow);
+    canvas.drawRect(
+      Rect.fromLTWH(x, y + h * 0.55, w, h * 0.45),
+      Paint()..color = botShadow,
+    );
     // Center base band
-    canvas.drawRect(Rect.fromLTWH(x, y + h * 0.20, w, h * 0.55), Paint()..color = base);
+    canvas.drawRect(
+      Rect.fromLTWH(x, y + h * 0.20, w, h * 0.55),
+      Paint()..color = base,
+    );
     // Top lit band
     canvas.drawRect(Rect.fromLTWH(x, y, w, h * 0.30), Paint()..color = topLit);
   }
@@ -3266,13 +3773,49 @@ class _RealisticShaderPainter extends CustomPainter {
     final leafDark = Color.lerp(leafBase, Colors.black, 0.40)!;
 
     // Tier 4 (bottom)
-    _drawVoxelFoliageBox(canvas, x + width * 0.08, y + height * 0.44, width * 0.84, height * 0.20, leafBase, leafLit, leafDark);
+    _drawVoxelFoliageBox(
+      canvas,
+      x + width * 0.08,
+      y + height * 0.44,
+      width * 0.84,
+      height * 0.20,
+      leafBase,
+      leafLit,
+      leafDark,
+    );
     // Tier 3
-    _drawVoxelFoliageBox(canvas, x + width * 0.18, y + height * 0.28, width * 0.64, height * 0.20, leafBase, leafLit, leafDark);
+    _drawVoxelFoliageBox(
+      canvas,
+      x + width * 0.18,
+      y + height * 0.28,
+      width * 0.64,
+      height * 0.20,
+      leafBase,
+      leafLit,
+      leafDark,
+    );
     // Tier 2
-    _drawVoxelFoliageBox(canvas, x + width * 0.28, y + height * 0.14, width * 0.44, height * 0.18, leafBase, leafLit, leafDark);
+    _drawVoxelFoliageBox(
+      canvas,
+      x + width * 0.28,
+      y + height * 0.14,
+      width * 0.44,
+      height * 0.18,
+      leafBase,
+      leafLit,
+      leafDark,
+    );
     // Tier 1 (top tip)
-    _drawVoxelFoliageBox(canvas, x + width * 0.38, y, width * 0.24, height * 0.18, leafBase, leafLit, leafDark);
+    _drawVoxelFoliageBox(
+      canvas,
+      x + width * 0.38,
+      y,
+      width * 0.24,
+      height * 0.18,
+      leafBase,
+      leafLit,
+      leafDark,
+    );
   }
 
   /// Stepped Minecraft Voxel Terrain Block (green grass top with jagged overhang + brown dirt)
@@ -3286,11 +3829,17 @@ class _RealisticShaderPainter extends CustomPainter {
     Color dirtColor,
   ) {
     // Dirt body
-    canvas.drawRect(Rect.fromLTWH(x, y, width, height), Paint()..color = dirtColor);
+    canvas.drawRect(
+      Rect.fromLTWH(x, y, width, height),
+      Paint()..color = dirtColor,
+    );
 
     // Grass top strip
     final grassH = height * 0.32;
-    canvas.drawRect(Rect.fromLTWH(x, y, width, grassH), Paint()..color = grassColor);
+    canvas.drawRect(
+      Rect.fromLTWH(x, y, width, grassH),
+      Paint()..color = grassColor,
+    );
 
     // Stepped jagged pixel grass overhangs (Minecraft style)
     final overhangPaint = Paint()..color = grassColor;
@@ -3321,7 +3870,11 @@ class _RealisticShaderPainter extends CustomPainter {
       final refW = w * (0.07 + i * 0.034);
       final alpha = isNight ? (0.80 - i * 0.08) : (0.92 - i * 0.07);
       canvas.drawRect(
-        Rect.fromCenter(center: Offset(w * centerXRatio, yPos), width: refW, height: 2.6),
+        Rect.fromCenter(
+          center: Offset(w * centerXRatio, yPos),
+          width: refW,
+          height: 2.6,
+        ),
         Paint()..color = reflColor.withValues(alpha: alpha.clamp(0.15, 1.0)),
       );
     }
@@ -3340,14 +3893,27 @@ class _RealisticShaderPainter extends CustomPainter {
       final yPos = h * (startYRatio + 0.04 + i * 0.065);
       final refW = w * (0.12 + i * 0.04);
       canvas.drawRect(
-        Rect.fromCenter(center: Offset(w * centerXRatio, yPos), width: refW, height: 2.2),
-        Paint()..color = reflColor.withValues(alpha: (0.65 - i * 0.07).clamp(0.12, 1.0)),
+        Rect.fromCenter(
+          center: Offset(w * centerXRatio, yPos),
+          width: refW,
+          height: 2.2,
+        ),
+        Paint()
+          ..color = reflColor.withValues(
+            alpha: (0.65 - i * 0.07).clamp(0.12, 1.0),
+          ),
       );
     }
   }
 
   /// Distant Minecraft blocky mountain ridge
-  void _drawVoxelMountainRidge(Canvas canvas, double w, double y, Color color, {required int step}) {
+  void _drawVoxelMountainRidge(
+    Canvas canvas,
+    double w,
+    double y,
+    Color color, {
+    required int step,
+  }) {
     final path = Path();
     if (step == 1) {
       path.moveTo(0, y + 10);
@@ -3416,7 +3982,13 @@ class _RealisticShaderPainter extends CustomPainter {
   // OTHER SHADER SCENES (God Rays, Torch, Water, Fog, Rain)
   // ─────────────────────────────────────────────────────────────────────────
 
-  void _drawGodRaysScene(Canvas canvas, double w, double h, Color c, {required double angle}) {
+  void _drawGodRaysScene(
+    Canvas canvas,
+    double w,
+    double h,
+    Color c, {
+    required double angle,
+  }) {
     // Atmospheric sky gradient tailored to time of day
     Color skyTop;
     Color skyMid;
@@ -3463,13 +4035,16 @@ class _RealisticShaderPainter extends CustomPainter {
       Offset(sunX, sunY),
       w * 0.50,
       Paint()
-        ..shader = RadialGradient(
-          colors: [
-            Color.lerp(Colors.white, sunWarm, 0.3)!.withValues(alpha: 0.70),
-            sunWarm.withValues(alpha: 0.28),
-            Colors.transparent,
-          ],
-        ).createShader(Rect.fromCircle(center: Offset(sunX, sunY), radius: w * 0.50)),
+        ..shader =
+            RadialGradient(
+              colors: [
+                Color.lerp(Colors.white, sunWarm, 0.3)!.withValues(alpha: 0.70),
+                sunWarm.withValues(alpha: 0.28),
+                Colors.transparent,
+              ],
+            ).createShader(
+              Rect.fromCircle(center: Offset(sunX, sunY), radius: w * 0.50),
+            ),
     );
 
     // 4. Volumetric Crepuscular God Rays radiating down from the Sun
@@ -3508,7 +4083,12 @@ class _RealisticShaderPainter extends CustomPainter {
     // Mid glowing sun corona
     canvas.drawRect(
       Rect.fromCenter(center: Offset(sunX, sunY), width: 17, height: 17),
-      Paint()..color = Color.lerp(sunWarm, Colors.white, 0.45)!.withValues(alpha: 0.85),
+      Paint()
+        ..color = Color.lerp(
+          sunWarm,
+          Colors.white,
+          0.45,
+        )!.withValues(alpha: 0.85),
     );
     // Inner brilliant Minecraft sun core (pure white)
     canvas.drawRect(
@@ -3517,10 +4097,22 @@ class _RealisticShaderPainter extends CustomPainter {
     );
     // Cardinal sun sparkle pixels
     final sparklePaint = Paint()..color = Colors.white.withValues(alpha: 0.9);
-    canvas.drawRect(Rect.fromCenter(center: Offset(sunX, sunY - 9), width: 2.5, height: 2.5), sparklePaint);
-    canvas.drawRect(Rect.fromCenter(center: Offset(sunX, sunY + 9), width: 2.5, height: 2.5), sparklePaint);
-    canvas.drawRect(Rect.fromCenter(center: Offset(sunX - 9, sunY), width: 2.5, height: 2.5), sparklePaint);
-    canvas.drawRect(Rect.fromCenter(center: Offset(sunX + 9, sunY), width: 2.5, height: 2.5), sparklePaint);
+    canvas.drawRect(
+      Rect.fromCenter(center: Offset(sunX, sunY - 9), width: 2.5, height: 2.5),
+      sparklePaint,
+    );
+    canvas.drawRect(
+      Rect.fromCenter(center: Offset(sunX, sunY + 9), width: 2.5, height: 2.5),
+      sparklePaint,
+    );
+    canvas.drawRect(
+      Rect.fromCenter(center: Offset(sunX - 9, sunY), width: 2.5, height: 2.5),
+      sparklePaint,
+    );
+    canvas.drawRect(
+      Rect.fromCenter(center: Offset(sunX + 9, sunY), width: 2.5, height: 2.5),
+      sparklePaint,
+    );
 
     // 6. Distant mountain ridge catching the sunlight
     final hillColor = Color.lerp(const Color(0xFF1E2F23), skyBot, 0.30)!;
@@ -3585,7 +4177,13 @@ class _RealisticShaderPainter extends CustomPainter {
     _drawDistantForestRidge(canvas, w, h * 0.86, const Color(0xFF040810));
   }
 
-  void _drawCloudBlock(Canvas canvas, double w, double h, Color c, {required bool isTop}) {
+  void _drawCloudBlock(
+    Canvas canvas,
+    double w,
+    double h,
+    Color c, {
+    required bool isTop,
+  }) {
     canvas.drawRect(
       Rect.fromLTWH(0, 0, w, h),
       Paint()..color = const Color(0xFF141E28),
@@ -3616,12 +4214,18 @@ class _RealisticShaderPainter extends CustomPainter {
       ..lineTo(w * 0.85, h * 0.64)
       ..lineTo(w * 0.5, h * 0.80)
       ..close();
-    canvas.drawPath(rightFace, Paint()..color = Color.lerp(cloudSideColor, Colors.black, 0.20)!);
+    canvas.drawPath(
+      rightFace,
+      Paint()..color = Color.lerp(cloudSideColor, Colors.black, 0.20)!,
+    );
   }
 
   void _drawTorchScene(Canvas canvas, double w, double h, Color c) {
     // 1. Dark stone dungeon / mine background
-    canvas.drawRect(Rect.fromLTWH(0, 0, w, h), Paint()..color = const Color(0xFF121518));
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, w, h),
+      Paint()..color = const Color(0xFF121518),
+    );
 
     // Subtle stone block mortar grid (Minecraft cobblestone feel)
     final mortarPaint = Paint()..color = const Color(0xFF0B0D0F);
@@ -3644,15 +4248,18 @@ class _RealisticShaderPainter extends CustomPainter {
       Offset(torchX, torchY),
       w * 0.65,
       Paint()
-        ..shader = RadialGradient(
-          colors: [
-            glowColor.withValues(alpha: 0.85),
-            glowColor.withValues(alpha: 0.40),
-            glowColor.withValues(alpha: 0.12),
-            Colors.transparent,
-          ],
-          stops: const [0.0, 0.35, 0.70, 1.0],
-        ).createShader(Rect.fromCircle(center: Offset(torchX, torchY), radius: w * 0.65)),
+        ..shader =
+            RadialGradient(
+              colors: [
+                glowColor.withValues(alpha: 0.85),
+                glowColor.withValues(alpha: 0.40),
+                glowColor.withValues(alpha: 0.12),
+                Colors.transparent,
+              ],
+              stops: const [0.0, 0.35, 0.70, 1.0],
+            ).createShader(
+              Rect.fromCircle(center: Offset(torchX, torchY), radius: w * 0.65),
+            ),
     );
 
     // 3. Wooden Torch Handle (with pixel wood texture)
@@ -3662,14 +4269,26 @@ class _RealisticShaderPainter extends CustomPainter {
     final stickY = torchY + 4;
 
     // Wood body
-    canvas.drawRect(Rect.fromLTWH(stickX, stickY, stickW, stickH), Paint()..color = const Color(0xFF5D4037));
+    canvas.drawRect(
+      Rect.fromLTWH(stickX, stickY, stickW, stickH),
+      Paint()..color = const Color(0xFF5D4037),
+    );
     // Darker wood edge
-    canvas.drawRect(Rect.fromLTWH(stickX + stickW * 0.6, stickY, stickW * 0.4, stickH), Paint()..color = const Color(0xFF3E2723));
+    canvas.drawRect(
+      Rect.fromLTWH(stickX + stickW * 0.6, stickY, stickW * 0.4, stickH),
+      Paint()..color = const Color(0xFF3E2723),
+    );
     // Lighter wood grain
-    canvas.drawRect(Rect.fromLTWH(stickX + 1, stickY, stickW * 0.3, stickH), Paint()..color = const Color(0xFF8D6E63));
+    canvas.drawRect(
+      Rect.fromLTWH(stickX + 1, stickY, stickW * 0.3, stickH),
+      Paint()..color = const Color(0xFF8D6E63),
+    );
 
     // Coal/charcoal head on stick
-    canvas.drawRect(Rect.fromLTWH(stickX, torchY - 2, stickW, 6), Paint()..color = const Color(0xFF212121));
+    canvas.drawRect(
+      Rect.fromLTWH(stickX, torchY - 2, stickW, 6),
+      Paint()..color = const Color(0xFF212121),
+    );
 
     // 4. Pixelated Flame Head (multi-layer fire)
     final flameW = w * 0.18;
@@ -3702,7 +4321,10 @@ class _RealisticShaderPainter extends CustomPainter {
     final sparkPaint = Paint()..color = const Color(0xFFFFD54F);
     canvas.drawRect(Rect.fromLTWH(torchX - 5, flameY - 7, 2, 2), sparkPaint);
     canvas.drawRect(Rect.fromLTWH(torchX + 4, flameY - 11, 2, 2), sparkPaint);
-    canvas.drawRect(Rect.fromLTWH(torchX - 1, flameY - 15, 1.5, 1.5), Paint()..color = const Color(0xFFFFAB91));
+    canvas.drawRect(
+      Rect.fromLTWH(torchX - 1, flameY - 15, 1.5, 1.5),
+      Paint()..color = const Color(0xFFFFAB91),
+    );
   }
 
   void _drawWaterScene(Canvas canvas, double w, double h, Color c) {
@@ -3738,7 +4360,11 @@ class _RealisticShaderPainter extends CustomPainter {
 
     // Subtle sun glare gleam on surface
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(w * 0.5, h * 0.18), width: w * 0.6, height: 6),
+      Rect.fromCenter(
+        center: Offset(w * 0.5, h * 0.18),
+        width: w * 0.6,
+        height: 6,
+      ),
       Paint()..color = Colors.white.withValues(alpha: 0.30),
     );
   }
@@ -3764,13 +4390,19 @@ class _RealisticShaderPainter extends CustomPainter {
       Offset(w * 0.5, h * 0.24),
       w * 0.22,
       Paint()
-        ..shader = RadialGradient(
-          colors: [
-            Colors.white.withValues(alpha: 0.45),
-            Colors.white.withValues(alpha: 0.15),
-            Colors.transparent,
-          ],
-        ).createShader(Rect.fromCircle(center: Offset(w * 0.5, h * 0.24), radius: w * 0.22)),
+        ..shader =
+            RadialGradient(
+              colors: [
+                Colors.white.withValues(alpha: 0.45),
+                Colors.white.withValues(alpha: 0.15),
+                Colors.transparent,
+              ],
+            ).createShader(
+              Rect.fromCircle(
+                center: Offset(w * 0.5, h * 0.24),
+                radius: w * 0.22,
+              ),
+            ),
     );
     canvas.drawRect(
       Rect.fromCenter(center: Offset(w * 0.5, h * 0.24), width: 10, height: 10),
@@ -3819,7 +4451,14 @@ class _RealisticShaderPainter extends CustomPainter {
     final grassMist = Color.lerp(const Color(0xFF283618), skyBot, 0.25)!;
     final dirtMist = const Color(0xFF382C1E);
     _drawVoxelBlock(canvas, 0, h * 0.74, w, h * 0.26, grassMist, dirtMist);
-    _drawMinecraftSpruceTree(canvas, w * 0.12, h * 0.46, w * 0.28, h * 0.34, grassMist);
+    _drawMinecraftSpruceTree(
+      canvas,
+      w * 0.12,
+      h * 0.46,
+      w * 0.28,
+      h * 0.34,
+      grassMist,
+    );
 
     // Ground fog hugging the grass
     canvas.drawRect(
@@ -3887,7 +4526,14 @@ class _RealisticShaderPainter extends CustomPainter {
     final grassWet = Color.lerp(const Color(0xFF1F3524), c, 0.20)!;
     final dirtWet = const Color(0xFF251A14);
     _drawVoxelBlock(canvas, 0, h * 0.68, w, h * 0.32, grassWet, dirtWet);
-    _drawMinecraftSpruceTree(canvas, w * 0.08, h * 0.40, w * 0.30, h * 0.38, grassWet);
+    _drawMinecraftSpruceTree(
+      canvas,
+      w * 0.08,
+      h * 0.40,
+      w * 0.30,
+      h * 0.38,
+      grassWet,
+    );
 
     // Low ground mist hugging the terrain
     canvas.drawRect(
@@ -3906,7 +4552,11 @@ class _RealisticShaderPainter extends CustomPainter {
 
     // 5. Natural falling rain streaks (delicate, semi-transparent, coordinated)
     final rainPaint = Paint()
-      ..color = Color.lerp(Colors.white, const Color(0xFFB0BEC5), 0.3)!.withValues(alpha: 0.42)
+      ..color = Color.lerp(
+        Colors.white,
+        const Color(0xFFB0BEC5),
+        0.3,
+      )!.withValues(alpha: 0.42)
       ..strokeWidth = 1.0;
 
     const rainPoints = [
@@ -3933,7 +4583,11 @@ class _RealisticShaderPainter extends CustomPainter {
       final sx = w * r[0];
       final sy = h * r[1];
       final len = h * r[2];
-      canvas.drawLine(Offset(sx, sy), Offset(sx - w * 0.04, sy + len), rainPaint);
+      canvas.drawLine(
+        Offset(sx, sy),
+        Offset(sx - w * 0.04, sy + len),
+        rainPaint,
+      );
     }
   }
 
@@ -3974,7 +4628,11 @@ class _RealisticShaderPainter extends CustomPainter {
 
       // Outer fading ring
       canvas.drawOval(
-        Rect.fromCenter(center: Offset(cx, cy), width: baseRadius * 2.2, height: baseRadius * 0.65),
+        Rect.fromCenter(
+          center: Offset(cx, cy),
+          width: baseRadius * 2.2,
+          height: baseRadius * 0.65,
+        ),
         Paint()
           ..color = rippleColor.withValues(alpha: 0.25)
           ..style = PaintingStyle.stroke
@@ -3983,7 +4641,11 @@ class _RealisticShaderPainter extends CustomPainter {
 
       // Middle ring
       canvas.drawOval(
-        Rect.fromCenter(center: Offset(cx, cy), width: baseRadius * 1.4, height: baseRadius * 0.42),
+        Rect.fromCenter(
+          center: Offset(cx, cy),
+          width: baseRadius * 1.4,
+          height: baseRadius * 0.42,
+        ),
         Paint()
           ..color = rippleColor.withValues(alpha: 0.55)
           ..style = PaintingStyle.stroke
@@ -3992,7 +4654,11 @@ class _RealisticShaderPainter extends CustomPainter {
 
       // Inner ripple core
       canvas.drawOval(
-        Rect.fromCenter(center: Offset(cx, cy), width: baseRadius * 0.6, height: baseRadius * 0.20),
+        Rect.fromCenter(
+          center: Offset(cx, cy),
+          width: baseRadius * 0.6,
+          height: baseRadius * 0.20,
+        ),
         Paint()
           ..color = rippleColor.withValues(alpha: 0.85)
           ..style = PaintingStyle.stroke
@@ -4020,10 +4686,26 @@ class _RealisticShaderPainter extends CustomPainter {
       ..color = Colors.white.withValues(alpha: 0.35)
       ..strokeWidth = 1.0;
 
-    canvas.drawLine(Offset(w * 0.38, h * 0.24), Offset(w * 0.36, h * 0.36), dropPaint);
-    canvas.drawLine(Offset(w * 0.72, h * 0.54), Offset(w * 0.70, h * 0.66), dropPaint);
-    canvas.drawLine(Offset(w * 0.79, h * 0.12), Offset(w * 0.78, h * 0.20), dropPaint);
-    canvas.drawLine(Offset(w * 0.21, h * 0.72), Offset(w * 0.20, h * 0.80), dropPaint);
+    canvas.drawLine(
+      Offset(w * 0.38, h * 0.24),
+      Offset(w * 0.36, h * 0.36),
+      dropPaint,
+    );
+    canvas.drawLine(
+      Offset(w * 0.72, h * 0.54),
+      Offset(w * 0.70, h * 0.66),
+      dropPaint,
+    );
+    canvas.drawLine(
+      Offset(w * 0.79, h * 0.12),
+      Offset(w * 0.78, h * 0.20),
+      dropPaint,
+    );
+    canvas.drawLine(
+      Offset(w * 0.21, h * 0.72),
+      Offset(w * 0.20, h * 0.80),
+      dropPaint,
+    );
   }
 
   @override
@@ -4031,8 +4713,6 @@ class _RealisticShaderPainter extends CustomPainter {
     return oldDelegate.type != type || oldDelegate.color != color;
   }
 }
-
-
 
 /// 3D Minecraft voxel block slider thumb matching user reference image
 
@@ -4085,7 +4765,8 @@ class _PixelatedClipper extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(covariant _PixelatedClipper oldClipper) => oldClipper.step != step;
+  bool shouldReclip(covariant _PixelatedClipper oldClipper) =>
+      oldClipper.step != step;
 }
 
 /// Stepped 90-degree Minecraft pixelated corner card painter matching reference screenshot
@@ -4123,7 +4804,12 @@ class _PixelatedCardPainter extends CustomPainter {
     canvas.drawPath(fillPath, Paint()..color = fillColor);
 
     // Subtle 3D inner bevel highlight
-    final innerPath = _PixelatedClipper.createPixelPath(w, h, borderWidth * 0.5, step);
+    final innerPath = _PixelatedClipper.createPixelPath(
+      w,
+      h,
+      borderWidth * 0.5,
+      step,
+    );
     canvas.drawPath(
       innerPath,
       Paint()
@@ -4185,7 +4871,6 @@ class _PixelatedBorderPainter extends CustomPainter {
       old.step != step;
 }
 
-
 /// Minecraft card with authentic stepped pixel corners matching screenshot
 class PixelatedCard extends StatelessWidget {
   final Widget child;
@@ -4226,10 +4911,7 @@ class PixelatedCard extends StatelessWidget {
         ),
         child: ClipPath(
           clipper: _PixelatedClipper(pixelStep),
-          child: Padding(
-            padding: padding,
-            child: child,
-          ),
+          child: Padding(padding: padding, child: child),
         ),
       ),
     );
@@ -4248,7 +4930,8 @@ class MinecraftSliderThumbShape extends SliderComponentShape {
   });
 
   @override
-  Size getPreferredSize(bool isEnabled, bool isDiscrete) => Size(thumbSize, thumbSize + 4);
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) =>
+      Size(thumbSize, thumbSize + 4);
 
   @override
   void paint(
@@ -4270,7 +4953,8 @@ class MinecraftSliderThumbShape extends SliderComponentShape {
     final h = thumbSize + 2;
 
     // 1. Outer bevel border in deeper shade of tab color
-    final outerColor = Color.lerp(borderColor, Colors.black, 0.25) ?? borderColor;
+    final outerColor =
+        Color.lerp(borderColor, Colors.black, 0.25) ?? borderColor;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromCenter(center: center, width: w, height: h),
@@ -4372,24 +5056,46 @@ class _AtmosphereDetailedScenePainter extends CustomPainter {
     // ── 2. PIXEL STARS (NIGHT ONLY) ─────────────────────────────────────────
     if (isNight) {
       final starPaint = Paint()
-        ..color = Colors.white.withValues(alpha: (0.85 * nightVision).clamp(0.25, 1.0));
+        ..color = Colors.white.withValues(
+          alpha: (0.85 * nightVision).clamp(0.25, 1.0),
+        );
       final starlightHalos = Paint()
-        ..color = const Color(0xFFC7D2FE).withValues(alpha: (0.40 * nightVision).clamp(0.1, 0.8));
+        ..color = const Color(
+          0xFFC7D2FE,
+        ).withValues(alpha: (0.40 * nightVision).clamp(0.1, 0.8));
 
       // Fixed pseudo-random Minecraft square star coordinates
       const stars = [
-        Offset(0.05, 0.12), Offset(0.12, 0.22), Offset(0.18, 0.08), Offset(0.24, 0.28),
-        Offset(0.31, 0.14), Offset(0.38, 0.06), Offset(0.44, 0.25), Offset(0.51, 0.10),
-        Offset(0.57, 0.18), Offset(0.62, 0.05), Offset(0.68, 0.30), Offset(0.75, 0.12),
-        Offset(0.82, 0.22), Offset(0.88, 0.08), Offset(0.94, 0.26), Offset(0.15, 0.38),
-        Offset(0.28, 0.42), Offset(0.48, 0.36), Offset(0.65, 0.38), Offset(0.84, 0.40),
+        Offset(0.05, 0.12),
+        Offset(0.12, 0.22),
+        Offset(0.18, 0.08),
+        Offset(0.24, 0.28),
+        Offset(0.31, 0.14),
+        Offset(0.38, 0.06),
+        Offset(0.44, 0.25),
+        Offset(0.51, 0.10),
+        Offset(0.57, 0.18),
+        Offset(0.62, 0.05),
+        Offset(0.68, 0.30),
+        Offset(0.75, 0.12),
+        Offset(0.82, 0.22),
+        Offset(0.88, 0.08),
+        Offset(0.94, 0.26),
+        Offset(0.15, 0.38),
+        Offset(0.28, 0.42),
+        Offset(0.48, 0.36),
+        Offset(0.65, 0.38),
+        Offset(0.84, 0.40),
       ];
 
       for (var i = 0; i < stars.length; i++) {
         final pos = Offset(stars[i].dx * w, stars[i].dy * h);
         final sz = (i % 3 == 0) ? 2.5 : 1.8;
         if (i % 2 == 0) {
-          canvas.drawRect(Rect.fromCenter(center: pos, width: sz * 2.2, height: sz * 2.2), starlightHalos);
+          canvas.drawRect(
+            Rect.fromCenter(center: pos, width: sz * 2.2, height: sz * 2.2),
+            starlightHalos,
+          );
         }
         canvas.drawRect(Rect.fromLTWH(pos.dx, pos.dy, sz, sz), starPaint);
       }
@@ -4428,8 +5134,10 @@ class _AtmosphereDetailedScenePainter extends CustomPainter {
       final angles = isMorning
           ? [0.25, 0.45, 0.70, 0.95, 1.20]
           : (isEvening
-              ? [-0.55, -0.25, 0.0, 0.25, 0.55]
-              : (isNight ? [-0.60, -0.35, -0.10, 0.15] : [-0.45, -0.20, 0.05, 0.30, 0.55]));
+                ? [-0.55, -0.25, 0.0, 0.25, 0.55]
+                : (isNight
+                      ? [-0.60, -0.35, -0.10, 0.15]
+                      : [-0.45, -0.20, 0.05, 0.30, 0.55]));
 
       for (final ang in angles) {
         final rayPath = Path();
@@ -4480,37 +5188,72 @@ class _AtmosphereDetailedScenePainter extends CustomPainter {
     }
 
     final glowPaint = Paint()
-      ..shader = RadialGradient(
-        colors: [
-          glowColor.withValues(alpha: (0.65 * (isNight ? nightVision : 1.0)).clamp(0.2, 0.9)),
-          glowColor.withValues(alpha: 0.22),
-          Colors.transparent,
-        ],
-        stops: const [0.0, 0.45, 1.0],
-      ).createShader(Rect.fromCenter(center: Offset(bodyX, bodyY), width: discSize * 3.2, height: discSize * 3.2));
+      ..shader =
+          RadialGradient(
+            colors: [
+              glowColor.withValues(
+                alpha: (0.65 * (isNight ? nightVision : 1.0)).clamp(0.2, 0.9),
+              ),
+              glowColor.withValues(alpha: 0.22),
+              Colors.transparent,
+            ],
+            stops: const [0.0, 0.45, 1.0],
+          ).createShader(
+            Rect.fromCenter(
+              center: Offset(bodyX, bodyY),
+              width: discSize * 3.2,
+              height: discSize * 3.2,
+            ),
+          );
     canvas.drawCircle(Offset(bodyX, bodyY), discSize * 1.6, glowPaint);
 
     if (isNight) {
       // Glowing Square Minecraft Moon with pixel crater detail
-      final moonRect = Rect.fromCenter(center: Offset(bodyX, bodyY), width: discSize, height: discSize);
+      final moonRect = Rect.fromCenter(
+        center: Offset(bodyX, bodyY),
+        width: discSize,
+        height: discSize,
+      );
       canvas.drawRRect(
         RRect.fromRectAndRadius(moonRect, const Radius.circular(2)),
         Paint()..color = const Color(0xFFF8FAFC),
       );
       final craterPaint = Paint()..color = const Color(0xFFCBD5E1);
       final cs = discSize * 0.28;
-      canvas.drawRect(Rect.fromLTWH(bodyX - discSize * 0.32, bodyY - discSize * 0.32, cs, cs), craterPaint);
-      canvas.drawRect(Rect.fromLTWH(bodyX + discSize * 0.05, bodyY + discSize * 0.05, cs * 0.8, cs * 0.8), craterPaint);
+      canvas.drawRect(
+        Rect.fromLTWH(bodyX - discSize * 0.32, bodyY - discSize * 0.32, cs, cs),
+        craterPaint,
+      );
+      canvas.drawRect(
+        Rect.fromLTWH(
+          bodyX + discSize * 0.05,
+          bodyY + discSize * 0.05,
+          cs * 0.8,
+          cs * 0.8,
+        ),
+        craterPaint,
+      );
     } else {
       // Glowing Square Minecraft Sun
-      final sunRect = Rect.fromCenter(center: Offset(bodyX, bodyY), width: discSize, height: discSize);
+      final sunRect = Rect.fromCenter(
+        center: Offset(bodyX, bodyY),
+        width: discSize,
+        height: discSize,
+      );
       canvas.drawRect(
         sunRect,
-        Paint()..color = isEvening ? const Color(0xFFFFCC80) : const Color(0xFFFFF9C4),
+        Paint()
+          ..color = isEvening
+              ? const Color(0xFFFFCC80)
+              : const Color(0xFFFFF9C4),
       );
       final coreSize = discSize * 0.72;
       canvas.drawRect(
-        Rect.fromCenter(center: Offset(bodyX, bodyY), width: coreSize, height: coreSize),
+        Rect.fromCenter(
+          center: Offset(bodyX, bodyY),
+          width: coreSize,
+          height: coreSize,
+        ),
         Paint()..color = Colors.white,
       );
     }
@@ -4522,34 +5265,118 @@ class _AtmosphereDetailedScenePainter extends CustomPainter {
     if (cloudType == 'Flat 2D') {
       final cloudPaint = Paint()..color = cTop.withValues(alpha: 0.85);
       final shadowPaint = Paint()..color = cBottom.withValues(alpha: 0.90);
-      _drawFlatMinecraftCloudBand(canvas, w, h * 0.15, h * 0.06, cloudPaint, shadowPaint);
+      _drawFlatMinecraftCloudBand(
+        canvas,
+        w,
+        h * 0.15,
+        h * 0.06,
+        cloudPaint,
+        shadowPaint,
+      );
     } else if (cloudType == 'Volumetric') {
-      _drawVolumetricCloudPuff(canvas, w * 0.06, h * 0.12, w * 0.36, h * 0.10, cTop, cBottom);
-      _drawVolumetricCloudPuff(canvas, w * 0.50, h * 0.18, w * 0.44, h * 0.09, cTop, cBottom);
+      _drawVolumetricCloudPuff(
+        canvas,
+        w * 0.06,
+        h * 0.12,
+        w * 0.36,
+        h * 0.10,
+        cTop,
+        cBottom,
+      );
+      _drawVolumetricCloudPuff(
+        canvas,
+        w * 0.50,
+        h * 0.18,
+        w * 0.44,
+        h * 0.09,
+        cTop,
+        cBottom,
+      );
     } else {
-      _draw3DVoxelCloud(canvas, w * 0.04, h * 0.11, w * 0.40, h * 0.11, cTop, cBottom);
-      _draw3DVoxelCloud(canvas, w * 0.52, h * 0.16, w * 0.42, h * 0.10, cTop, cBottom);
+      _draw3DVoxelCloud(
+        canvas,
+        w * 0.04,
+        h * 0.11,
+        w * 0.40,
+        h * 0.11,
+        cTop,
+        cBottom,
+      );
+      _draw3DVoxelCloud(
+        canvas,
+        w * 0.52,
+        h * 0.16,
+        w * 0.42,
+        h * 0.10,
+        cTop,
+        cBottom,
+      );
     }
 
     // ── 6. DISTANT MINECRAFT MOUNTAIN RIDGES ─────────────────────────────────
     Color ridgeFarColor;
     Color ridgeNearColor;
     if (isMorning) {
-      ridgeFarColor = Color.lerp(const Color(0xFF5A728A), activeSkyColor, 0.35)!;
-      ridgeNearColor = Color.lerp(const Color(0xFF4A6638), const Color(0xFFFF9E3D), 0.25)!;
+      ridgeFarColor = Color.lerp(
+        const Color(0xFF5A728A),
+        activeSkyColor,
+        0.35,
+      )!;
+      ridgeNearColor = Color.lerp(
+        const Color(0xFF4A6638),
+        const Color(0xFFFF9E3D),
+        0.25,
+      )!;
     } else if (isEvening) {
-      ridgeFarColor = Color.lerp(const Color(0xFF4A1F3D), activeSkyColor, 0.40)!;
-      ridgeNearColor = Color.lerp(const Color(0xFF38181A), const Color(0xFFFF6D00), 0.30)!;
+      ridgeFarColor = Color.lerp(
+        const Color(0xFF4A1F3D),
+        activeSkyColor,
+        0.40,
+      )!;
+      ridgeNearColor = Color.lerp(
+        const Color(0xFF38181A),
+        const Color(0xFFFF6D00),
+        0.30,
+      )!;
     } else if (isNight) {
-      ridgeFarColor = Color.lerp(const Color(0xFF070F1E), activeSkyColor, 0.25)!;
-      ridgeNearColor = Color.lerp(const Color(0xFF040A14), activeSkyColor, 0.20)!;
+      ridgeFarColor = Color.lerp(
+        const Color(0xFF070F1E),
+        activeSkyColor,
+        0.25,
+      )!;
+      ridgeNearColor = Color.lerp(
+        const Color(0xFF040A14),
+        activeSkyColor,
+        0.20,
+      )!;
     } else {
-      ridgeFarColor = Color.lerp(const Color(0xFF64B5F6), activeSkyColor, 0.30)!;
-      ridgeNearColor = Color.lerp(const Color(0xFF43A047), activeSkyColor, 0.25)!;
+      ridgeFarColor = Color.lerp(
+        const Color(0xFF64B5F6),
+        activeSkyColor,
+        0.30,
+      )!;
+      ridgeNearColor = Color.lerp(
+        const Color(0xFF43A047),
+        activeSkyColor,
+        0.25,
+      )!;
     }
 
-    _drawSteppedMountainSilhouette(canvas, w, h * 0.44, ridgeFarColor, h * 0.16);
-    _drawSteppedMountainSilhouette(canvas, w, h * 0.50, ridgeNearColor, h * 0.12, shift: w * 0.25);
+    _drawSteppedMountainSilhouette(
+      canvas,
+      w,
+      h * 0.44,
+      ridgeFarColor,
+      h * 0.16,
+    );
+    _drawSteppedMountainSilhouette(
+      canvas,
+      w,
+      h * 0.50,
+      ridgeNearColor,
+      h * 0.12,
+      shift: w * 0.25,
+    );
 
     // ── 7. VOLUMETRIC HORIZON FOG LAYER (DYNAMIC TO fogDensity) ──────────────
     if (fogDensity > 0.05) {
@@ -4557,7 +5384,9 @@ class _AtmosphereDetailedScenePainter extends CustomPainter {
       final fogAlpha = (0.42 * fogDensity).clamp(0.08, 0.85);
       final fogColor = isNight
           ? const Color(0xFF0F172A)
-          : (isEvening ? const Color(0xFFEA580C) : (isMorning ? const Color(0xFFFFB74D) : activeSkyColor));
+          : (isEvening
+                ? const Color(0xFFEA580C)
+                : (isMorning ? const Color(0xFFFFB74D) : activeSkyColor));
 
       final fogPaint = Paint()
         ..shader = LinearGradient(
@@ -4577,9 +5406,17 @@ class _AtmosphereDetailedScenePainter extends CustomPainter {
     Color grassColor;
     const dirtColor = Color(0xFF4E342E);
     if (isMorning) {
-      grassColor = Color.lerp(const Color(0xFF558B2F), const Color(0xFFFF9E3D), 0.20)!;
+      grassColor = Color.lerp(
+        const Color(0xFF558B2F),
+        const Color(0xFFFF9E3D),
+        0.20,
+      )!;
     } else if (isEvening) {
-      grassColor = Color.lerp(const Color(0xFF33691E), const Color(0xFFFF6D00), 0.30)!;
+      grassColor = Color.lerp(
+        const Color(0xFF33691E),
+        const Color(0xFFFF6D00),
+        0.30,
+      )!;
     } else if (isNight) {
       grassColor = Color.lerp(const Color(0xFF1B3820), activeSkyColor, 0.25)!;
     } else {
@@ -4590,8 +5427,8 @@ class _AtmosphereDetailedScenePainter extends CustomPainter {
     final riverColor = isNight
         ? Color.lerp(const Color(0xFF08182B), activeSkyColor, 0.30)!
         : (isEvening
-            ? Color.lerp(const Color(0xFFB45309), activeSkyColor, 0.40)!
-            : Color.lerp(const Color(0xFF1E88E5), activeSkyColor, 0.40)!);
+              ? Color.lerp(const Color(0xFFB45309), activeSkyColor, 0.40)!
+              : Color.lerp(const Color(0xFF1E88E5), activeSkyColor, 0.40)!);
     final riverPath = Path()
       ..moveTo(w * 0.42, h * 0.58)
       ..lineTo(w * 0.58, h * 0.58)
@@ -4603,65 +5440,199 @@ class _AtmosphereDetailedScenePainter extends CustomPainter {
     // River celestial reflection ripples
     final rippleColor = isNight
         ? const Color(0xFFC7D2FE).withValues(alpha: 0.35)
-        : (isEvening ? const Color(0xFFFFD54F).withValues(alpha: 0.40) : Colors.white.withValues(alpha: 0.40));
-    canvas.drawRect(Rect.fromLTWH(w * 0.46, h * 0.65, w * 0.08, 2.0), Paint()..color = rippleColor);
-    canvas.drawRect(Rect.fromLTWH(w * 0.43, h * 0.76, w * 0.14, 2.5), Paint()..color = rippleColor);
-    canvas.drawRect(Rect.fromLTWH(w * 0.38, h * 0.88, w * 0.24, 3.0), Paint()..color = rippleColor);
+        : (isEvening
+              ? const Color(0xFFFFD54F).withValues(alpha: 0.40)
+              : Colors.white.withValues(alpha: 0.40));
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.46, h * 0.65, w * 0.08, 2.0),
+      Paint()..color = rippleColor,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.43, h * 0.76, w * 0.14, 2.5),
+      Paint()..color = rippleColor,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.38, h * 0.88, w * 0.24, 3.0),
+      Paint()..color = rippleColor,
+    );
 
     // Left Grass Stepped Bank
-    _drawVoxelBlock(canvas, 0, h * 0.58, w * 0.42, h * 0.10, grassColor, dirtColor);
-    _drawVoxelBlock(canvas, 0, h * 0.68, w * 0.36, h * 0.14, grassColor, dirtColor);
-    _drawVoxelBlock(canvas, 0, h * 0.80, w * 0.30, h * 0.20, grassColor, dirtColor);
+    _drawVoxelBlock(
+      canvas,
+      0,
+      h * 0.58,
+      w * 0.42,
+      h * 0.10,
+      grassColor,
+      dirtColor,
+    );
+    _drawVoxelBlock(
+      canvas,
+      0,
+      h * 0.68,
+      w * 0.36,
+      h * 0.14,
+      grassColor,
+      dirtColor,
+    );
+    _drawVoxelBlock(
+      canvas,
+      0,
+      h * 0.80,
+      w * 0.30,
+      h * 0.20,
+      grassColor,
+      dirtColor,
+    );
 
     // Right Grass Stepped Bank
-    _drawVoxelBlock(canvas, w * 0.58, h * 0.58, w * 0.42, h * 0.10, grassColor, dirtColor);
-    _drawVoxelBlock(canvas, w * 0.64, h * 0.68, w * 0.36, h * 0.14, grassColor, dirtColor);
-    _drawVoxelBlock(canvas, w * 0.70, h * 0.80, w * 0.30, h * 0.20, grassColor, dirtColor);
+    _drawVoxelBlock(
+      canvas,
+      w * 0.58,
+      h * 0.58,
+      w * 0.42,
+      h * 0.10,
+      grassColor,
+      dirtColor,
+    );
+    _drawVoxelBlock(
+      canvas,
+      w * 0.64,
+      h * 0.68,
+      w * 0.36,
+      h * 0.14,
+      grassColor,
+      dirtColor,
+    );
+    _drawVoxelBlock(
+      canvas,
+      w * 0.70,
+      h * 0.80,
+      w * 0.30,
+      h * 0.20,
+      grassColor,
+      dirtColor,
+    );
 
     // Minecraft Oak / Spruce Trees on banks
-    _drawMinecraftOakTree(canvas, w * 0.06, h * 0.38, w * 0.24, h * 0.36, grassColor);
-    _drawMinecraftSpruceTree(canvas, w * 0.76, h * 0.42, w * 0.18, h * 0.36, grassColor);
+    _drawMinecraftOakTree(
+      canvas,
+      w * 0.06,
+      h * 0.38,
+      w * 0.24,
+      h * 0.36,
+      grassColor,
+    );
+    _drawMinecraftSpruceTree(
+      canvas,
+      w * 0.76,
+      h * 0.42,
+      w * 0.18,
+      h * 0.36,
+      grassColor,
+    );
   }
 
-  void _drawVoxelBlock(Canvas canvas, double x, double y, double bw, double bh, Color top, Color side) {
+  void _drawVoxelBlock(
+    Canvas canvas,
+    double x,
+    double y,
+    double bw,
+    double bh,
+    Color top,
+    Color side,
+  ) {
     canvas.drawRect(Rect.fromLTWH(x, y, bw, bh), Paint()..color = side);
     canvas.drawRect(Rect.fromLTWH(x, y, bw, 3.0), Paint()..color = top);
   }
 
-  void _drawFlatMinecraftCloudBand(Canvas canvas, double w, double y, double bh, Paint topPaint, Paint shadowPaint) {
+  void _drawFlatMinecraftCloudBand(
+    Canvas canvas,
+    double w,
+    double y,
+    double bh,
+    Paint topPaint,
+    Paint shadowPaint,
+  ) {
     canvas.drawRect(Rect.fromLTWH(0, y, w, bh * 0.65), topPaint);
     canvas.drawRect(Rect.fromLTWH(0, y + bh * 0.65, w, bh * 0.35), shadowPaint);
   }
 
-  void _drawVolumetricCloudPuff(Canvas canvas, double x, double y, double cw, double ch, Color topC, Color botC) {
+  void _drawVolumetricCloudPuff(
+    Canvas canvas,
+    double x,
+    double y,
+    double cw,
+    double ch,
+    Color topC,
+    Color botC,
+  ) {
     final puffPaint = Paint()
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [topC.withValues(alpha: 0.92), botC.withValues(alpha: 0.85)],
       ).createShader(Rect.fromLTWH(x, y, cw, ch));
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(x, y, cw, ch), const Radius.circular(5)), puffPaint);
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(x + cw * 0.15, y - ch * 0.35, cw * 0.55, ch * 0.55), const Radius.circular(4)), puffPaint);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(x, y, cw, ch),
+        const Radius.circular(5),
+      ),
+      puffPaint,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(x + cw * 0.15, y - ch * 0.35, cw * 0.55, ch * 0.55),
+        const Radius.circular(4),
+      ),
+      puffPaint,
+    );
   }
 
-  void _draw3DVoxelCloud(Canvas canvas, double x, double y, double cw, double ch, Color topC, Color botC) {
+  void _draw3DVoxelCloud(
+    Canvas canvas,
+    double x,
+    double y,
+    double cw,
+    double ch,
+    Color topC,
+    Color botC,
+  ) {
     final topP = Paint()..color = topC.withValues(alpha: 0.95);
     final botP = Paint()..color = botC.withValues(alpha: 0.90);
     canvas.drawRect(Rect.fromLTWH(x, y, cw, ch * 0.65), topP);
     canvas.drawRect(Rect.fromLTWH(x, y + ch * 0.65, cw, ch * 0.35), botP);
-    canvas.drawRect(Rect.fromLTWH(x + cw * 0.20, y - ch * 0.40, cw * 0.45, ch * 0.40), topP);
-    canvas.drawRect(Rect.fromLTWH(x + cw * 0.65, y + ch * 0.15, cw * 0.25, ch * 0.50), topP);
-    canvas.drawRect(Rect.fromLTWH(x + cw * 0.65, y + ch * 0.65, cw * 0.25, ch * 0.35), botP);
+    canvas.drawRect(
+      Rect.fromLTWH(x + cw * 0.20, y - ch * 0.40, cw * 0.45, ch * 0.40),
+      topP,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(x + cw * 0.65, y + ch * 0.15, cw * 0.25, ch * 0.50),
+      topP,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(x + cw * 0.65, y + ch * 0.65, cw * 0.25, ch * 0.35),
+      botP,
+    );
   }
 
-  void _drawSteppedMountainSilhouette(Canvas canvas, double w, double baseH, Color col, double peakHeight, {double shift = 0.0}) {
+  void _drawSteppedMountainSilhouette(
+    Canvas canvas,
+    double w,
+    double baseH,
+    Color col,
+    double peakHeight, {
+    double shift = 0.0,
+  }) {
     final p = Path();
     p.moveTo(0, baseH + peakHeight);
     const segments = 8;
     final segW = w / segments;
     for (var i = 0; i <= segments; i++) {
       final segX = i * segW;
-      final alt = (i % 2 == 1) ? -peakHeight : (i % 4 == 2 ? -peakHeight * 0.55 : 0.0);
+      final alt = (i % 2 == 1)
+          ? -peakHeight
+          : (i % 4 == 2 ? -peakHeight * 0.55 : 0.0);
       p.lineTo(segX, baseH + alt);
     }
     p.lineTo(w, baseH + peakHeight);
@@ -4669,25 +5640,58 @@ class _AtmosphereDetailedScenePainter extends CustomPainter {
     canvas.drawPath(p, Paint()..color = col);
   }
 
-  void _drawMinecraftOakTree(Canvas canvas, double x, double y, double tw, double th, Color leafColor) {
+  void _drawMinecraftOakTree(
+    Canvas canvas,
+    double x,
+    double y,
+    double tw,
+    double th,
+    Color leafColor,
+  ) {
     final trunkW = tw * 0.22;
     final trunkH = th * 0.50;
-    canvas.drawRect(Rect.fromLTWH(x + (tw - trunkW) / 2, y + th - trunkH, trunkW, trunkH), Paint()..color = const Color(0xFF5D4037));
+    canvas.drawRect(
+      Rect.fromLTWH(x + (tw - trunkW) / 2, y + th - trunkH, trunkW, trunkH),
+      Paint()..color = const Color(0xFF5D4037),
+    );
     final leafPaint = Paint()..color = leafColor;
-    final leafShadow = Paint()..color = Color.lerp(leafColor, Colors.black, 0.25)!;
+    final leafShadow = Paint()
+      ..color = Color.lerp(leafColor, Colors.black, 0.25)!;
     canvas.drawRect(Rect.fromLTWH(x, y + th * 0.20, tw, th * 0.45), leafPaint);
-    canvas.drawRect(Rect.fromLTWH(x + tw * 0.10, y + th * 0.55, tw * 0.80, th * 0.12), leafShadow);
-    canvas.drawRect(Rect.fromLTWH(x + tw * 0.18, y, tw * 0.64, th * 0.28), leafPaint);
+    canvas.drawRect(
+      Rect.fromLTWH(x + tw * 0.10, y + th * 0.55, tw * 0.80, th * 0.12),
+      leafShadow,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(x + tw * 0.18, y, tw * 0.64, th * 0.28),
+      leafPaint,
+    );
   }
 
-  void _drawMinecraftSpruceTree(Canvas canvas, double x, double y, double tw, double th, Color leafColor) {
+  void _drawMinecraftSpruceTree(
+    Canvas canvas,
+    double x,
+    double y,
+    double tw,
+    double th,
+    Color leafColor,
+  ) {
     final trunkW = tw * 0.18;
-    canvas.drawRect(Rect.fromLTWH(x + (tw - trunkW) / 2, y + th * 0.6, trunkW, th * 0.4), Paint()..color = const Color(0xFF3E2723));
+    canvas.drawRect(
+      Rect.fromLTWH(x + (tw - trunkW) / 2, y + th * 0.6, trunkW, th * 0.4),
+      Paint()..color = const Color(0xFF3E2723),
+    );
     final spruceLeaf = Color.lerp(leafColor, const Color(0xFF1B3820), 0.35)!;
     final p = Paint()..color = spruceLeaf;
     canvas.drawRect(Rect.fromLTWH(x, y + th * 0.52, tw, th * 0.22), p);
-    canvas.drawRect(Rect.fromLTWH(x + tw * 0.15, y + th * 0.30, tw * 0.70, th * 0.24), p);
-    canvas.drawRect(Rect.fromLTWH(x + tw * 0.30, y + th * 0.10, tw * 0.40, th * 0.22), p);
+    canvas.drawRect(
+      Rect.fromLTWH(x + tw * 0.15, y + th * 0.30, tw * 0.70, th * 0.24),
+      p,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(x + tw * 0.30, y + th * 0.10, tw * 0.40, th * 0.22),
+      p,
+    );
     canvas.drawRect(Rect.fromLTWH(x + tw * 0.40, y, tw * 0.20, th * 0.12), p);
   }
 
@@ -4729,7 +5733,10 @@ class _LightingDetailedScenePainter extends CustomPainter {
     final h = size.height;
 
     // 1. Dark stone cavern/room background
-    canvas.drawRect(Rect.fromLTWH(0, 0, w, h), Paint()..color = const Color(0xFF0F172A));
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, w, h),
+      Paint()..color = const Color(0xFF0F172A),
+    );
 
     // 2. Cobblestone / Stone brick wall patterns
     const stoneDark = Color(0xFF1E293B);
@@ -4743,7 +5750,8 @@ class _LightingDetailedScenePainter extends CustomPainter {
         final by = r * brickH;
         canvas.drawRect(
           Rect.fromLTWH(bx + 1, by + 1, brickW - 2, brickH - 2),
-          Paint()..color = (c + r) % 3 == 0 ? const Color(0xFF253348) : stoneDark,
+          Paint()
+            ..color = (c + r) % 3 == 0 ? const Color(0xFF253348) : stoneDark,
         );
         canvas.drawRect(
           Rect.fromLTWH(bx, by, brickW, brickH),
@@ -4794,20 +5802,36 @@ class _LightingDetailedScenePainter extends CustomPainter {
     final glowRad = (55.0 * blockLightIntensity).clamp(18.0, 110.0);
 
     final torchGlow = Paint()
-      ..shader = RadialGradient(
-        colors: [
-          torchColor.withValues(alpha: (0.85 * blockLightIntensity).clamp(0.25, 0.95)),
-          torchColor.withValues(alpha: (0.35 * blockLightIntensity).clamp(0.1, 0.6)),
-          Colors.transparent,
-        ],
-        stops: const [0.0, 0.45, 1.0],
-      ).createShader(Rect.fromCircle(center: Offset(torchX, torchY), radius: glowRad));
+      ..shader =
+          RadialGradient(
+            colors: [
+              torchColor.withValues(
+                alpha: (0.85 * blockLightIntensity).clamp(0.25, 0.95),
+              ),
+              torchColor.withValues(
+                alpha: (0.35 * blockLightIntensity).clamp(0.1, 0.6),
+              ),
+              Colors.transparent,
+            ],
+            stops: const [0.0, 0.45, 1.0],
+          ).createShader(
+            Rect.fromCircle(center: Offset(torchX, torchY), radius: glowRad),
+          );
     canvas.drawCircle(Offset(torchX, torchY), glowRad, torchGlow);
 
     // Torch stick & flame block
-    canvas.drawRect(Rect.fromLTWH(torchX - 2.5, torchY - 2, 5, 20), Paint()..color = const Color(0xFF6B4226));
-    canvas.drawRect(Rect.fromLTWH(torchX - 3.5, torchY - 8, 7, 7), Paint()..color = const Color(0xFFFFB300));
-    canvas.drawRect(Rect.fromLTWH(torchX - 2, torchY - 11, 4, 5), Paint()..color = const Color(0xFFFFF9C4));
+    canvas.drawRect(
+      Rect.fromLTWH(torchX - 2.5, torchY - 2, 5, 20),
+      Paint()..color = const Color(0xFF6B4226),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(torchX - 3.5, torchY - 8, 7, 7),
+      Paint()..color = const Color(0xFFFFB300),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(torchX - 2, torchY - 11, 4, 5),
+      Paint()..color = const Color(0xFFFFF9C4),
+    );
 
     // 6. Ambient Fog Layer
     canvas.drawRect(
@@ -4823,7 +5847,10 @@ class _LightingDetailedScenePainter extends CustomPainter {
       ..shader = RadialGradient(
         center: Alignment.center,
         radius: 0.9,
-        colors: [Colors.transparent, Colors.black.withValues(alpha: shadowAlpha)],
+        colors: [
+          Colors.transparent,
+          Colors.black.withValues(alpha: shadowAlpha),
+        ],
         stops: const [0.55, 1.0],
       ).createShader(Rect.fromLTWH(0, 0, w, h));
     canvas.drawRect(Rect.fromLTWH(0, 0, w, h), vignette);
@@ -4864,18 +5891,34 @@ class _WaterDetailedScenePainter extends CustomPainter {
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [const Color(0xFF0284C7), const Color(0xFF7DD3FC), const Color(0xFFE0F2FE)],
+        colors: [
+          const Color(0xFF0284C7),
+          const Color(0xFF7DD3FC),
+          const Color(0xFFE0F2FE),
+        ],
         stops: const [0.0, 0.45, 0.70],
       ).createShader(Rect.fromLTWH(0, 0, w, h * 0.45));
     canvas.drawRect(Rect.fromLTWH(0, 0, w, h * 0.45), skyPaint);
 
     // Fluffy cloud
-    canvas.drawRect(Rect.fromLTWH(w * 0.10, h * 0.08, w * 0.32, h * 0.10), Paint()..color = Colors.white.withValues(alpha: 0.9));
-    canvas.drawRect(Rect.fromLTWH(w * 0.16, h * 0.04, w * 0.18, h * 0.06), Paint()..color = Colors.white);
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.10, h * 0.08, w * 0.32, h * 0.10),
+      Paint()..color = Colors.white.withValues(alpha: 0.9),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.16, h * 0.04, w * 0.18, h * 0.06),
+      Paint()..color = Colors.white,
+    );
 
     // Distant tropical island
-    canvas.drawRect(Rect.fromLTWH(w * 0.55, h * 0.34, w * 0.35, h * 0.11), Paint()..color = const Color(0xFF2E7D32));
-    canvas.drawRect(Rect.fromLTWH(w * 0.52, h * 0.41, w * 0.41, h * 0.04), Paint()..color = const Color(0xFFC0CA33));
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.55, h * 0.34, w * 0.35, h * 0.11),
+      Paint()..color = const Color(0xFF2E7D32),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.52, h * 0.41, w * 0.41, h * 0.04),
+      Paint()..color = const Color(0xFFC0CA33),
+    );
 
     // 2. Sand seabed under the water
     final sandPaint = Paint()
@@ -4887,8 +5930,14 @@ class _WaterDetailedScenePainter extends CustomPainter {
     canvas.drawRect(Rect.fromLTWH(0, h * 0.45, w, h * 0.55), sandPaint);
 
     // Sand voxel blocks & coral details
-    canvas.drawRect(Rect.fromLTWH(w * 0.15, h * 0.72, w * 0.12, h * 0.10), Paint()..color = const Color(0xFFE91E63).withValues(alpha: 0.8));
-    canvas.drawRect(Rect.fromLTWH(w * 0.70, h * 0.78, w * 0.14, h * 0.09), Paint()..color = const Color(0xFF9C27B0).withValues(alpha: 0.8));
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.15, h * 0.72, w * 0.12, h * 0.10),
+      Paint()..color = const Color(0xFFE91E63).withValues(alpha: 0.8),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.70, h * 0.78, w * 0.14, h * 0.09),
+      Paint()..color = const Color(0xFF9C27B0).withValues(alpha: 0.8),
+    );
 
     // 3. Water body depth gradient tinted with waterColor
     final waterAlpha = waterQuality == 'Low' ? 0.85 : 0.65;
@@ -4906,7 +5955,8 @@ class _WaterDetailedScenePainter extends CustomPainter {
 
     // 4. Procedural Caustic Water Wave Ripples
     final waveAlpha = (0.35 * (waterSpeed.clamp(0.5, 2.0))).clamp(0.15, 0.65);
-    final wavePaint = Paint()..color = Colors.white.withValues(alpha: waveAlpha);
+    final wavePaint = Paint()
+      ..color = Colors.white.withValues(alpha: waveAlpha);
 
     for (var i = 0; i < 7; i++) {
       final y = h * 0.48 + i * (h * 0.07);
@@ -4915,14 +5965,20 @@ class _WaterDetailedScenePainter extends CustomPainter {
       final stepOffset = (i % 2 == 1) ? rw * 0.8 : 0.0;
       for (var x = -rw; x < w + rw; x += spacing) {
         canvas.drawRRect(
-          RRect.fromRectAndRadius(Rect.fromLTWH(x + stepOffset, y, rw, 2.5), const Radius.circular(1.5)),
+          RRect.fromRectAndRadius(
+            Rect.fromLTWH(x + stepOffset, y, rw, 2.5),
+            const Radius.circular(1.5),
+          ),
           wavePaint,
         );
       }
     }
 
     // 5. Shoreline Foam line at water edge
-    canvas.drawRect(Rect.fromLTWH(0, h * 0.45, w, 2.5), Paint()..color = Colors.white.withValues(alpha: 0.8));
+    canvas.drawRect(
+      Rect.fromLTWH(0, h * 0.45, w, 2.5),
+      Paint()..color = Colors.white.withValues(alpha: 0.8),
+    );
 
     // 6. Underwater caustics network
     if (underwaterCaustics) {
@@ -4971,7 +6027,11 @@ class _WeatherDetailedScenePainter extends CustomPainter {
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [const Color(0xFF1E293B), const Color(0xFF334155), const Color(0xFF475569)],
+        colors: [
+          const Color(0xFF1E293B),
+          const Color(0xFF334155),
+          const Color(0xFF475569),
+        ],
         stops: const [0.0, 0.50, 0.75],
       ).createShader(Rect.fromLTWH(0, 0, w, h));
     canvas.drawRect(Rect.fromLTWH(0, 0, w, h), stormSky);
@@ -4979,10 +6039,22 @@ class _WeatherDetailedScenePainter extends CustomPainter {
     // 2. Heavy dark stormy voxel thunderclouds
     const cloudDark = Color(0xFF182232);
     const cloudShadow = Color(0xFF0F172A);
-    canvas.drawRect(Rect.fromLTWH(0, 0, w, h * 0.28), Paint()..color = cloudDark);
-    canvas.drawRect(Rect.fromLTWH(0, h * 0.24, w, h * 0.06), Paint()..color = cloudShadow);
-    canvas.drawRect(Rect.fromLTWH(w * 0.20, h * 0.28, w * 0.60, h * 0.08), Paint()..color = cloudDark);
-    canvas.drawRect(Rect.fromLTWH(w * 0.25, h * 0.34, w * 0.50, h * 0.04), Paint()..color = cloudShadow);
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, w, h * 0.28),
+      Paint()..color = cloudDark,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(0, h * 0.24, w, h * 0.06),
+      Paint()..color = cloudShadow,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.20, h * 0.28, w * 0.60, h * 0.08),
+      Paint()..color = cloudDark,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.25, h * 0.34, w * 0.50, h * 0.04),
+      Paint()..color = cloudShadow,
+    );
 
     // 3. Shrouded distant mountain silhouettes in rain fog
     final mtnColor = Color.lerp(const Color(0xFF1E293B), rainFogColor, 0.45)!;
@@ -5002,10 +6074,26 @@ class _WeatherDetailedScenePainter extends CustomPainter {
     canvas.drawRect(Rect.fromLTWH(0, h * 0.62, w, h * 0.38), groundPaint);
 
     // PBR Metallic puddles reflecting stormy sky
-    final puddleColor = Color.lerp(const Color(0xFF475569), rainWaterColor, 0.4)!;
+    final puddleColor = Color.lerp(
+      const Color(0xFF475569),
+      rainWaterColor,
+      0.4,
+    )!;
     final puddlePaint = Paint()..color = puddleColor;
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w * 0.12, h * 0.74, w * 0.28, h * 0.12), const Radius.circular(6)), puddlePaint);
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w * 0.55, h * 0.80, w * 0.35, h * 0.12), const Radius.circular(6)), puddlePaint);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.12, h * 0.74, w * 0.28, h * 0.12),
+        const Radius.circular(6),
+      ),
+      puddlePaint,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.55, h * 0.80, w * 0.35, h * 0.12),
+        const Radius.circular(6),
+      ),
+      puddlePaint,
+    );
 
     // Metallic sheen overlay when PBR / Metalness is active
     if (pbrEnabled) {
@@ -5027,20 +6115,28 @@ class _WeatherDetailedScenePainter extends CustomPainter {
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [
-          Colors.transparent,
-          rainFogColor.withValues(alpha: 0.40),
-        ],
+        colors: [Colors.transparent, rainFogColor.withValues(alpha: 0.40)],
       ).createShader(Rect.fromLTWH(0, h * 0.40, w, h * 0.60));
     canvas.drawRect(Rect.fromLTWH(0, h * 0.40, w, h * 0.60), fogPaint);
 
     // 6. Angled Rain Streaks
     final rainPaint = Paint()..color = Colors.white.withValues(alpha: 0.42);
     const rainDrops = [
-      Offset(0.08, 0.15), Offset(0.18, 0.30), Offset(0.28, 0.10), Offset(0.38, 0.45),
-      Offset(0.48, 0.20), Offset(0.58, 0.50), Offset(0.68, 0.15), Offset(0.78, 0.35),
-      Offset(0.88, 0.22), Offset(0.94, 0.48), Offset(0.14, 0.65), Offset(0.32, 0.75),
-      Offset(0.52, 0.68), Offset(0.74, 0.72), Offset(0.85, 0.60),
+      Offset(0.08, 0.15),
+      Offset(0.18, 0.30),
+      Offset(0.28, 0.10),
+      Offset(0.38, 0.45),
+      Offset(0.48, 0.20),
+      Offset(0.58, 0.50),
+      Offset(0.68, 0.15),
+      Offset(0.78, 0.35),
+      Offset(0.88, 0.22),
+      Offset(0.94, 0.48),
+      Offset(0.14, 0.65),
+      Offset(0.32, 0.75),
+      Offset(0.52, 0.68),
+      Offset(0.74, 0.72),
+      Offset(0.85, 0.60),
     ];
     for (final drop in rainDrops) {
       final dx = drop.dx * w;
@@ -5062,17 +6158,17 @@ class _WeatherDetailedScenePainter extends CustomPainter {
 class _BuilderTabTheme {
   final String label;
   final VoxelIconType icon;
-  final Uint8List artBytes;       // The scene image matching screenshot
-  final Color primary;            // Signature accent color
-  final Color bg;                 // Full app background
-  final Color surface;            // Top AppBar, Tab bar header & Bottom bar
-  final Color border;             // Subtle frame & divider border
-  final Color cardBg;             // Darkened card background
+  final Uint8List artBytes; // The scene image matching screenshot
+  final Color primary; // Signature accent color
+  final Color bg; // Full app background
+  final Color surface; // Top AppBar, Tab bar header & Bottom bar
+  final Color border; // Subtle frame & divider border
+  final Color cardBg; // Darkened card background
   final List<Color> nextGradient; // Next Tab / Generate button gradient
-  final Color nextBorder;         // Next Tab button border
-  final Color nextShadow;         // Next Tab button glow/shadow
-  final Color backBg;             // Back button background
-  final Color backBorder;         // Back button border
+  final Color nextBorder; // Next Tab button border
+  final Color nextShadow; // Next Tab button glow/shadow
+  final Color backBg; // Back button background
+  final Color backBorder; // Back button border
 
   const _BuilderTabTheme({
     required this.label,
@@ -5148,8 +6244,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
   String cloudType = 'Realistic 3D'; // 'Realistic 3D', 'Volumetric', 'Flat 2D'
   bool wavingFoliage = true;
   double foliageWaveSpeed = 1.0;
-  String volumetricFogProfile = 'Cinematic'; // 'Cinematic', 'Balanced', 'Low End'
-  String biomeTone = 'Dynamic'; // 'Dynamic', 'Vibrant', 'Savanna', 'Frost', 'Moody'
+  String volumetricFogProfile =
+      'Cinematic'; // 'Cinematic', 'Balanced', 'Low End'
+  String biomeTone =
+      'Dynamic'; // 'Dynamic', 'Vibrant', 'Savanna', 'Frost', 'Moody'
 
   // Lighting & Shadows
   Color rayMorningColor = const Color(0xFFFFA040);
@@ -5345,10 +6443,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           icon: VoxelIconType.sun,
           artBytes: kTabArtAtmosphereBytes,
           primary: const Color(0xFFFDBA74), // Warm Sunrise Golden Amber Orange
-          bg: const Color(0xFF080D14),       // Clean Obsidian Dark
-          surface: const Color(0xFF0E1724),  // Midnight Slate
-          border: const Color(0xFF3D2A18),   // Soft Warm Dawn Slate
-          cardBg: const Color(0xFF131B2A),   // Dark Card Slate
+          bg: const Color(0xFF080D14), // Clean Obsidian Dark
+          surface: const Color(0xFF0E1724), // Midnight Slate
+          border: const Color(0xFF3D2A18), // Soft Warm Dawn Slate
+          cardBg: const Color(0xFF131B2A), // Dark Card Slate
           nextGradient: const [Color(0xFF3B271A), Color(0xFF523522)],
           nextBorder: const Color(0xFFFDBA74),
           nextShadow: const Color(0x33FDBA74),
@@ -5361,10 +6459,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           icon: VoxelIconType.sun,
           artBytes: kHeroSunsetBytes,
           primary: const Color(0xFFFDBA74), // Sunset Soft Peach/Amber
-          bg: const Color(0xFF080D14),       // Clean Obsidian Dark
-          surface: const Color(0xFF0E1724),  // Midnight Slate
-          border: const Color(0xFF3C2C24),   // Soft Twilight Slate
-          cardBg: const Color(0xFF131B2A),   // Dark Card Slate
+          bg: const Color(0xFF080D14), // Clean Obsidian Dark
+          surface: const Color(0xFF0E1724), // Midnight Slate
+          border: const Color(0xFF3C2C24), // Soft Twilight Slate
+          cardBg: const Color(0xFF131B2A), // Dark Card Slate
           nextGradient: const [Color(0xFF3A241B), Color(0xFF503022)],
           nextBorder: const Color(0xFFFDBA74),
           nextShadow: const Color(0x33FDBA74),
@@ -5377,10 +6475,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           icon: VoxelIconType.moon,
           artBytes: kTabArtAtmosphereBytes,
           primary: const Color(0xFFA5B4FC), // Starlight Soft Periwinkle
-          bg: const Color(0xFF080D14),       // Clean Obsidian Dark
-          surface: const Color(0xFF0E1724),  // Midnight Slate
-          border: const Color(0xFF242C48),   // Soft Midnight Astral Slate
-          cardBg: const Color(0xFF131B2A),   // Dark Card Slate
+          bg: const Color(0xFF080D14), // Clean Obsidian Dark
+          surface: const Color(0xFF0E1724), // Midnight Slate
+          border: const Color(0xFF242C48), // Soft Midnight Astral Slate
+          cardBg: const Color(0xFF131B2A), // Dark Card Slate
           nextGradient: const [Color(0xFF22294A), Color(0xFF2D3764)],
           nextBorder: const Color(0xFFA5B4FC),
           nextShadow: const Color(0x33A5B4FC),
@@ -5394,10 +6492,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           icon: VoxelIconType.sun,
           artBytes: kTabArtAtmosphereBytes,
           primary: const Color(0xFF7DD3FC), // Soft Sky Azure
-          bg: const Color(0xFF080D14),       // Clean Obsidian Dark
-          surface: const Color(0xFF0E1724),  // Midnight Slate
-          border: const Color(0xFF1C324C),   // Soft Azure Slate
-          cardBg: const Color(0xFF131B2A),   // Dark Card Slate
+          bg: const Color(0xFF080D14), // Clean Obsidian Dark
+          surface: const Color(0xFF0E1724), // Midnight Slate
+          border: const Color(0xFF1C324C), // Soft Azure Slate
+          cardBg: const Color(0xFF131B2A), // Dark Card Slate
           nextGradient: const [Color(0xFF17304A), Color(0xFF1D4265)],
           nextBorder: const Color(0xFF7DD3FC),
           nextShadow: const Color(0x337DD3FC),
@@ -5422,18 +6520,29 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         title: const Text(
           'Pack Shader Name',
-          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w800),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w800,
+          ),
         ),
         content: TextField(
           controller: renameCtrl,
           autofocus: true,
-          style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
           decoration: InputDecoration(
             hintText: 'Enter shader name',
             hintStyle: const TextStyle(color: Color(0xFF64748B)),
             filled: true,
             fillColor: const Color(0xFF16202A),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 12,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: const BorderSide(color: Color(0xFF334155)),
@@ -5447,13 +6556,18 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel', style: TextStyle(color: Color(0xFF94A3B8))),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Color(0xFF94A3B8)),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: curTheme.primary,
               foregroundColor: Colors.black,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             onPressed: () {
               final newName = renameCtrl.text.trim();
@@ -5464,7 +6578,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               }
               Navigator.pop(ctx);
             },
-            child: const Text('Save', style: TextStyle(fontWeight: FontWeight.w800)),
+            child: const Text(
+              'Save',
+              style: TextStyle(fontWeight: FontWeight.w800),
+            ),
           ),
         ],
       ),
@@ -5483,7 +6600,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
             fontSize: 13,
           ),
         ),
-        backgroundColor: isError ? const Color(0xFF5D1E1E) : const Color(0xFF262422),
+        backgroundColor: isError
+            ? const Color(0xFF5D1E1E)
+            : const Color(0xFF262422),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -5542,7 +6661,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         {'name': 'Deep Nebula', 'color': const Color(0xFF4C1D95)},
         {'name': 'Starlight Silver', 'color': const Color(0xFFCBD5E1)},
       ];
-    } else if (title.contains('Torch') || title.contains('Ray') || title.contains('Light')) {
+    } else if (title.contains('Torch') ||
+        title.contains('Ray') ||
+        title.contains('Light')) {
       return [
         {'name': 'Campfire Amber', 'color': const Color(0xFFFF9933)},
         {'name': 'Lantern Gold', 'color': const Color(0xFFFBBF24)},
@@ -5616,12 +6737,16 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       barrierColor: Colors.black87,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setD) {
-          final curTheme = _tabThemes[_tabController.index.clamp(0, _tabThemes.length - 1)];
+          final curTheme =
+              _tabThemes[_tabController.index.clamp(0, _tabThemes.length - 1)];
           final themeColor = curTheme.primary;
 
           return Dialog(
             backgroundColor: Colors.transparent,
-            insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            insetPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 24,
+            ),
             child: PixelatedCard(
               backgroundColor: curTheme.cardBg,
               borderColor: curTheme.border,
@@ -5684,7 +6809,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                             children: [
                               Row(
                                 children: [
-                                  const AnimatedMinecraftIcon(type: VoxelIconType.sparkles, size: 16),
+                                  const AnimatedMinecraftIcon(
+                                    type: VoxelIconType.sparkles,
+                                    size: 16,
+                                  ),
                                   const SizedBox(width: 6),
                                   Text(
                                     'COLOR CRAFTING',
@@ -5713,7 +6841,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                         ),
                         // Live Hex Badge
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
                           decoration: BoxDecoration(
                             color: const Color(0xFF111417),
                             borderRadius: BorderRadius.circular(6),
@@ -5728,7 +6859,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                                 decoration: BoxDecoration(
                                   color: tmp,
                                   shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.white70, width: 1),
+                                  border: Border.all(
+                                    color: Colors.white70,
+                                    width: 1,
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 6),
@@ -5751,7 +6885,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                     // 1b. Professional Curated Palette tailored for this element
                     Row(
                       children: [
-                        const Icon(Icons.auto_awesome, size: 13, color: Color(0xFFF59E0B)),
+                        const Icon(
+                          Icons.auto_awesome,
+                          size: 13,
+                          color: Color(0xFFF59E0B),
+                        ),
                         const SizedBox(width: 5),
                         Text(
                           'CURATED ${title.toUpperCase()} PALETTE',
@@ -5778,7 +6916,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                             onTap: () {
                               setD(() {
                                 tmp = swColor;
-                                hexCtrl.text = swColor.toARGB32().toRadixString(16).substring(2).toUpperCase();
+                                hexCtrl.text = swColor
+                                    .toARGB32()
+                                    .toRadixString(16)
+                                    .substring(2)
+                                    .toUpperCase();
                               });
                               setState(() => onSet(swColor));
                             },
@@ -5810,7 +6952,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                               ),
                               child: isSel
                                   ? const Center(
-                                      child: Icon(Icons.check, size: 18, color: Colors.white),
+                                      child: Icon(
+                                        Icons.check,
+                                        size: 18,
+                                        color: Colors.white,
+                                      ),
                                     )
                                   : null,
                             ),
@@ -5841,7 +6987,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                           onTap: () {
                             setD(() {
                               tmp = dyeColor;
-                              hexCtrl.text = dyeColor.toARGB32().toRadixString(16).substring(2).toUpperCase();
+                              hexCtrl.text = dyeColor
+                                  .toARGB32()
+                                  .toRadixString(16)
+                                  .substring(2)
+                                  .toUpperCase();
                             });
                             setState(() => onSet(dyeColor));
                           },
@@ -5872,7 +7022,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                             ),
                             child: isSel
                                 ? const Center(
-                                    child: Icon(Icons.check, size: 18, color: Colors.white),
+                                    child: Icon(
+                                      Icons.check,
+                                      size: 18,
+                                      color: Colors.white,
+                                    ),
                                   )
                                 : null,
                           ),
@@ -5901,7 +7055,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                         onColorChanged: (c) {
                           setD(() {
                             tmp = c;
-                            hexCtrl.text = c.toARGB32().toRadixString(16).substring(2).toUpperCase();
+                            hexCtrl.text = c
+                                .toARGB32()
+                                .toRadixString(16)
+                                .substring(2)
+                                .toUpperCase();
                           });
                           setState(() => onSet(c));
                         },
@@ -5913,7 +7071,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             color: const Color(0xFF14171A),
                             borderRadius: BorderRadius.circular(6),
@@ -5944,16 +7105,25 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                             decoration: InputDecoration(
                               counterText: '',
                               isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
                               filled: true,
                               fillColor: const Color(0xFF14171A),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6),
-                                borderSide: const BorderSide(color: Color(0xFF262C33), width: 1.5),
+                                borderSide: const BorderSide(
+                                  color: Color(0xFF262C33),
+                                  width: 1.5,
+                                ),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6),
-                                borderSide: BorderSide(color: themeColor, width: 2),
+                                borderSide: BorderSide(
+                                  color: themeColor,
+                                  width: 2,
+                                ),
                               ),
                             ),
                             onChanged: (v) {
@@ -5984,8 +7154,13 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                                 Navigator.pop(context);
                               },
                               style: OutlinedButton.styleFrom(
-                                side: const BorderSide(color: Color(0xFF38404A), width: 1.5),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                side: const BorderSide(
+                                  color: Color(0xFF38404A),
+                                  width: 1.5,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
                               child: const Text(
                                 'CANCEL',
@@ -6008,7 +7183,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                                 setState(() => onSet(tmp));
                                 Navigator.pop(context);
                               },
-                              icon: const Icon(Icons.check, size: 18, color: Colors.black),
+                              icon: const Icon(
+                                Icons.check,
+                                size: 18,
+                                color: Colors.black,
+                              ),
                               label: const Text(
                                 'APPLY',
                                 style: TextStyle(
@@ -6020,7 +7199,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: themeColor,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
                             ),
                           ),
@@ -6038,8 +7219,6 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
   }
 
   // ── CUSTOM MINECRAFT SETTING ROW BUILDERS (Matching User Reference Image) ──
-
-
 
   /// Minecraft Setting Slider with pixelated styling and adaptive background theme
   Widget _buildMinecraftSlider({
@@ -6062,11 +7241,15 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
     final fColor = thumbFaceColor ?? activeColor;
     final bColor = thumbBorderColor ?? activeColor;
 
-    final titleColor = isLightBackground ? const Color(0xFF1E1006) : Colors.white;
+    final titleColor = isLightBackground
+        ? const Color(0xFF1E1006)
+        : Colors.white;
     final badgeBg = activeColor.withValues(alpha: 0.18);
     final badgeBorder = activeColor.withValues(alpha: 0.45);
     final inactiveTrack = Colors.white.withValues(alpha: 0.12);
-    final sideLabelColor = isLightBackground ? const Color(0xFF381F0E) : Colors.white54;
+    final sideLabelColor = isLightBackground
+        ? const Color(0xFF381F0E)
+        : Colors.white54;
     final centerLabelColor = activeColor;
 
     return Padding(
@@ -6076,7 +7259,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         children: [
           Row(
             children: [
-              AnimatedMinecraftIcon(type: icon, size: 24, colorOverride: activeColor),
+              AnimatedMinecraftIcon(
+                type: icon,
+                size: 24,
+                colorOverride: activeColor,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -6089,19 +7276,28 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 3,
+                ),
                 decoration: BoxDecoration(
                   color: badgeBg,
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(color: badgeBorder, width: 1.2),
                   boxShadow: const [
-                    BoxShadow(color: Colors.black45, blurRadius: 2, offset: Offset(0, 1)),
+                    BoxShadow(
+                      color: Colors.black45,
+                      blurRadius: 2,
+                      offset: Offset(0, 1),
+                    ),
                   ],
                 ),
                 child: Text(
                   '${value.toStringAsFixed(1)}x',
                   style: TextStyle(
-                    color: activeColor.computeLuminance() > 0.65 ? Colors.white : activeColor,
+                    color: activeColor.computeLuminance() > 0.65
+                        ? Colors.white
+                        : activeColor,
                     fontWeight: FontWeight.w900,
                     fontSize: 11,
                     fontFamily: 'monospace',
@@ -6137,10 +7333,31 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(minLabel, style: TextStyle(color: sideLabelColor, fontSize: 10, fontWeight: FontWeight.w600)),
+                Text(
+                  minLabel,
+                  style: TextStyle(
+                    color: sideLabelColor,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 if (centerLabel.isNotEmpty)
-                  Text(centerLabel, style: TextStyle(color: centerLabelColor, fontSize: 10, fontWeight: FontWeight.w800)),
-                Text(maxLabel, style: TextStyle(color: sideLabelColor, fontSize: 10, fontWeight: FontWeight.w600)),
+                  Text(
+                    centerLabel,
+                    style: TextStyle(
+                      color: centerLabelColor,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                Text(
+                  maxLabel,
+                  style: TextStyle(
+                    color: sideLabelColor,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
             ),
           ),
@@ -6158,13 +7375,18 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
     Color? activeColor,
     required ValueChanged<bool> onChanged,
   }) {
-    final theme = _tabThemes[_tabController.index.clamp(0, _tabThemes.length - 1)];
+    final theme =
+        _tabThemes[_tabController.index.clamp(0, _tabThemes.length - 1)];
     final actColor = activeColor ?? theme.primary;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          AnimatedMinecraftIcon(type: icon, size: 24, colorOverride: value ? actColor : null),
+          AnimatedMinecraftIcon(
+            type: icon,
+            size: 24,
+            colorOverride: value ? actColor : null,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -6183,7 +7405,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: const TextStyle(color: Colors.white54, fontSize: 10.5),
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 10.5,
+                    ),
                   ),
                 ],
               ],
@@ -6218,7 +7443,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         children: [
           Row(
             children: [
-              AnimatedMinecraftIcon(type: icon, size: 24, colorOverride: activeColor),
+              AnimatedMinecraftIcon(
+                type: icon,
+                size: 24,
+                colorOverride: activeColor,
+              ),
               const SizedBox(width: 10),
               Text(
                 title,
@@ -6242,10 +7471,14 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
-                        color: isSel ? activeColor : Colors.black.withValues(alpha: 0.3),
+                        color: isSel
+                            ? activeColor
+                            : Colors.black.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(
-                          color: isSel ? activeColor : activeColor.withValues(alpha: 0.25),
+                          color: isSel
+                              ? activeColor
+                              : activeColor.withValues(alpha: 0.25),
                           width: 1.2,
                         ),
                         boxShadow: isSel
@@ -6262,7 +7495,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                         it,
                         style: TextStyle(
                           color: isSel
-                              ? (activeColor.computeLuminance() > 0.55 ? Colors.black87 : Colors.white)
+                              ? (activeColor.computeLuminance() > 0.55
+                                    ? Colors.black87
+                                    : Colors.white)
                               : Colors.white70,
                           fontWeight: FontWeight.w800,
                           fontSize: 11,
@@ -6310,7 +7545,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         children: [
           Row(
             children: [
-              AnimatedMinecraftIcon(type: icon, size: 24, colorOverride: selectedColor),
+              AnimatedMinecraftIcon(
+                type: icon,
+                size: 24,
+                colorOverride: selectedColor,
+              ),
               const SizedBox(width: 10),
               Text(
                 title,
@@ -6325,7 +7564,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 behavior: HitTestBehavior.opaque,
                 onTap: onCustomTap,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: selectedColor.withValues(alpha: 0.20),
                     borderRadius: BorderRadius.circular(6),
@@ -6334,7 +7576,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.colorize, size: 12, color: Colors.white70),
+                      const Icon(
+                        Icons.colorize,
+                        size: 12,
+                        color: Colors.white70,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         '#${selectedColor.toARGB32().toRadixString(16).substring(2).toUpperCase()}',
@@ -6356,7 +7602,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
             children: [
               ...swatches.map((item) {
                 final c = item['color'] as Color;
-                final isSel = (selectedColor.toARGB32() & 0x00FFFFFF) == (c.toARGB32() & 0x00FFFFFF);
+                final isSel =
+                    (selectedColor.toARGB32() & 0x00FFFFFF) ==
+                    (c.toARGB32() & 0x00FFFFFF);
                 return Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 3),
@@ -6374,7 +7622,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                           color: c,
                           borderRadius: BorderRadius.circular(6),
                           border: Border.all(
-                            color: isSel ? Colors.white : const Color(0xFF060D17),
+                            color: isSel
+                                ? Colors.white
+                                : const Color(0xFF060D17),
                             width: isSel ? 2.5 : 1.5,
                           ),
                           boxShadow: [
@@ -6394,7 +7644,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                         ),
                         child: isSel
                             ? const Center(
-                                child: Icon(Icons.check, size: 18, color: Colors.white),
+                                child: Icon(
+                                  Icons.check,
+                                  size: 18,
+                                  color: Colors.white,
+                                ),
                               )
                             : null,
                       ),
@@ -6408,8 +7662,6 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       ),
     );
   }
-
-
 
   /// Minecraft Steve Avatar Tip Banner (matching bottom of user reference screens)
   Widget _buildSteveTipBanner(String tip) {
@@ -6451,7 +7703,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   // Yellow glowing lightbulb
                   const Padding(
                     padding: EdgeInsets.only(top: 1, right: 8),
-                    child: AnimatedMinecraftIcon(type: VoxelIconType.lightbulb, size: 20),
+                    child: AnimatedMinecraftIcon(
+                      type: VoxelIconType.lightbulb,
+                      size: 20,
+                    ),
                   ),
                   // Rich Text: Pink "Tip: " + Cream Message
                   Expanded(
@@ -6461,7 +7716,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                           const TextSpan(
                             text: 'Tip: ',
                             style: TextStyle(
-                              color: Color(0xFFF06292), // Bright pink matching screenshot
+                              color: Color(
+                                0xFFF06292,
+                              ), // Bright pink matching screenshot
                               fontWeight: FontWeight.w900,
                               fontSize: 12,
                               letterSpacing: 0.3,
@@ -6505,22 +7762,26 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       activeSky = nightColor;
       currentFog = nightFogDensity;
       badgeIcon = VoxelIconType.moon;
-      statusText = 'NIGHT • MOON ${moonSize.toStringAsFixed(1)}x • BRIGHTNESS ${nightVision.toStringAsFixed(1)}x • FOG ${nightFogDensity.toStringAsFixed(1)}x';
+      statusText =
+          'NIGHT • MOON ${moonSize.toStringAsFixed(1)}x • BRIGHTNESS ${nightVision.toStringAsFixed(1)}x • FOG ${nightFogDensity.toStringAsFixed(1)}x';
     } else if (isMorning) {
       activeSky = morningColor;
       currentFog = morningFogDensity;
       badgeIcon = VoxelIconType.sun;
-      statusText = 'DAWN • SUN ${sunSizeMorning.toStringAsFixed(1)}x • FOG ${morningFogDensity.toStringAsFixed(1)}x • RAYS ${morningRayIntensity.toStringAsFixed(1)}x';
+      statusText =
+          'DAWN • SUN ${sunSizeMorning.toStringAsFixed(1)}x • FOG ${morningFogDensity.toStringAsFixed(1)}x • RAYS ${morningRayIntensity.toStringAsFixed(1)}x';
     } else if (isEvening) {
       activeSky = eveningColor;
       currentFog = eveningFogDensity;
       badgeIcon = VoxelIconType.sun;
-      statusText = 'SUNSET • SUN ${sunSizeEvening.toStringAsFixed(1)}x • FOG ${eveningFogDensity.toStringAsFixed(1)}x • RAYS ${eveningRayIntensity.toStringAsFixed(1)}x';
+      statusText =
+          'SUNSET • SUN ${sunSizeEvening.toStringAsFixed(1)}x • FOG ${eveningFogDensity.toStringAsFixed(1)}x • RAYS ${eveningRayIntensity.toStringAsFixed(1)}x';
     } else {
       activeSky = noonColor;
       currentFog = fogDensity;
       badgeIcon = VoxelIconType.sun;
-      statusText = 'NOON • SUN ${sunSize.toStringAsFixed(1)}x • FOG ${fogDensity.toStringAsFixed(1)}x • LIGHT ${lightIntensity.toStringAsFixed(1)}x';
+      statusText =
+          'NOON • SUN ${sunSize.toStringAsFixed(1)}x • FOG ${fogDensity.toStringAsFixed(1)}x • LIGHT ${lightIntensity.toStringAsFixed(1)}x';
     }
 
     final curTheme = _activeTabTheme;
@@ -6531,7 +7792,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: curTheme.primary.withValues(alpha: 0.65), width: 1.5),
+        border: Border.all(
+          color: curTheme.primary.withValues(alpha: 0.65),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
             color: curTheme.primary.withValues(alpha: 0.20),
@@ -6546,21 +7810,27 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           children: [
             // 1. Pure Procedural Minecraft Scene (Drawn 100% in code via CustomPainter)
             Positioned.fill(
-              child: CustomPaint(
-                painter: _AtmosphereDetailedScenePainter(
-                  timeOfDay: _activeColorKey,
-                  activeSkyColor: activeSky,
-                  sunOrMoonScale: isNight
-                      ? moonSize
-                      : (isMorning ? sunSizeMorning : (isEvening ? sunSizeEvening : sunSize)),
-                  fogDensity: currentFog,
-                  rayIntensity: isMorning
-                      ? morningRayIntensity
-                      : (isEvening ? eveningRayIntensity : (isNight ? moonRayIntensity : 1.0)),
-                  nightVision: nightVision,
-                  cloudType: cloudType,
-                  cloudTopColor: cloudTopColor,
-                  cloudBottomColor: cloudBottomColor,
+              child: RepaintBoundary(
+                child: CustomPaint(
+                  painter: _AtmosphereDetailedScenePainter(
+                    timeOfDay: _activeColorKey,
+                    activeSkyColor: activeSky,
+                    sunOrMoonScale: isNight
+                        ? moonSize
+                        : (isMorning
+                              ? sunSizeMorning
+                              : (isEvening ? sunSizeEvening : sunSize)),
+                    fogDensity: currentFog,
+                    rayIntensity: isMorning
+                        ? morningRayIntensity
+                        : (isEvening
+                              ? eveningRayIntensity
+                              : (isNight ? moonRayIntensity : 1.0)),
+                    nightVision: nightVision,
+                    cloudType: cloudType,
+                    cloudTopColor: cloudTopColor,
+                    cloudBottomColor: cloudBottomColor,
+                  ),
                 ),
               ),
             ),
@@ -6570,11 +7840,17 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               right: 12,
               top: 10,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 7,
+                  vertical: 2.5,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xCC080D14),
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: curTheme.primary.withValues(alpha: 0.40), width: 0.9),
+                  border: Border.all(
+                    color: curTheme.primary.withValues(alpha: 0.40),
+                    width: 0.9,
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -6586,7 +7862,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                         color: curTheme.primary,
                         shape: BoxShape.circle,
                         boxShadow: [
-                          BoxShadow(color: curTheme.primary.withValues(alpha: 0.8), blurRadius: 4),
+                          BoxShadow(
+                            color: curTheme.primary.withValues(alpha: 0.8),
+                            blurRadius: 4,
+                          ),
                         ],
                       ),
                     ),
@@ -6610,16 +7889,26 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               left: 12,
               bottom: 8,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 3.5,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xCC080D14),
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: curTheme.primary.withValues(alpha: 0.5), width: 1.0),
+                  border: Border.all(
+                    color: curTheme.primary.withValues(alpha: 0.5),
+                    width: 1.0,
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AnimatedMinecraftIcon(type: badgeIcon, size: 12, colorOverride: curTheme.primary),
+                    AnimatedMinecraftIcon(
+                      type: badgeIcon,
+                      size: 12,
+                      colorOverride: curTheme.primary,
+                    ),
                     const SizedBox(width: 5),
                     Text(
                       statusText,
@@ -6642,9 +7931,18 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
 
   /// Interactive Lighting Preview Banner reflecting Torch Glow, God Rays & High-Detail Scenery
   Widget _buildLightingPreviewBanner() {
-    final tR = (torchLightColor.redInt * blockLightIntensity).round().clamp(0, 255);
-    final tG = (torchLightColor.greenInt * blockLightIntensity).round().clamp(0, 255);
-    final tB = (torchLightColor.blueInt * blockLightIntensity).round().clamp(0, 255);
+    final tR = (torchLightColor.redInt * blockLightIntensity).round().clamp(
+      0,
+      255,
+    );
+    final tG = (torchLightColor.greenInt * blockLightIntensity).round().clamp(
+      0,
+      255,
+    );
+    final tB = (torchLightColor.blueInt * blockLightIntensity).round().clamp(
+      0,
+      255,
+    );
     final effectiveTorch = Color.fromARGB(255, tR, tG, tB);
 
     Color activeRay = rayNoonColor;
@@ -6660,7 +7958,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: curTheme.primary.withValues(alpha: 0.65), width: 1.5),
+        border: Border.all(
+          color: curTheme.primary.withValues(alpha: 0.65),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
             color: curTheme.primary.withValues(alpha: 0.20),
@@ -6675,14 +7976,16 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           children: [
             // 1. Procedural High-Detail Minecraft Torch & Cavern Scenery (100% Code via CustomPainter)
             Positioned.fill(
-              child: CustomPaint(
-                painter: _LightingDetailedScenePainter(
-                  blockLightIntensity: blockLightIntensity,
-                  lightIntensity: lightIntensity,
-                  torchColor: effectiveTorch,
-                  rayColor: activeRay,
-                  fogColor: fogColor,
-                  shadowQuality: shadowQuality,
+              child: RepaintBoundary(
+                child: CustomPaint(
+                  painter: _LightingDetailedScenePainter(
+                    blockLightIntensity: blockLightIntensity,
+                    lightIntensity: lightIntensity,
+                    torchColor: effectiveTorch,
+                    rayColor: activeRay,
+                    fogColor: fogColor,
+                    shadowQuality: shadowQuality,
+                  ),
                 ),
               ),
             ),
@@ -6697,16 +8000,26 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               left: 12,
               bottom: 8,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 3.5,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xCC080D14),
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: curTheme.primary.withValues(alpha: 0.5), width: 1.0),
+                  border: Border.all(
+                    color: curTheme.primary.withValues(alpha: 0.5),
+                    width: 1.0,
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AnimatedMinecraftIcon(type: VoxelIconType.lantern, size: 12, colorOverride: curTheme.primary),
+                    AnimatedMinecraftIcon(
+                      type: VoxelIconType.lantern,
+                      size: 12,
+                      colorOverride: curTheme.primary,
+                    ),
                     const SizedBox(width: 5),
                     Text(
                       'LIGHT ${lightIntensity.toStringAsFixed(1)}x • TORCH ${blockLightIntensity.toStringAsFixed(1)}x • SHADOWS: $shadowQuality',
@@ -6736,7 +8049,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: curTheme.primary.withValues(alpha: 0.65), width: 1.5),
+        border: Border.all(
+          color: curTheme.primary.withValues(alpha: 0.65),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
             color: curTheme.primary.withValues(alpha: 0.20),
@@ -6751,12 +8067,14 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           children: [
             // 1. Procedural High-Detail Minecraft Storm Scenery (100% Code via CustomPainter)
             Positioned.fill(
-              child: CustomPaint(
-                painter: _WeatherDetailedScenePainter(
-                  rainFogColor: rainFogColor,
-                  rainWaterColor: rainWaterColor,
-                  metalness: globalMetalness,
-                  pbrEnabled: enablePBR,
+              child: RepaintBoundary(
+                child: CustomPaint(
+                  painter: _WeatherDetailedScenePainter(
+                    rainFogColor: rainFogColor,
+                    rainWaterColor: rainWaterColor,
+                    metalness: globalMetalness,
+                    pbrEnabled: enablePBR,
+                  ),
                 ),
               ),
             ),
@@ -6765,16 +8083,26 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               left: 12,
               bottom: 8,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 3.5,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xCC080D14),
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: curTheme.primary.withValues(alpha: 0.5), width: 1.0),
+                  border: Border.all(
+                    color: curTheme.primary.withValues(alpha: 0.5),
+                    width: 1.0,
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AnimatedMinecraftIcon(type: VoxelIconType.rainCloud, size: 12, colorOverride: curTheme.primary),
+                    AnimatedMinecraftIcon(
+                      type: VoxelIconType.rainCloud,
+                      size: 12,
+                      colorOverride: curTheme.primary,
+                    ),
                     const SizedBox(width: 5),
                     Text(
                       'PBR: ${enablePBR ? 'ON' : 'OFF'} • METAL ${(globalMetalness * 100).round()}% • TONE: $toneMapFilter',
@@ -6804,7 +8132,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: curTheme.primary.withValues(alpha: 0.65), width: 1.5),
+        border: Border.all(
+          color: curTheme.primary.withValues(alpha: 0.65),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
             color: curTheme.primary.withValues(alpha: 0.20),
@@ -6819,12 +8150,14 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           children: [
             // 1. Procedural High-Detail Minecraft Water Ocean Scenery (100% Code via CustomPainter)
             Positioned.fill(
-              child: CustomPaint(
-                painter: _WaterDetailedScenePainter(
-                  waterColor: waterColor,
-                  waterSpeed: windSpeed,
-                  waterQuality: waterQuality,
-                  underwaterCaustics: underwaterCaustics,
+              child: RepaintBoundary(
+                child: CustomPaint(
+                  painter: _WaterDetailedScenePainter(
+                    waterColor: waterColor,
+                    waterSpeed: windSpeed,
+                    waterQuality: waterQuality,
+                    underwaterCaustics: underwaterCaustics,
+                  ),
                 ),
               ),
             ),
@@ -6833,16 +8166,26 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               left: 12,
               bottom: 8,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 3.5,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xCC080D14),
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: curTheme.primary.withValues(alpha: 0.5), width: 1.0),
+                  border: Border.all(
+                    color: curTheme.primary.withValues(alpha: 0.5),
+                    width: 1.0,
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AnimatedMinecraftIcon(type: VoxelIconType.waves, size: 12, colorOverride: curTheme.primary),
+                    AnimatedMinecraftIcon(
+                      type: VoxelIconType.waves,
+                      size: 12,
+                      colorOverride: curTheme.primary,
+                    ),
                     const SizedBox(width: 5),
                     Text(
                       'WATER: $waterQuality • SPEED ${windSpeed.toStringAsFixed(1)}x • CAUSTICS: ${underwaterCaustics ? 'ON' : 'OFF'}',
@@ -6863,11 +8206,13 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
     );
   }
 
-
   // ── 4 TAB IMPLEMENTATIONS (ATMOSPHERE, LIGHTING, WATER, WEATHER) ──────────
 
   // Context-aware atmosphere sliders tailored to selected time of day
-  List<Widget> _buildAtmosphereContextSliders(Color tabAccent, Color dividerColor) {
+  List<Widget> _buildAtmosphereContextSliders(
+    Color tabAccent,
+    Color dividerColor,
+  ) {
     if (_activeColorKey.contains('Morning')) {
       return [
         _buildMinecraftSlider(
@@ -6883,7 +8228,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           activeColor: tabAccent,
           onChanged: (v) => setState(() => sunSizeMorning = v),
         ),
-        Container(height: 1.5, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+        Container(
+          height: 1.5,
+          color: dividerColor,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        ),
         _buildMinecraftSlider(
           icon: VoxelIconType.cloud,
           title: 'Dawn Fog Density',
@@ -6897,7 +8246,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           activeColor: tabAccent,
           onChanged: (v) => setState(() => morningFogDensity = v),
         ),
-        Container(height: 1.5, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+        Container(
+          height: 1.5,
+          color: dividerColor,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        ),
         _buildMinecraftSlider(
           icon: VoxelIconType.sun,
           title: 'Sunrise Ray Glow',
@@ -6911,7 +8264,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           activeColor: tabAccent,
           onChanged: (v) => setState(() => morningRayIntensity = v),
         ),
-        Container(height: 1.5, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+        Container(
+          height: 1.5,
+          color: dividerColor,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        ),
         _buildMinecraftSegmented(
           icon: VoxelIconType.cloud,
           title: 'Clouds Style',
@@ -6936,7 +8293,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           activeColor: tabAccent,
           onChanged: (v) => setState(() => sunSizeEvening = v),
         ),
-        Container(height: 1.5, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+        Container(
+          height: 1.5,
+          color: dividerColor,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        ),
         _buildMinecraftSlider(
           icon: VoxelIconType.cloud,
           title: 'Sunset Fog Density',
@@ -6950,7 +8311,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           activeColor: tabAccent,
           onChanged: (v) => setState(() => eveningFogDensity = v),
         ),
-        Container(height: 1.5, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+        Container(
+          height: 1.5,
+          color: dividerColor,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        ),
         _buildMinecraftSlider(
           icon: VoxelIconType.torch,
           title: 'Twilight Rays Intensity',
@@ -6964,7 +8329,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           activeColor: tabAccent,
           onChanged: (v) => setState(() => eveningRayIntensity = v),
         ),
-        Container(height: 1.5, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+        Container(
+          height: 1.5,
+          color: dividerColor,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        ),
         _buildMinecraftSegmented(
           icon: VoxelIconType.cloud,
           title: 'Clouds Style',
@@ -6989,7 +8358,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           activeColor: tabAccent,
           onChanged: (v) => setState(() => moonSize = v),
         ),
-        Container(height: 1.5, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+        Container(
+          height: 1.5,
+          color: dividerColor,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        ),
         _buildMinecraftSlider(
           icon: VoxelIconType.moon,
           title: 'Night Brightness',
@@ -7003,7 +8376,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           activeColor: tabAccent,
           onChanged: (v) => setState(() => nightVision = v),
         ),
-        Container(height: 1.5, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+        Container(
+          height: 1.5,
+          color: dividerColor,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        ),
         _buildMinecraftSlider(
           icon: VoxelIconType.cloud,
           title: 'Night Fog & Stars',
@@ -7017,7 +8394,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           activeColor: tabAccent,
           onChanged: (v) => setState(() => nightFogDensity = v),
         ),
-        Container(height: 1.5, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+        Container(
+          height: 1.5,
+          color: dividerColor,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        ),
         _buildMinecraftSlider(
           icon: VoxelIconType.lantern,
           title: 'Moonlight God Rays',
@@ -7031,7 +8412,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           activeColor: tabAccent,
           onChanged: (v) => setState(() => moonRayIntensity = v),
         ),
-        Container(height: 1.5, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+        Container(
+          height: 1.5,
+          color: dividerColor,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        ),
         _buildMinecraftSegmented(
           icon: VoxelIconType.cloud,
           title: 'Clouds Style',
@@ -7057,7 +8442,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           activeColor: tabAccent,
           onChanged: (v) => setState(() => sunSize = v),
         ),
-        Container(height: 1.5, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+        Container(
+          height: 1.5,
+          color: dividerColor,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        ),
         _buildMinecraftSlider(
           icon: VoxelIconType.cloud,
           title: 'Midday Fog Density',
@@ -7071,7 +8460,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           activeColor: tabAccent,
           onChanged: (v) => setState(() => fogDensity = v),
         ),
-        Container(height: 1.5, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+        Container(
+          height: 1.5,
+          color: dividerColor,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        ),
         _buildMinecraftSlider(
           icon: VoxelIconType.sun,
           title: 'Sunlight Illuminance',
@@ -7085,7 +8478,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           activeColor: tabAccent,
           onChanged: (v) => setState(() => lightIntensity = v),
         ),
-        Container(height: 1.5, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+        Container(
+          height: 1.5,
+          color: dividerColor,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+        ),
         _buildMinecraftSegmented(
           icon: VoxelIconType.cloud,
           title: 'Clouds Style',
@@ -7121,7 +8518,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               children: [
                 Row(
                   children: [
-                    AnimatedMinecraftIcon(type: VoxelIconType.sun, size: 30, colorOverride: tabAccent),
+                    AnimatedMinecraftIcon(
+                      type: VoxelIconType.sun,
+                      size: 30,
+                      colorOverride: tabAccent,
+                    ),
                     const SizedBox(width: 10),
                     const Expanded(
                       child: Column(
@@ -7159,10 +8560,42 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   title: '',
                   gap: 14.0,
                   tiles: [
-                    _colorRow('Morning', 'Sunrise sky tint', morningColor, (c) => morningColor = c, iconType: ShaderIconType.morning, labelColor: Colors.white70, aspectRatio: 1.0),
-                    _colorRow('Noon', 'Midday sky tint', noonColor, (c) => noonColor = c, iconType: ShaderIconType.noon, labelColor: Colors.white70, aspectRatio: 1.0),
-                    _colorRow('Evening', 'Sunset sky tint', eveningColor, (c) => eveningColor = c, iconType: ShaderIconType.evening, labelColor: Colors.white70, aspectRatio: 1.0),
-                    _colorRow('Night', 'Midnight sky tint', nightColor, (c) => nightColor = c, iconType: ShaderIconType.night, labelColor: Colors.white70, aspectRatio: 1.0),
+                    _colorRow(
+                      'Morning',
+                      'Sunrise sky tint',
+                      morningColor,
+                      (c) => morningColor = c,
+                      iconType: ShaderIconType.morning,
+                      labelColor: Colors.white70,
+                      aspectRatio: 1.0,
+                    ),
+                    _colorRow(
+                      'Noon',
+                      'Midday sky tint',
+                      noonColor,
+                      (c) => noonColor = c,
+                      iconType: ShaderIconType.noon,
+                      labelColor: Colors.white70,
+                      aspectRatio: 1.0,
+                    ),
+                    _colorRow(
+                      'Evening',
+                      'Sunset sky tint',
+                      eveningColor,
+                      (c) => eveningColor = c,
+                      iconType: ShaderIconType.evening,
+                      labelColor: Colors.white70,
+                      aspectRatio: 1.0,
+                    ),
+                    _colorRow(
+                      'Night',
+                      'Midnight sky tint',
+                      nightColor,
+                      (c) => nightColor = c,
+                      iconType: ShaderIconType.night,
+                      labelColor: Colors.white70,
+                      aspectRatio: 1.0,
+                    ),
                   ],
                 ),
               ],
@@ -7183,10 +8616,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
             _activeColorKey.contains('Morning')
                 ? 'Tip: Sunrise rays look magical when paired with subtle dawn fog!'
                 : (_activeColorKey.contains('Evening')
-                    ? 'Tip: Larger sunset sun size creates breathtaking cinematic twilights!'
-                    : (_activeColorKey.contains('Night')
-                        ? 'Tip: Adjust moon size and night brightness for luminous starry skies!'
-                        : 'Tip: Balanced midday sun size gives sharp, realistic shadows!')),
+                      ? 'Tip: Larger sunset sun size creates breathtaking cinematic twilights!'
+                      : (_activeColorKey.contains('Night')
+                            ? 'Tip: Adjust moon size and night brightness for luminous starry skies!'
+                            : 'Tip: Balanced midday sun size gives sharp, realistic shadows!')),
           ),
         ],
       ),
@@ -7216,7 +8649,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               children: [
                 Row(
                   children: [
-                    AnimatedMinecraftIcon(type: VoxelIconType.lantern, size: 28, colorOverride: tabAccent),
+                    AnimatedMinecraftIcon(
+                      type: VoxelIconType.lantern,
+                      size: 28,
+                      colorOverride: tabAccent,
+                    ),
                     const SizedBox(width: 10),
                     const Expanded(
                       child: Column(
@@ -7233,7 +8670,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                           ),
                           Text(
                             'Make your world look stunning.',
-                            style: TextStyle(color: Colors.white54, fontSize: 11),
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 11,
+                            ),
                           ),
                         ],
                       ),
@@ -7248,8 +8688,22 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   title: '',
                   gap: 16.0,
                   tiles: [
-                    _colorRow('Soft Fog', 'Atmospheric mist', fogColor, (c) => fogColor = c, iconType: ShaderIconType.fog, aspectRatio: 1.0),
-                    _colorRow('Torch Light', 'Warm point lighting', torchLightColor, (c) => torchLightColor = c, iconType: ShaderIconType.torch, aspectRatio: 1.0),
+                    _colorRow(
+                      'Soft Fog',
+                      'Atmospheric mist',
+                      fogColor,
+                      (c) => fogColor = c,
+                      iconType: ShaderIconType.fog,
+                      aspectRatio: 1.0,
+                    ),
+                    _colorRow(
+                      'Torch Light',
+                      'Warm point lighting',
+                      torchLightColor,
+                      (c) => torchLightColor = c,
+                      iconType: ShaderIconType.torch,
+                      aspectRatio: 1.0,
+                    ),
                   ],
                 ),
               ],
@@ -7276,7 +8730,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   activeColor: tabAccent,
                   onChanged: (v) => lightIntensity = v,
                 ),
-                Container(height: 1, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+                Container(
+                  height: 1,
+                  color: dividerColor,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                ),
 
                 // Block Light Intensity Slider
                 _buildMinecraftSlider(
@@ -7292,7 +8750,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   activeColor: tabAccent,
                   onChanged: (v) => blockLightIntensity = v,
                 ),
-                Container(height: 1, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+                Container(
+                  height: 1,
+                  color: dividerColor,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                ),
 
                 // Shadow Quality Segmented Selector
                 _buildMinecraftSegmented(
@@ -7314,7 +8776,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   activeColor: tabAccent,
                   onChanged: (v) => enablePointLightShadows = v,
                 ),
-                Container(height: 1, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+                Container(
+                  height: 1,
+                  color: dividerColor,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                ),
 
                 // 2. VOLUMETRIC FOG (Cinematic / Balanced / Low End)
                 _buildMinecraftSegmented(
@@ -7338,7 +8804,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               children: [
                 Row(
                   children: [
-                    AnimatedMinecraftIcon(type: VoxelIconType.sun, size: 28, colorOverride: tabAccent),
+                    AnimatedMinecraftIcon(
+                      type: VoxelIconType.sun,
+                      size: 28,
+                      colorOverride: tabAccent,
+                    ),
                     const SizedBox(width: 10),
                     const Expanded(
                       child: Column(
@@ -7355,7 +8825,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                           ),
                           Text(
                             'Sunlight & moonlight volumetric rays by time of day',
-                            style: TextStyle(color: Colors.white54, fontSize: 11),
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 11,
+                            ),
                           ),
                         ],
                       ),
@@ -7439,7 +8912,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               children: [
                 Row(
                   children: [
-                    AnimatedMinecraftIcon(type: VoxelIconType.waves, size: 28, colorOverride: tabAccent),
+                    AnimatedMinecraftIcon(
+                      type: VoxelIconType.waves,
+                      size: 28,
+                      colorOverride: tabAccent,
+                    ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Column(
@@ -7456,7 +8933,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                           ),
                           Text(
                             'Customize water appearance and behavior.',
-                            style: TextStyle(color: Color(0xFF80DEEA), fontSize: 11),
+                            style: TextStyle(
+                              color: Color(0xFF80DEEA),
+                              fontSize: 11,
+                            ),
                           ),
                         ],
                       ),
@@ -7477,16 +8957,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                       waterColor = c;
                     });
                   },
-                  onCustomTap: () => _pickColor(
-                    'Water Tint',
-                    waterColor,
-                    (c) {
-                      setState(() {
-                        waterColor = c;
-                      });
-                    },
-                    iconType: ShaderIconType.water,
-                  ),
+                  onCustomTap: () => _pickColor('Water Tint', waterColor, (c) {
+                    setState(() {
+                      waterColor = c;
+                    });
+                  }, iconType: ShaderIconType.water),
                 ),
               ],
             ),
@@ -7512,7 +8987,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   activeColor: tabAccent,
                   onChanged: (v) => windSpeed = v,
                 ),
-                Container(height: 1, color: dividerColor, margin: const EdgeInsets.symmetric(vertical: 8)),
+                Container(
+                  height: 1,
+                  color: dividerColor,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                ),
 
                 // Water Quality Segmented
                 _buildMinecraftSegmented(
@@ -7534,13 +9013,14 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   activeColor: tabAccent,
                   onChanged: (v) => underwaterCaustics = v,
                 ),
-
               ],
             ),
           ),
 
           // Steve Tip Banner for Water & Ocean reflections
-          _buildSteveTipBanner('Tip: Adjust caustics and wave speed for realistic currents!'),
+          _buildSteveTipBanner(
+            'Tip: Adjust caustics and wave speed for realistic currents!',
+          ),
         ],
       ),
     );
@@ -7569,7 +9049,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               children: [
                 Row(
                   children: [
-                    AnimatedMinecraftIcon(type: VoxelIconType.rainCloud, size: 28, colorOverride: tabAccent),
+                    AnimatedMinecraftIcon(
+                      type: VoxelIconType.rainCloud,
+                      size: 28,
+                      colorOverride: tabAccent,
+                    ),
                     const SizedBox(width: 10),
                     const Expanded(
                       child: Column(
@@ -7586,7 +9070,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                           ),
                           Text(
                             'Tune storms, bloom, and cinematic color grading.',
-                            style: TextStyle(color: Colors.white54, fontSize: 11),
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 11,
+                            ),
                           ),
                         ],
                       ),
@@ -7600,8 +9087,20 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 MinecraftColorGrid(
                   title: '',
                   tiles: [
-                    _colorRow('Rain Fog', 'Atmospheric haze during rain', rainFogColor, (c) => rainFogColor = c, iconType: ShaderIconType.rainFog),
-                    _colorRow('Rain Water', 'Water color during rain', rainWaterColor, (c) => rainWaterColor = c, iconType: ShaderIconType.rainWater),
+                    _colorRow(
+                      'Rain Fog',
+                      'Atmospheric haze during rain',
+                      rainFogColor,
+                      (c) => rainFogColor = c,
+                      iconType: ShaderIconType.rainFog,
+                    ),
+                    _colorRow(
+                      'Rain Water',
+                      'Water color during rain',
+                      rainWaterColor,
+                      (c) => rainWaterColor = c,
+                      iconType: ShaderIconType.rainWater,
+                    ),
                   ],
                 ),
               ],
@@ -7617,7 +9116,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               children: [
                 Row(
                   children: [
-                    AnimatedMinecraftIcon(type: VoxelIconType.cubeMirror, size: 28, colorOverride: tabAccent),
+                    AnimatedMinecraftIcon(
+                      type: VoxelIconType.cubeMirror,
+                      size: 28,
+                      colorOverride: tabAccent,
+                    ),
                     const SizedBox(width: 10),
                     const Expanded(
                       child: Column(
@@ -7634,7 +9137,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                           ),
                           Text(
                             'Real-time reflections, bump maps, and waving flora.',
-                            style: TextStyle(color: Colors.white54, fontSize: 11),
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 11,
+                            ),
                           ),
                         ],
                       ),
@@ -7647,12 +9153,17 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 _buildMinecraftToggle(
                   icon: VoxelIconType.cubeMirror,
                   title: 'World Reflections',
-                  subtitle: 'Real-time reflections of sky and surrounding blocks',
+                  subtitle:
+                      'Real-time reflections of sky and surrounding blocks',
                   value: worldReflectionsEnabled,
                   activeColor: tabAccent,
                   onChanged: (v) => worldReflectionsEnabled = v,
                 ),
-                Container(height: 1, color: weatherDivider, margin: const EdgeInsets.symmetric(vertical: 8)),
+                Container(
+                  height: 1,
+                  color: weatherDivider,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                ),
 
                 // PBR Bump Mapping Toggle
                 _buildMinecraftToggle(
@@ -7663,7 +9174,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   activeColor: tabAccent,
                   onChanged: (v) => enablePBR = v,
                 ),
-                Container(height: 1, color: weatherDivider, margin: const EdgeInsets.symmetric(vertical: 8)),
+                Container(
+                  height: 1,
+                  color: weatherDivider,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                ),
 
                 // Global Metalness Slider
                 _buildMinecraftSlider(
@@ -7679,20 +9194,29 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   activeColor: tabAccent,
                   onChanged: (v) => globalMetalness = v,
                 ),
-                Container(height: 1, color: weatherDivider, margin: const EdgeInsets.symmetric(vertical: 8)),
+                Container(
+                  height: 1,
+                  color: weatherDivider,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                ),
 
                 // Waving Foliage Toggle
                 _buildMinecraftToggle(
                   icon: VoxelIconType.grassBlock,
                   title: 'Waving Foliage',
-                  subtitle: 'Wind-swaying animation for leaves, grass, crops & vines',
+                  subtitle:
+                      'Wind-swaying animation for leaves, grass, crops & vines',
                   value: wavingFoliage,
                   activeColor: tabAccent,
                   onChanged: (v) => wavingFoliage = v,
                 ),
 
                 if (wavingFoliage) ...[
-                  Container(height: 1, color: weatherDivider, margin: const EdgeInsets.symmetric(vertical: 8)),
+                  Container(
+                    height: 1,
+                    color: weatherDivider,
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                  ),
                   _buildMinecraftSlider(
                     icon: VoxelIconType.waves,
                     title: 'Foliage Wave Intensity',
@@ -7720,7 +9244,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               children: [
                 Row(
                   children: [
-                    AnimatedMinecraftIcon(type: VoxelIconType.film, size: 28, colorOverride: tabAccent),
+                    AnimatedMinecraftIcon(
+                      type: VoxelIconType.film,
+                      size: 28,
+                      colorOverride: tabAccent,
+                    ),
                     const SizedBox(width: 10),
                     const Expanded(
                       child: Column(
@@ -7737,7 +9265,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                           ),
                           Text(
                             'Cinematic color grading and biome temperature.',
-                            style: TextStyle(color: Colors.white54, fontSize: 11),
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 11,
+                            ),
                           ),
                         ],
                       ),
@@ -7755,13 +9286,23 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   activeColor: tabAccent,
                   onChanged: (v) => toneMapFilter = v,
                 ),
-                Container(height: 1, color: weatherDivider, margin: const EdgeInsets.symmetric(vertical: 8)),
+                Container(
+                  height: 1,
+                  color: weatherDivider,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                ),
 
                 // Biome-wise Tone (Dynamic / Vibrant / Savanna / Frost / Moody)
                 _buildMinecraftSegmented(
                   icon: VoxelIconType.palette,
                   title: 'Biome-wise Tone',
-                  items: const ['Dynamic', 'Vibrant', 'Savanna', 'Frost', 'Moody'],
+                  items: const [
+                    'Dynamic',
+                    'Vibrant',
+                    'Savanna',
+                    'Frost',
+                    'Moody',
+                  ],
                   selected: biomeTone,
                   activeColor: tabAccent,
                   onChanged: (v) => setState(() => biomeTone = v),
@@ -7771,7 +9312,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
           ),
 
           // Steve Tip Banner
-          _buildSteveTipBanner('Tip: Select ACES tone mapping with Dynamic biome tone for cinematic color depth!'),
+          _buildSteveTipBanner(
+            'Tip: Select ACES tone mapping with Dynamic biome tone for cinematic color depth!',
+          ),
         ],
       ),
     );
@@ -7821,11 +9364,19 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ),
         title: const Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: Color(0xFFE5A04A), size: 22),
+            Icon(
+              Icons.warning_amber_rounded,
+              color: Color(0xFFE5A04A),
+              size: 22,
+            ),
             SizedBox(width: 8),
             Text(
               'Discard Edits?',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
           ],
         ),
@@ -7836,7 +9387,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Keep Editing', style: TextStyle(color: Colors.white60)),
+            child: const Text(
+              'Keep Editing',
+              style: TextStyle(color: Colors.white60),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -7844,7 +9398,10 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Discard', style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text(
+              'Discard',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -7905,21 +9462,24 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
             _guideStep(
               stepNumber: '1',
               title: 'Open or Import Pack',
-              description: 'Tap "Open with Minecraft" or export .mcpack. Minecraft will launch and show "Import Started... Successfully imported pack".',
+              description:
+                  'Tap "Open with Minecraft" or export .mcpack. Minecraft will launch and show "Import Started... Successfully imported pack".',
               icon: Icons.file_download_done_rounded,
             ),
             const SizedBox(height: 10),
             _guideStep(
               stepNumber: '2',
               title: 'Enable Creator Experiments in World',
-              description: 'Open your World Settings -> Scroll down to Experiments -> Toggle ON "Render Dragon Features for Creators".',
+              description:
+                  'Open your World Settings -> Scroll down to Experiments -> Toggle ON "Render Dragon Features for Creators".',
               icon: Icons.science_outlined,
             ),
             const SizedBox(height: 10),
             _guideStep(
               stepNumber: '3',
               title: 'Turn On Deferred Lighting',
-              description: 'In Minecraft Settings -> Video -> Graphics Mode -> Choose "Deferred Technical Preview" to activate your custom shaders!',
+              description:
+                  'In Minecraft Settings -> Video -> Graphics Mode -> Choose "Deferred Technical Preview" to activate your custom shaders!',
               icon: Icons.wb_sunny_outlined,
             ),
             const SizedBox(height: 18),
@@ -7930,10 +9490,15 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF22C55E),
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text("GOT IT, LET'S GO!", style: TextStyle(fontWeight: FontWeight.w900)),
+                child: const Text(
+                  "GOT IT, LET'S GO!",
+                  style: TextStyle(fontWeight: FontWeight.w900),
+                ),
               ),
             ),
           ],
@@ -8051,7 +9616,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                 border: Border.all(color: curTheme.backBorder),
               ),
               child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 16),
+                icon: const Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: Colors.white,
+                  size: 16,
+                ),
                 padding: EdgeInsets.zero,
                 onPressed: () async {
                   final shouldPop = await _confirmDiscardEdits();
@@ -8062,233 +9631,276 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               ),
             ),
           ),
-        centerTitle: false,
-        // Pack Shader Name with edit action + Pack Icon button with generous standard spacing
-        title: Row(
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: _showRenameDialog,
+          centerTitle: false,
+          // Pack Shader Name with edit action + Pack Icon button with generous standard spacing
+          title: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: _showRenameDialog,
+                  behavior: HitTestBehavior.opaque,
+                  child: Container(
+                    height: 36,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: curTheme.cardBg,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: curTheme.border, width: 1.2),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.inventory_2_outlined,
+                          color: curTheme.primary,
+                          size: 15,
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            shaderNameCtrl.text.isEmpty
+                                ? 'Piglix Shader'
+                                : shaderNameCtrl.text,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.2,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.edit_rounded,
+                          color: curTheme.primary.withValues(alpha: 0.7),
+                          size: 12,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Generous standard spacing between Shader Name and Pack Icon
+              const SizedBox(width: 12),
+              GestureDetector(
+                onTap: _pickEditorLogo,
                 behavior: HitTestBehavior.opaque,
                 child: Container(
                   height: 36,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 9),
                   decoration: BoxDecoration(
                     color: curTheme.cardBg,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: curTheme.border, width: 1.2),
+                    border: Border.all(
+                      color:
+                          (_activeLogoBytes != null ||
+                              widget.uploadedLogoBytes != null)
+                          ? curTheme.primary
+                          : curTheme.border,
+                      width: 1.2,
+                    ),
                   ),
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.inventory_2_outlined, color: curTheme.primary, size: 15),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          shaderNameCtrl.text.isEmpty ? 'Piglix Shader' : shaderNameCtrl.text,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0.2,
+                      Container(
+                        width: 22,
+                        height: 22,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            color:
+                                (_activeLogoBytes != null ||
+                                    widget.uploadedLogoBytes != null)
+                                ? curTheme.primary
+                                : curTheme.border,
+                            width: 0.8,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: _activeLogoBytes != null
+                            ? Image.memory(_activeLogoBytes!, fit: BoxFit.cover)
+                            : (widget.uploadedLogoBytes != null
+                                  ? Image.memory(
+                                      widget.uploadedLogoBytes!,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : const Icon(
+                                      Icons.add_photo_alternate_outlined,
+                                      color: Color(0xFF94A3B8),
+                                      size: 13,
+                                    )),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        (_activeLogoBytes != null ||
+                                widget.uploadedLogoBytes != null)
+                            ? 'Icon ✓'
+                            : 'Pack Icon',
+                        style: TextStyle(
+                          color:
+                              (_activeLogoBytes != null ||
+                                  widget.uploadedLogoBytes != null)
+                              ? curTheme.primary
+                              : const Color(0xFF94A3B8),
+                          fontSize: 11.0,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const SizedBox(width: 4),
-                      Icon(Icons.edit_rounded, color: curTheme.primary.withValues(alpha: 0.7), size: 12),
                     ],
                   ),
                 ),
               ),
-            ),
-            // Generous standard spacing between Shader Name and Pack Icon
-            const SizedBox(width: 12),
-            GestureDetector(
-              onTap: _pickEditorLogo,
-              behavior: HitTestBehavior.opaque,
-              child: Container(
-                height: 36,
-                padding: const EdgeInsets.symmetric(horizontal: 9),
-                decoration: BoxDecoration(
-                  color: curTheme.cardBg,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: (_activeLogoBytes != null || widget.uploadedLogoBytes != null)
-                        ? curTheme.primary
-                        : curTheme.border,
-                    width: 1.2,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 22,
-                      height: 22,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(
-                          color: (_activeLogoBytes != null || widget.uploadedLogoBytes != null)
-                              ? curTheme.primary
-                              : curTheme.border,
-                          width: 0.8,
-                        ),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: _activeLogoBytes != null
-                          ? Image.memory(_activeLogoBytes!, fit: BoxFit.cover)
-                          : (widget.uploadedLogoBytes != null
-                              ? Image.memory(widget.uploadedLogoBytes!, fit: BoxFit.cover)
-                              : const Icon(Icons.add_photo_alternate_outlined,
-                                  color: Color(0xFF94A3B8), size: 13)),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      (_activeLogoBytes != null || widget.uploadedLogoBytes != null)
-                          ? 'Icon ✓'
-                          : 'Pack Icon',
-                      style: TextStyle(
-                        color: (_activeLogoBytes != null || widget.uploadedLogoBytes != null)
-                            ? curTheme.primary
-                            : const Color(0xFF94A3B8),
-                        fontSize: 11.0,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
+              const SizedBox(width: 4),
+            ],
+          ),
+          actions: [
+            IconButton(
+              tooltip: 'How to use in Minecraft',
+              icon: const Icon(
+                Icons.help_outline_rounded,
+                color: Colors.white70,
+                size: 22,
               ),
+              onPressed: _showActivationGuide,
             ),
             const SizedBox(width: 4),
           ],
-        ),
-        actions: [
-          IconButton(
-            tooltip: 'How to use in Minecraft',
-            icon: const Icon(Icons.help_outline_rounded, color: Colors.white70, size: 22),
-            onPressed: _showActivationGuide,
-          ),
-          const SizedBox(width: 4),
-        ],
-        // Exactly 4 Tabs with AI Scene Art & Pixelated Button Frames (compact & visible border)
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(62),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            height: 62,
-            padding: const EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 9),
-            decoration: BoxDecoration(
-              color: curTheme.surface,
-              border: Border(bottom: BorderSide(color: curTheme.border)),
-            ),
-            child: Row(
-              children: List.generate(_tabThemes.length, (idx) {
-                final tab = _tabThemes[idx];
-                final isSel = _tabController.index == idx;
-                final activeColor = (isSel && idx == 0) ? curTheme.primary : tab.primary;
-                const unselBorder = Color(0xFF68707E); // Clearly visible crisp border
+          // Exactly 4 Tabs with AI Scene Art & Pixelated Button Frames (compact & visible border)
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(62),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              height: 62,
+              padding: const EdgeInsets.only(
+                left: 8,
+                right: 8,
+                top: 4,
+                bottom: 9,
+              ),
+              decoration: BoxDecoration(
+                color: curTheme.surface,
+                border: Border(bottom: BorderSide(color: curTheme.border)),
+              ),
+              child: Row(
+                children: List.generate(_tabThemes.length, (idx) {
+                  final tab = _tabThemes[idx];
+                  final isSel = _tabController.index == idx;
+                  final activeColor = (isSel && idx == 0)
+                      ? curTheme.primary
+                      : tab.primary;
+                  const unselBorder = Color(
+                    0xFF68707E,
+                  ); // Clearly visible crisp border
 
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.5),
-                    child: GestureDetector(
-                      onTap: () => setState(() => _tabController.animateTo(idx)),
-                      child: CustomPaint(
-                        painter: _PixelatedCardPainter(
-                          fillColor: const Color(0xFF16202A),
-                          borderColor: isSel ? activeColor : unselBorder,
-                          borderWidth: isSel ? 2.0 : 1.4,
-                          step: 2.5,
-                          hasShadow: false,
-                        ),
-                        foregroundPainter: _PixelatedBorderPainter(
-                          borderColor: isSel ? activeColor : unselBorder,
-                          borderWidth: isSel ? 2.0 : 1.4,
-                          step: 2.5,
-                        ),
-                        child: ClipPath(
-                           clipper: const _PixelatedClipper(2.5),
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              // 1. Clean AI Minecraft Scene Art fitted properly
-                              Image.memory(
-                                tab.artBytes,
-                                fit: BoxFit.cover,
-                                gaplessPlayback: true,
-                              ),
+                  return Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.5),
+                      child: GestureDetector(
+                        onTap: () =>
+                            setState(() => _tabController.animateTo(idx)),
+                        child: CustomPaint(
+                          painter: _PixelatedCardPainter(
+                            fillColor: const Color(0xFF16202A),
+                            borderColor: isSel ? activeColor : unselBorder,
+                            borderWidth: isSel ? 2.0 : 1.4,
+                            step: 2.5,
+                            hasShadow: false,
+                          ),
+                          foregroundPainter: _PixelatedBorderPainter(
+                            borderColor: isSel ? activeColor : unselBorder,
+                            borderWidth: isSel ? 2.0 : 1.4,
+                            step: 2.5,
+                          ),
+                          child: ClipPath(
+                            clipper: const _PixelatedClipper(2.5),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                // 1. Clean AI Minecraft Scene Art fitted properly
+                                Image.memory(
+                                  tab.artBytes,
+                                  fit: BoxFit.cover,
+                                  gaplessPlayback: true,
+                                ),
 
-                              // 2. Subtle Dark Bottom Gradient Vignette
-                              Positioned(
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                child: Container(
-                                  height: 16,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.transparent,
-                                        Colors.black.withValues(alpha: 0.70),
-                                        Colors.black.withValues(alpha: 0.92),
-                                      ],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    ),
-                                  ),
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.symmetric(horizontal: 2),
-                                  child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Text(
-                                      tab.label,
-                                      style: TextStyle(
-                                        color: isSel ? const Color(0xFFFFF3D0) : const Color(0xFFCAD4DF),
-                                        fontFamily: 'PixelifySans',
-                                        fontSize: 8.0,
-                                        fontWeight: isSel ? FontWeight.w900 : FontWeight.w700,
-                                        letterSpacing: 0.5,
-                                        shadows: const [
-                                          Shadow(
-                                            color: Colors.black,
-                                            blurRadius: 2,
-                                            offset: Offset(0, 1),
-                                          ),
+                                // 2. Subtle Dark Bottom Gradient Vignette
+                                Positioned(
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Container(
+                                    height: 16,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.transparent,
+                                          Colors.black.withValues(alpha: 0.70),
+                                          Colors.black.withValues(alpha: 0.92),
                                         ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                      ),
+                                    ),
+                                    alignment: Alignment.center,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 2,
+                                    ),
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        tab.label,
+                                        style: TextStyle(
+                                          color: isSel
+                                              ? const Color(0xFFFFF3D0)
+                                              : const Color(0xFFCAD4DF),
+                                          fontFamily: 'PixelifySans',
+                                          fontSize: 8.0,
+                                          fontWeight: isSel
+                                              ? FontWeight.w900
+                                              : FontWeight.w700,
+                                          letterSpacing: 0.5,
+                                          shadows: const [
+                                            Shadow(
+                                              color: Colors.black,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 1),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              }),
+                  );
+                }),
+              ),
             ),
           ),
         ),
-      ),
-      body: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-        color: curTheme.bg,
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            _tabAtmosphere(),
-            _tabLighting(),
-            _tabWorld(),
-            _tabWeather(),
-          ],
+        body: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          color: curTheme.bg,
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              _tabAtmosphere(),
+              _tabLighting(),
+              _tabWorld(),
+              _tabWeather(),
+            ],
+          ),
         ),
-      ),
-      bottomNavigationBar: _buildBottomBar(curTheme),
+        bottomNavigationBar: _buildBottomBar(curTheme),
       ),
     );
   }
@@ -8348,7 +9960,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.play_arrow_rounded, size: 22, color: Colors.white),
+                                Icon(
+                                  Icons.play_arrow_rounded,
+                                  size: 22,
+                                  color: Colors.white,
+                                ),
                                 SizedBox(width: 8),
                                 Text(
                                   'OPEN WITH MINECRAFT',
@@ -8396,7 +10012,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   }),
                   child: Text(
                     '✎ Edit & Regenerate',
-                    style: TextStyle(color: curTheme.primary, fontSize: 12, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      color: curTheme.primary,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -8407,13 +10027,28 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   SizedBox(
                     height: 50,
                     child: OutlinedButton.icon(
-                      onPressed: () => setState(() => _tabController.animateTo(_tabController.index - 1)),
-                      icon: const Icon(Icons.arrow_back_rounded, size: 18, color: Colors.white70),
-                      label: const Text('Back', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w700)),
+                      onPressed: () => setState(
+                        () =>
+                            _tabController.animateTo(_tabController.index - 1),
+                      ),
+                      icon: const Icon(
+                        Icons.arrow_back_rounded,
+                        size: 18,
+                        color: Colors.white70,
+                      ),
+                      label: const Text(
+                        'Back',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       style: OutlinedButton.styleFrom(
                         backgroundColor: curTheme.backBg,
                         side: BorderSide(color: curTheme.backBorder),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
                   ),
@@ -8448,13 +10083,19 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                       child: InkWell(
                         onTap: isLastTab
                             ? _generatePack
-                            : () => setState(() => _tabController.animateTo(_tabController.index + 1)),
+                            : () => setState(
+                                () => _tabController.animateTo(
+                                  _tabController.index + 1,
+                                ),
+                              ),
                         borderRadius: BorderRadius.circular(12),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              isLastTab ? Icons.auto_awesome_rounded : Icons.arrow_forward_rounded,
+                              isLastTab
+                                  ? Icons.auto_awesome_rounded
+                                  : Icons.arrow_forward_rounded,
                               color: Colors.white,
                               size: 20,
                             ),
@@ -8483,9 +10124,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => _CompileProgressDialog(
-        onCompile: (p, s) => _doCompile(p, s),
-      ),
+      builder: (_) =>
+          _CompileProgressDialog(onCompile: (p, s) => _doCompile(p, s)),
     );
   }
 
@@ -8506,11 +10146,18 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       statusN.value = 'Loading Vibrant Visuals configuration & PBR assets...';
 
       Archive sourceArchive;
-      if (widget.uploadedShaderBytes != null && widget.uploadedShaderBytes!.isNotEmpty) {
-        sourceArchive = await compute(_decodeZipBytesWorker, widget.uploadedShaderBytes!);
+      if (widget.uploadedShaderBytes != null &&
+          widget.uploadedShaderBytes!.isNotEmpty) {
+        sourceArchive = await compute(
+          _decodeZipBytesWorker,
+          widget.uploadedShaderBytes!,
+        );
       } else {
         final byteData = await rootBundle.load('assets/base_shader.zip');
-        sourceArchive = await compute(_decodeZipBytesWorker, byteData.buffer.asUint8List());
+        sourceArchive = await compute(
+          _decodeZipBytesWorker,
+          byteData.buffer.asUint8List(),
+        );
       }
 
       // Detect if archive has a single top-level folder prefix (e.g. PackFolder/manifest.json)
@@ -8522,12 +10169,25 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         if (slashIdx != -1) {
           final candidate = first.substring(0, slashIdx + 1);
           const standardDirs = [
-            'atmospherics/', 'biomes/', 'fogs/', 'lighting/', 'local_lighting/',
-            'point_lights/', 'water/', 'color_grading/', 'textures/', 'subpacks/',
-            'pbr/', 'shadows/', 'particles/', 'materials/'
+            'atmospherics/',
+            'biomes/',
+            'fogs/',
+            'lighting/',
+            'local_lighting/',
+            'point_lights/',
+            'water/',
+            'color_grading/',
+            'textures/',
+            'subpacks/',
+            'pbr/',
+            'shadows/',
+            'particles/',
+            'materials/',
           ];
           if (!standardDirs.any((d) => candidate.startsWith(d))) {
-            if (nonDirFiles.every((f) => f.name.replaceAll('\\', '/').startsWith(candidate))) {
+            if (nonDirFiles.every(
+              (f) => f.name.replaceAll('\\', '/').startsWith(candidate),
+            )) {
               prefix = candidate;
             }
           }
@@ -8554,10 +10214,20 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       statusN.value = 'Configuring Atmosphere, Water & Lighting JSONs...';
 
       // 1. Torch & Point Lighting (Both 1.21.60+ local_lighting and 1.21.0-1.21.50 point_lights)
-      final tR = (torchLightColor.redInt * blockLightIntensity).round().clamp(0, 255);
-      final tG = (torchLightColor.greenInt * blockLightIntensity).round().clamp(0, 255);
-      final tB = (torchLightColor.blueInt * blockLightIntensity).round().clamp(0, 255);
-      final torchHex = '#${Color.fromARGB(255, tR, tG, tB).toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
+      final tR = (torchLightColor.redInt * blockLightIntensity).round().clamp(
+        0,
+        255,
+      );
+      final tG = (torchLightColor.greenInt * blockLightIntensity).round().clamp(
+        0,
+        255,
+      );
+      final tB = (torchLightColor.blueInt * blockLightIntensity).round().clamp(
+        0,
+        255,
+      );
+      final torchHex =
+          '#${Color.fromARGB(255, tR, tG, tB).toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
 
       final pointColors = {
         'minecraft:torch': torchHex,
@@ -8578,50 +10248,72 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         'minecraft:local_light_settings': {
           'description': {'identifier': 'pog:local_lighting'},
           'colors': pointColors,
-        }
+        },
       });
       final llBytes = utf8.encode(localLightingJson);
-      fileMap['local_lighting/local_lighting.json'] = ArchiveFile('local_lighting/local_lighting.json', llBytes.length, llBytes);
+      fileMap['local_lighting/local_lighting.json'] = ArchiveFile(
+        'local_lighting/local_lighting.json',
+        llBytes.length,
+        llBytes,
+      );
 
       final pointLightsJson = jsonEncode({
         'format_version': '1.21.40',
-        'minecraft:point_light_settings': {
-          'colors': pointColors,
-        }
+        'minecraft:point_light_settings': {'colors': pointColors},
       });
       final plBytes = utf8.encode(pointLightsJson);
-      fileMap['point_lights/global.json'] = ArchiveFile('point_lights/global.json', plBytes.length, plBytes);
+      fileMap['point_lights/global.json'] = ArchiveFile(
+        'point_lights/global.json',
+        plBytes.length,
+        plBytes,
+      );
 
       // 2. Water Waves, Caustics & Transparency across all water/*.json files
       final waterTransparency = waterQuality == 'Ultra'
           ? 0.85
-          : (waterQuality == 'High' ? 0.70 : (waterQuality == 'Medium' ? 0.55 : 0.40));
+          : (waterQuality == 'High'
+                ? 0.70
+                : (waterQuality == 'Medium' ? 0.55 : 0.40));
       final waterSpeed = (windSpeed * 2.38).clamp(0.2, 8.0);
       final waterFreq = (windSpeed * 1.33).clamp(0.2, 4.0);
-      final waterOctaves = waterQuality == 'Ultra' ? 24 : (waterQuality == 'High' ? 18 : (waterQuality == 'Medium' ? 12 : 8));
+      final waterOctaves = waterQuality == 'Ultra'
+          ? 24
+          : (waterQuality == 'High' ? 18 : (waterQuality == 'Medium' ? 12 : 8));
 
       for (final key in fileMap.keys.toList()) {
         if (key.startsWith('water/') && key.endsWith('.json')) {
           try {
-            final raw = _cleanJson(utf8.decode(fileMap[key]!.content as List<int>));
+            final raw = _cleanJson(
+              utf8.decode(fileMap[key]!.content as List<int>),
+            );
             final wData = jsonDecode(raw) as Map<String, dynamic>;
-            final wSettings = wData['minecraft:water_settings'] as Map<String, dynamic>?;
+            final wSettings =
+                wData['minecraft:water_settings'] as Map<String, dynamic>?;
             if (wSettings != null) {
-              if (wSettings['waves'] == null) wSettings['waves'] = <String, dynamic>{};
+              if (wSettings['waves'] == null) {
+                wSettings['waves'] = <String, dynamic>{};
+              }
               final waves = wSettings['waves'] as Map<String, dynamic>;
               waves['enabled'] = true;
               waves['speed'] = waterSpeed;
               waves['frequency'] = waterFreq;
               waves['octaves'] = waterOctaves;
 
-              if (wSettings['caustics'] == null) wSettings['caustics'] = <String, dynamic>{};
+              if (wSettings['caustics'] == null) {
+                wSettings['caustics'] = <String, dynamic>{};
+              }
               final caustics = wSettings['caustics'] as Map<String, dynamic>;
               caustics['enabled'] = underwaterCaustics;
               caustics['texture'] = 'textures/causticsLow/caustics.png';
 
               if (wSettings['particle_concentrations'] != null) {
-                final p = wSettings['particle_concentrations'] as Map<String, dynamic>;
-                p['chlorophyll'] = ((1.0 - waterTransparency) * 0.05).clamp(0.0005, 0.1);
+                final p =
+                    wSettings['particle_concentrations']
+                        as Map<String, dynamic>;
+                p['chlorophyll'] = ((1.0 - waterTransparency) * 0.05).clamp(
+                  0.0005,
+                  0.1,
+                );
               }
 
               final wBytes = utf8.encode(jsonEncode(wData));
@@ -8632,22 +10324,32 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       }
 
       // 3. Biome Water Surface Color, Transparency & Sky Color across all biomes
-      final waterHex = '#${waterColor.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
-      final skyHex = '#${noonColor.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
+      final waterHex =
+          '#${waterColor.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
+      final skyHex =
+          '#${noonColor.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
       for (final key in fileMap.keys.toList()) {
         if (key.startsWith('biomes/') && key.endsWith('.client_biome.json')) {
           try {
-            final raw = _cleanJson(utf8.decode(fileMap[key]!.content as List<int>));
+            final raw = _cleanJson(
+              utf8.decode(fileMap[key]!.content as List<int>),
+            );
             final bData = jsonDecode(raw) as Map<String, dynamic>;
             final bSettings = bData['minecraft:client_biome'] ?? bData;
             if (bSettings != null) {
-              bSettings['water_surface_color'] = [waterColor.redInt, waterColor.greenInt, waterColor.blueInt];
+              bSettings['water_surface_color'] = [
+                waterColor.redInt,
+                waterColor.greenInt,
+                waterColor.blueInt,
+              ];
               bSettings['water_surface_transparency'] = waterTransparency;
               if (bSettings['components'] != null) {
                 final comps = bSettings['components'] as Map<String, dynamic>;
                 if (comps['minecraft:water_appearance'] != null) {
-                  comps['minecraft:water_appearance']['surface_color'] = waterHex;
-                  comps['minecraft:water_appearance']['surface_transparency'] = waterTransparency;
+                  comps['minecraft:water_appearance']['surface_color'] =
+                      waterHex;
+                  comps['minecraft:water_appearance']['surface_transparency'] =
+                      waterTransparency;
                 }
                 if (comps['minecraft:sky_color'] != null) {
                   comps['minecraft:sky_color']['sky_color'] = skyHex;
@@ -8661,9 +10363,12 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       }
 
       // 4. Fog Density, Soft Fog Color & Weather Fog across all fog definitions
-      final fogHex = '#${fogColor.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
-      final rainFogHex = '#${rainFogColor.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
-      final rainWaterHex = '#${rainWaterColor.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
+      final fogHex =
+          '#${fogColor.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
+      final rainFogHex =
+          '#${rainFogColor.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
+      final rainWaterHex =
+          '#${rainWaterColor.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
       final baseVolumetric = volumetricFogProfile == 'Cinematic'
           ? 0.065
           : (volumetricFogProfile == 'Balanced' ? 0.035 : 0.012);
@@ -8671,16 +10376,25 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       for (final key in fileMap.keys.toList()) {
         if (key.startsWith('fogs/') && key.endsWith('.json')) {
           try {
-            final raw = _cleanJson(utf8.decode(fileMap[key]!.content as List<int>));
+            final raw = _cleanJson(
+              utf8.decode(fileMap[key]!.content as List<int>),
+            );
             final fData = jsonDecode(raw) as Map<String, dynamic>;
-            final fSettings = fData['minecraft:fog_settings'] as Map<String, dynamic>?;
+            final fSettings =
+                fData['minecraft:fog_settings'] as Map<String, dynamic>?;
             if (fSettings != null) {
               if (fSettings['distance'] != null) {
                 final dist = fSettings['distance'] as Map<String, dynamic>;
                 if (dist['air'] != null) {
                   dist['air']['fog_color'] = fogHex;
-                  dist['air']['fog_start'] = (0.92 - (fogDensity * 0.40)).clamp(0.05, 0.95);
-                  dist['air']['fog_end'] = (1.00 - (fogDensity * 0.20)).clamp(0.30, 1.00);
+                  dist['air']['fog_start'] = (0.92 - (fogDensity * 0.40)).clamp(
+                    0.05,
+                    0.95,
+                  );
+                  dist['air']['fog_end'] = (1.00 - (fogDensity * 0.20)).clamp(
+                    0.30,
+                    1.00,
+                  );
                 }
                 if (dist['weather'] != null) {
                   dist['weather']['fog_color'] = rainFogHex;
@@ -8692,7 +10406,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
               if (fSettings['volumetric'] != null) {
                 final vol = fSettings['volumetric'] as Map<String, dynamic>;
                 if (vol['density'] != null && vol['density']['air'] != null) {
-                  vol['density']['air']['max_density'] = (baseVolumetric * fogDensity).clamp(0.002, 0.25);
+                  vol['density']['air']['max_density'] =
+                      (baseVolumetric * fogDensity).clamp(0.002, 0.25);
                 }
                 if (vol['media_coefficients'] != null) {
                   final mc = vol['media_coefficients'] as Map<String, dynamic>;
@@ -8721,26 +10436,37 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       final op = toneMapFilter.toLowerCase().contains('reinhard')
           ? 'reinhard'
           : (toneMapFilter.toLowerCase().contains('warm')
-              ? 'hable'
-              : (toneMapFilter.toLowerCase().contains('cool') ? 'aces' : 'aces'));
+                ? 'hable'
+                : (toneMapFilter.toLowerCase().contains('cool')
+                      ? 'aces'
+                      : 'aces'));
       final targetTemp = biomeTone == 'Savanna'
           ? 5500.0
           : (biomeTone == 'Frost'
-              ? 7800.0
-              : (biomeTone == 'Vibrant'
-                  ? 6200.0
-                  : (biomeTone == 'Moody' ? 6000.0 : 6500.0)));
-      final satMult = biomeTone == 'Vibrant' ? 1.25 : (biomeTone == 'Moody' ? 0.75 : 1.0);
+                ? 7800.0
+                : (biomeTone == 'Vibrant'
+                      ? 6200.0
+                      : (biomeTone == 'Moody' ? 6000.0 : 6500.0)));
+      final satMult = biomeTone == 'Vibrant'
+          ? 1.25
+          : (biomeTone == 'Moody' ? 0.75 : 1.0);
       final effSat = (globalSaturation * satMult).clamp(0.1, 2.5);
       final effContrast = contrast.clamp(0.5, 2.0);
       final effGain = (1.05 * autoExposure).clamp(0.4, 2.5);
 
-      for (final cgKey in ['color_grading/color_grading.json', 'color_grading/pale_color_grading.json']) {
+      for (final cgKey in [
+        'color_grading/color_grading.json',
+        'color_grading/pale_color_grading.json',
+      ]) {
         if (fileMap.containsKey(cgKey)) {
           try {
-            final raw = _cleanJson(utf8.decode(fileMap[cgKey]!.content as List<int>));
+            final raw = _cleanJson(
+              utf8.decode(fileMap[cgKey]!.content as List<int>),
+            );
             final cgData = jsonDecode(raw) as Map<String, dynamic>;
-            final cgSettings = cgData['minecraft:color_grading_settings'] as Map<String, dynamic>?;
+            final cgSettings =
+                cgData['minecraft:color_grading_settings']
+                    as Map<String, dynamic>?;
             if (cgSettings != null) {
               cgSettings['description'] = {'identifier': 'pog:color_grading'};
               cgSettings['tone_mapping'] = {'operator': op};
@@ -8772,17 +10498,27 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       statusN.value = 'Configuring Directional Lighting & God Rays...';
 
       // 6. Directional Sun & Moon Illuminance, God Rays Colors & Orbital Offset (lighting/*.json)
-      final sunIllumScale = (181.0 * lightIntensity * bloomIntensity).clamp(10.0, 350.0);
-      final moonIllumScale = (2.1 * nightVision * moonRayIntensity).clamp(0.1, 15.0);
+      final sunIllumScale = (181.0 * lightIntensity * bloomIntensity).clamp(
+        10.0,
+        350.0,
+      );
+      final moonIllumScale = (2.1 * nightVision * moonRayIntensity).clamp(
+        0.1,
+        15.0,
+      );
 
       for (final key in fileMap.keys.toList()) {
         if (key.startsWith('lighting/') && key.endsWith('.json')) {
           try {
-            final raw = _cleanJson(utf8.decode(fileMap[key]!.content as List<int>));
+            final raw = _cleanJson(
+              utf8.decode(fileMap[key]!.content as List<int>),
+            );
             final lData = jsonDecode(raw) as Map<String, dynamic>;
-            final lSettings = lData['minecraft:lighting_settings'] as Map<String, dynamic>?;
+            final lSettings =
+                lData['minecraft:lighting_settings'] as Map<String, dynamic>?;
             if (lSettings != null && lSettings['directional_lights'] != null) {
-              final dl = lSettings['directional_lights'] as Map<String, dynamic>;
+              final dl =
+                  lSettings['directional_lights'] as Map<String, dynamic>;
               if (dl['orbital'] == null) dl['orbital'] = <String, dynamic>{};
               final orbital = dl['orbital'] as Map<String, dynamic>;
 
@@ -8801,20 +10537,56 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   '0.827000': sunIllumScale * 1.18,
                 },
                 'color': {
-                  '0.000000': [rayNoonColor.redInt, rayNoonColor.greenInt, rayNoonColor.blueInt],
-                  '0.160000': [rayNoonColor.redInt, rayNoonColor.greenInt, rayNoonColor.blueInt],
-                  '0.215000': [rayEveningColor.redInt, rayEveningColor.greenInt, rayEveningColor.blueInt],
-                  '0.230000': [rayEveningColor.redInt, rayEveningColor.greenInt, rayEveningColor.blueInt],
+                  '0.000000': [
+                    rayNoonColor.redInt,
+                    rayNoonColor.greenInt,
+                    rayNoonColor.blueInt,
+                  ],
+                  '0.160000': [
+                    rayNoonColor.redInt,
+                    rayNoonColor.greenInt,
+                    rayNoonColor.blueInt,
+                  ],
+                  '0.215000': [
+                    rayEveningColor.redInt,
+                    rayEveningColor.greenInt,
+                    rayEveningColor.blueInt,
+                  ],
+                  '0.230000': [
+                    rayEveningColor.redInt,
+                    rayEveningColor.greenInt,
+                    rayEveningColor.blueInt,
+                  ],
                   '0.300000': [40, 15, 5],
                   '0.670000': [0, 0, 0],
                   '0.680000': [0, 0, 0],
                   '0.690000': [0, 0, 0],
-                  '0.740000': [rayMorningColor.redInt, rayMorningColor.greenInt, rayMorningColor.blueInt],
-                  '0.750000': [rayMorningColor.redInt, rayMorningColor.greenInt, rayMorningColor.blueInt],
-                  '0.770000': [rayMorningColor.redInt, rayMorningColor.greenInt, rayMorningColor.blueInt],
-                  '0.790000': [rayMorningColor.redInt, rayMorningColor.greenInt, rayMorningColor.blueInt],
-                  '0.800000': [rayNoonColor.redInt, rayNoonColor.greenInt, rayNoonColor.blueInt],
-                }
+                  '0.740000': [
+                    rayMorningColor.redInt,
+                    rayMorningColor.greenInt,
+                    rayMorningColor.blueInt,
+                  ],
+                  '0.750000': [
+                    rayMorningColor.redInt,
+                    rayMorningColor.greenInt,
+                    rayMorningColor.blueInt,
+                  ],
+                  '0.770000': [
+                    rayMorningColor.redInt,
+                    rayMorningColor.greenInt,
+                    rayMorningColor.blueInt,
+                  ],
+                  '0.790000': [
+                    rayMorningColor.redInt,
+                    rayMorningColor.greenInt,
+                    rayMorningColor.blueInt,
+                  ],
+                  '0.800000': [
+                    rayNoonColor.redInt,
+                    rayNoonColor.greenInt,
+                    rayNoonColor.blueInt,
+                  ],
+                },
               };
 
               orbital['moon'] = {
@@ -8825,10 +10597,22 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
                   '1.000000': moonIllumScale * 0.5,
                 },
                 'color': {
-                  '0.000000': [rayNightColor.redInt, rayNightColor.greenInt, rayNightColor.blueInt],
-                  '0.300000': [rayNightColor.redInt, rayNightColor.greenInt, rayNightColor.blueInt],
-                  '0.500000': [rayNightColor.redInt, rayNightColor.greenInt, rayNightColor.blueInt],
-                }
+                  '0.000000': [
+                    rayNightColor.redInt,
+                    rayNightColor.greenInt,
+                    rayNightColor.blueInt,
+                  ],
+                  '0.300000': [
+                    rayNightColor.redInt,
+                    rayNightColor.greenInt,
+                    rayNightColor.blueInt,
+                  ],
+                  '0.500000': [
+                    rayNightColor.redInt,
+                    rayNightColor.greenInt,
+                    rayNightColor.blueInt,
+                  ],
+                },
               };
 
               if (orbital['orbital_offset_degrees'] == null) {
@@ -8850,54 +10634,134 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       // 7. Atmospherics: Volumetric God Rays, Glare, Rayleigh & Sky Colors
       final rayMultiplier = volumetricRays.contains('Heavy')
           ? 1.5
-          : (volumetricRays.contains('Balanced') ? 1.0 : (volumetricRays.contains('Subtle') ? 0.6 : 0.2));
-      final mieMorning = (4.0 * morningRayIntensity * rayMultiplier).clamp(0.2, 16.0);
+          : (volumetricRays.contains('Balanced')
+                ? 1.0
+                : (volumetricRays.contains('Subtle') ? 0.6 : 0.2));
+      final mieMorning = (4.0 * morningRayIntensity * rayMultiplier).clamp(
+        0.2,
+        16.0,
+      );
       final mieNoon = (4.0 * lightIntensity * rayMultiplier).clamp(0.2, 16.0);
-      final mieEvening = (4.0 * eveningRayIntensity * rayMultiplier).clamp(0.2, 16.0);
-      final mieMoon = (1.5 * moonRayIntensity * rayMultiplier * nightVision).clamp(0.05, 10.0);
+      final mieEvening = (4.0 * eveningRayIntensity * rayMultiplier).clamp(
+        0.2,
+        16.0,
+      );
+      final mieMoon = (1.5 * moonRayIntensity * rayMultiplier * nightVision)
+          .clamp(0.05, 10.0);
 
       for (final key in fileMap.keys.toList()) {
         if (key.startsWith('atmospherics/') && key.endsWith('.json')) {
           try {
-            final raw = _cleanJson(utf8.decode(fileMap[key]!.content as List<int>));
+            final raw = _cleanJson(
+              utf8.decode(fileMap[key]!.content as List<int>),
+            );
             final aData = jsonDecode(raw) as Map<String, dynamic>;
-            final aSettings = aData['minecraft:atmosphere_settings'] as Map<String, dynamic>?;
+            final aSettings =
+                aData['minecraft:atmosphere_settings'] as Map<String, dynamic>?;
             if (aSettings != null) {
               aSettings['sky_zenith_color'] = {
-                '0.000000': [noonColor.redInt, noonColor.greenInt, noonColor.blueInt],
-                '0.160000': [noonColor.redInt, noonColor.greenInt, noonColor.blueInt],
-                '0.215000': [eveningColor.redInt, eveningColor.greenInt, eveningColor.blueInt],
-                '0.225000': [eveningColor.redInt, eveningColor.greenInt, eveningColor.blueInt],
-                '0.300000': [nightColor.redInt, nightColor.greenInt, nightColor.blueInt],
-                '0.500000': [nightColor.redInt, nightColor.greenInt, nightColor.blueInt],
-                '0.694000': [nightColor.redInt, nightColor.greenInt, nightColor.blueInt],
-                '0.740000': [morningColor.redInt, morningColor.greenInt, morningColor.blueInt],
-                '0.770000': [morningColor.redInt, morningColor.greenInt, morningColor.blueInt],
-                '0.827000': [noonColor.redInt, noonColor.greenInt, noonColor.blueInt],
+                '0.000000': [
+                  noonColor.redInt,
+                  noonColor.greenInt,
+                  noonColor.blueInt,
+                ],
+                '0.160000': [
+                  noonColor.redInt,
+                  noonColor.greenInt,
+                  noonColor.blueInt,
+                ],
+                '0.215000': [
+                  eveningColor.redInt,
+                  eveningColor.greenInt,
+                  eveningColor.blueInt,
+                ],
+                '0.225000': [
+                  eveningColor.redInt,
+                  eveningColor.greenInt,
+                  eveningColor.blueInt,
+                ],
+                '0.300000': [
+                  nightColor.redInt,
+                  nightColor.greenInt,
+                  nightColor.blueInt,
+                ],
+                '0.500000': [
+                  nightColor.redInt,
+                  nightColor.greenInt,
+                  nightColor.blueInt,
+                ],
+                '0.694000': [
+                  nightColor.redInt,
+                  nightColor.greenInt,
+                  nightColor.blueInt,
+                ],
+                '0.740000': [
+                  morningColor.redInt,
+                  morningColor.greenInt,
+                  morningColor.blueInt,
+                ],
+                '0.770000': [
+                  morningColor.redInt,
+                  morningColor.greenInt,
+                  morningColor.blueInt,
+                ],
+                '0.827000': [
+                  noonColor.redInt,
+                  noonColor.greenInt,
+                  noonColor.blueInt,
+                ],
               };
 
               aSettings['sky_horizon_color'] = {
                 '0.000000': [
                   (noonColor.redInt * 0.85 + 38).round().clamp(0, 255),
                   (noonColor.greenInt * 0.85 + 38).round().clamp(0, 255),
-                  (noonColor.blueInt * 0.85 + 38).round().clamp(0, 255)
+                  (noonColor.blueInt * 0.85 + 38).round().clamp(0, 255),
                 ],
                 '0.160000': [
                   (noonColor.redInt * 0.85 + 38).round().clamp(0, 255),
                   (noonColor.greenInt * 0.85 + 38).round().clamp(0, 255),
-                  (noonColor.blueInt * 0.85 + 38).round().clamp(0, 255)
+                  (noonColor.blueInt * 0.85 + 38).round().clamp(0, 255),
                 ],
-                '0.215000': [eveningColor.redInt, eveningColor.greenInt, eveningColor.blueInt],
-                '0.225000': [eveningColor.redInt, eveningColor.greenInt, eveningColor.blueInt],
-                '0.300000': [nightColor.redInt, nightColor.greenInt, (nightColor.blueInt * 0.8).round().clamp(0, 255)],
-                '0.500000': [nightColor.redInt, nightColor.greenInt, (nightColor.blueInt * 0.8).round().clamp(0, 255)],
-                '0.694000': [nightColor.redInt, nightColor.greenInt, (nightColor.blueInt * 0.8).round().clamp(0, 255)],
-                '0.740000': [morningColor.redInt, morningColor.greenInt, morningColor.blueInt],
-                '0.770000': [morningColor.redInt, morningColor.greenInt, morningColor.blueInt],
+                '0.215000': [
+                  eveningColor.redInt,
+                  eveningColor.greenInt,
+                  eveningColor.blueInt,
+                ],
+                '0.225000': [
+                  eveningColor.redInt,
+                  eveningColor.greenInt,
+                  eveningColor.blueInt,
+                ],
+                '0.300000': [
+                  nightColor.redInt,
+                  nightColor.greenInt,
+                  (nightColor.blueInt * 0.8).round().clamp(0, 255),
+                ],
+                '0.500000': [
+                  nightColor.redInt,
+                  nightColor.greenInt,
+                  (nightColor.blueInt * 0.8).round().clamp(0, 255),
+                ],
+                '0.694000': [
+                  nightColor.redInt,
+                  nightColor.greenInt,
+                  (nightColor.blueInt * 0.8).round().clamp(0, 255),
+                ],
+                '0.740000': [
+                  morningColor.redInt,
+                  morningColor.greenInt,
+                  morningColor.blueInt,
+                ],
+                '0.770000': [
+                  morningColor.redInt,
+                  morningColor.greenInt,
+                  morningColor.blueInt,
+                ],
                 '0.827000': [
                   (noonColor.redInt * 0.85 + 38).round().clamp(0, 255),
                   (noonColor.greenInt * 0.85 + 38).round().clamp(0, 255),
-                  (noonColor.blueInt * 0.85 + 38).round().clamp(0, 255)
+                  (noonColor.blueInt * 0.85 + 38).round().clamp(0, 255),
                 ],
               };
 
@@ -8967,17 +10831,25 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       // 8. Shadows Settings (format_version: 1.21.80)
       final texel = shadowQuality == 'Ultra'
           ? 2048
-          : (shadowQuality == 'High' ? 1024 : (shadowQuality == 'Low' ? 512 : 256));
+          : (shadowQuality == 'High'
+                ? 1024
+                : (shadowQuality == 'Low' ? 512 : 256));
       Map<String, dynamic> shadowSettings = {
         'format_version': '1.21.80',
         'minecraft:shadow_settings': {
-          'shadow_style': shadowQuality == 'Off' ? 'hard_shadows' : 'soft_shadows',
+          'shadow_style': shadowQuality == 'Off'
+              ? 'hard_shadows'
+              : 'soft_shadows',
           'texel_size': texel,
           'point_light_shadows': enablePointLightShadows,
-        }
+        },
       };
       final shBytes = utf8.encode(jsonEncode(shadowSettings));
-      fileMap['shadows/global.json'] = ArchiveFile('shadows/global.json', shBytes.length, shBytes);
+      fileMap['shadows/global.json'] = ArchiveFile(
+        'shadows/global.json',
+        shBytes.length,
+        shBytes,
+      );
 
       // 9. PBR Fallback Settings (minecraft:pog_fallback_settings)
       final metalInt = (globalMetalness * 255).round().clamp(0, 255);
@@ -8988,42 +10860,76 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         'minecraft:pog_fallback_settings': {
           'description': {'identifier': 'pog:base_pog'},
           'blocks': {
-            'global_metalness_emissive_roughness_subsurface': [metalInt, 0, roughInt, bumpInt]
+            'global_metalness_emissive_roughness_subsurface': [
+              metalInt,
+              0,
+              roughInt,
+              bumpInt,
+            ],
           },
           'actors': {
-            'global_metalness_emissive_roughness_subsurface': [metalInt, 0, roughInt, 32]
+            'global_metalness_emissive_roughness_subsurface': [
+              metalInt,
+              0,
+              roughInt,
+              32,
+            ],
           },
           'particles': {
-            'global_metalness_emissive_roughness_subsurface': [metalInt, 0, roughInt, 0]
+            'global_metalness_emissive_roughness_subsurface': [
+              metalInt,
+              0,
+              roughInt,
+              0,
+            ],
           },
           'items': {
-            'global_metalness_emissive_roughness_subsurface': [metalInt, 0, roughInt, 0]
-          }
-        }
+            'global_metalness_emissive_roughness_subsurface': [
+              metalInt,
+              0,
+              roughInt,
+              0,
+            ],
+          },
+        },
       };
       final pbrBytes = utf8.encode(jsonEncode(pbrSettings));
-      fileMap['pbr/global.json'] = ArchiveFile('pbr/global.json', pbrBytes.length, pbrBytes);
+      fileMap['pbr/global.json'] = ArchiveFile(
+        'pbr/global.json',
+        pbrBytes.length,
+        pbrBytes,
+      );
 
       // 10. Waving Foliage in particles/leaves/*.particle.json
       for (final key in fileMap.keys.toList()) {
-        if (key.startsWith('particles/leaves/') && key.endsWith('.particle.json')) {
+        if (key.startsWith('particles/leaves/') &&
+            key.endsWith('.particle.json')) {
           try {
-            final raw = _cleanJson(utf8.decode(fileMap[key]!.content as List<int>));
+            final raw = _cleanJson(
+              utf8.decode(fileMap[key]!.content as List<int>),
+            );
             final pData = jsonDecode(raw) as Map<String, dynamic>;
             final pe = pData['particle_effect'] as Map<String, dynamic>?;
             if (pe != null && pe['components'] != null) {
               final comps = pe['components'] as Map<String, dynamic>;
               if (!wavingFoliage) {
                 if (comps['minecraft:particle_emitter_rate_steady'] != null) {
-                  comps['minecraft:particle_emitter_rate_steady']['spawn_rate'] = 0.0;
+                  comps['minecraft:particle_emitter_rate_steady']['spawn_rate'] =
+                      0.0;
                 }
               } else {
                 if (comps['minecraft:particle_emitter_rate_steady'] != null) {
-                  comps['minecraft:particle_emitter_rate_steady']['spawn_rate'] = (2.0 * foliageWaveSpeed).clamp(0.5, 6.0);
+                  comps['minecraft:particle_emitter_rate_steady']['spawn_rate'] =
+                      (2.0 * foliageWaveSpeed).clamp(0.5, 6.0);
                 }
                 if (comps['minecraft:particle_motion_dynamic'] != null) {
-                  final motion = comps['minecraft:particle_motion_dynamic'] as Map<String, dynamic>;
-                  motion['linear_speed'] = (0.35 * foliageWaveSpeed).clamp(0.05, 1.5);
+                  final motion =
+                      comps['minecraft:particle_motion_dynamic']
+                          as Map<String, dynamic>;
+                  motion['linear_speed'] = (0.35 * foliageWaveSpeed).clamp(
+                    0.05,
+                    1.5,
+                  );
                 }
               }
               final pBytes = utf8.encode(jsonEncode(pData));
@@ -9034,43 +10940,80 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
       }
 
       // 11. Pack Icon & Title Sanitization
-      final iconBytes = _activeLogoBytes ?? widget.uploadedLogoBytes ?? kPiglixLogoBytes;
-      fileMap['pack_icon.png'] = ArchiveFile('pack_icon.png', iconBytes.length, iconBytes);
+      final iconBytes =
+          _activeLogoBytes ?? widget.uploadedLogoBytes ?? kPiglixLogoBytes;
+      fileMap['pack_icon.png'] = ArchiveFile(
+        'pack_icon.png',
+        iconBytes.length,
+        iconBytes,
+      );
       fileMap.remove('textures/ui/title.png');
 
       // Ensure caustics texture resolves regardless of naming
-      if (fileMap.containsKey('textures/causticsLow/caustics.png') && !fileMap.containsKey('textures/caustic/caustics.png')) {
+      if (fileMap.containsKey('textures/causticsLow/caustics.png') &&
+          !fileMap.containsKey('textures/caustic/caustics.png')) {
         final c = fileMap['textures/causticsLow/caustics.png']!;
-        fileMap['textures/caustic/caustics.png'] = ArchiveFile('textures/caustic/caustics.png', c.size, c.content);
+        fileMap['textures/caustic/caustics.png'] = ArchiveFile(
+          'textures/caustic/caustics.png',
+          c.size,
+          c.content,
+        );
       }
-      if (fileMap.containsKey('textures/caustic/caustics.png') && !fileMap.containsKey('textures/causticsLow/caustics.png')) {
+      if (fileMap.containsKey('textures/caustic/caustics.png') &&
+          !fileMap.containsKey('textures/causticsLow/caustics.png')) {
         final c = fileMap['textures/caustic/caustics.png']!;
-        fileMap['textures/causticsLow/caustics.png'] = ArchiveFile('textures/causticsLow/caustics.png', c.size, c.content);
+        fileMap['textures/causticsLow/caustics.png'] = ArchiveFile(
+          'textures/causticsLow/caustics.png',
+          c.size,
+          c.content,
+        );
       }
       // Ensure cloud texture exists in standard environment folder
-      if (fileMap.containsKey('subpacks/16x/textures/clouds.png') && !fileMap.containsKey('textures/environment/clouds.png')) {
+      if (fileMap.containsKey('subpacks/16x/textures/clouds.png') &&
+          !fileMap.containsKey('textures/environment/clouds.png')) {
         final c = fileMap['subpacks/16x/textures/clouds.png']!;
-        fileMap['textures/environment/clouds.png'] = ArchiveFile('textures/environment/clouds.png', c.size, c.content);
+        fileMap['textures/environment/clouds.png'] = ArchiveFile(
+          'textures/environment/clouds.png',
+          c.size,
+          c.content,
+        );
       }
 
       // 12. Manifest.json & Subpacks Preservation
       final packUuid = const Uuid().v4();
       final moduleUuid = const Uuid().v4();
-      String pName = shaderNameCtrl.text.trim().isEmpty ? 'Piglix Shader' : shaderNameCtrl.text.trim();
+      String pName = shaderNameCtrl.text.trim().isEmpty
+          ? 'Piglix Shader'
+          : shaderNameCtrl.text.trim();
 
       List<Map<String, dynamic>> subpacksList = [];
       if (fileMap.containsKey('manifest.json')) {
         try {
-          final existingM = jsonDecode(utf8.decode(fileMap['manifest.json']!.content as List<int>)) as Map<String, dynamic>;
-          if (existingM['subpacks'] is List && (existingM['subpacks'] as List).isNotEmpty) {
-            subpacksList = (existingM['subpacks'] as List).map((e) => Map<String, dynamic>.from(e as Map)).toList();
+          final existingM =
+              jsonDecode(
+                    utf8.decode(fileMap['manifest.json']!.content as List<int>),
+                  )
+                  as Map<String, dynamic>;
+          if (existingM['subpacks'] is List &&
+              (existingM['subpacks'] as List).isNotEmpty) {
+            subpacksList = (existingM['subpacks'] as List)
+                .map((e) => Map<String, dynamic>.from(e as Map))
+                .toList();
           }
         } catch (_) {}
       }
       if (subpacksList.isEmpty) {
         subpacksList = [
-          {'folder_name': '32x', 'name': '32x HD Texture Resolution', 'memory_tier': 2},
-          {'folder_name': '16x', 'name': '16x Standard Texture Resolution', 'memory_tier': 3},
+          {
+            'folder_name': '32x',
+            'name': '32x HD Texture Resolution',
+            'memory_tier': 2,
+          },
+          {
+            'folder_name': '16x',
+            'name': '16x Standard Texture Resolution',
+            'memory_tier': 3,
+          },
         ];
       }
 
@@ -9078,7 +11021,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         'format_version': 2,
         'header': {
           'name': pName,
-          'description': 'Piglix Vibrant Visuals · Bedrock Deferred PBR Shader\n§aReal-Time Lighting · Water Caustics · Atmospheric Rays & PBR',
+          'description':
+              'Piglix Vibrant Visuals · Bedrock Deferred PBR Shader\n§aReal-Time Lighting · Water Caustics · Atmospheric Rays & PBR',
           'uuid': packUuid,
           'version': [1, 0, 0],
           'min_engine_version': [1, 21, 0],
@@ -9088,18 +11032,27 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
             'type': 'resources',
             'uuid': moduleUuid,
             'version': [1, 0, 0],
-          }
+          },
         ],
         'capabilities': enablePBR ? ['pbr'] : [],
         'subpacks': subpacksList,
       });
       final mBytes = utf8.encode(manifestJson);
-      fileMap['manifest.json'] = ArchiveFile('manifest.json', mBytes.length, mBytes);
+      fileMap['manifest.json'] = ArchiveFile(
+        'manifest.json',
+        mBytes.length,
+        mBytes,
+      );
 
       // 13. Texts Localization (en_US.lang)
-      final langContent = 'pack.name=$pName\npack.description=Piglix Vibrant Visuals Engine for Minecraft Bedrock (Deferred PBR)\n';
+      final langContent =
+          'pack.name=$pName\npack.description=Piglix Vibrant Visuals Engine for Minecraft Bedrock (Deferred PBR)\n';
       final lBytes = utf8.encode(langContent);
-      fileMap['texts/en_US.lang'] = ArchiveFile('texts/en_US.lang', lBytes.length, lBytes);
+      fileMap['texts/en_US.lang'] = ArchiveFile(
+        'texts/en_US.lang',
+        lBytes.length,
+        lBytes,
+      );
 
       await Future.delayed(const Duration(milliseconds: 300));
       progressN.value = 0.85;
@@ -9190,7 +11143,9 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         ..setAttribute('download', pName)
         ..click();
       html.Url.revokeObjectUrl(url);
-      _snack('📦 .mcpack downloaded! Open from Downloads to install in Minecraft.');
+      _snack(
+        '📦 .mcpack downloaded! Open from Downloads to install in Minecraft.',
+      );
       return;
     }
     try {
@@ -9207,7 +11162,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
 }
 
 class _CompileProgressDialog extends StatefulWidget {
-  final Future<void> Function(ValueNotifier<double> progressN, ValueNotifier<String> statusN) onCompile;
+  final Future<void> Function(
+    ValueNotifier<double> progressN,
+    ValueNotifier<String> statusN,
+  )
+  onCompile;
 
   const _CompileProgressDialog({required this.onCompile});
 
@@ -9217,7 +11176,9 @@ class _CompileProgressDialog extends StatefulWidget {
 
 class _CompileProgressDialogState extends State<_CompileProgressDialog> {
   final ValueNotifier<double> progressN = ValueNotifier<double>(0.1);
-  final ValueNotifier<String> statusN = ValueNotifier<String>('Initializing Piglix Engine...');
+  final ValueNotifier<String> statusN = ValueNotifier<String>(
+    'Initializing Piglix Engine...',
+  );
 
   @override
   void initState() {
@@ -9245,7 +11206,10 @@ class _CompileProgressDialogState extends State<_CompileProgressDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const AnimatedMinecraftIcon(type: VoxelIconType.grassBlock, size: 48),
+            const AnimatedMinecraftIcon(
+              type: VoxelIconType.grassBlock,
+              size: 48,
+            ),
             const SizedBox(height: 16),
             const Text(
               'COMPILING SHADER',

@@ -1,0 +1,14 @@
+Computing fixes in piglix_shader_builder (dry run)...
+Nothing to fix!
+Changed lib/hero_sunset_bytes.dart
+Changed lib/io_real.dart
+Changed lib/legal_screens.dart
+Changed lib/minecraft_icons.dart
+Changed lib/my_shaders_screen.dart
+Changed lib/new_ui.dart
+Changed lib/shader_presets.dart
+Changed lib/tab_art_data.dart
+Changed lib/theme_controller.dart
+Changed test/shader_store_test.dart
+Changed test/widget_test.dart
+Formatted 14 files (11 changed) in 0.22 seconds.

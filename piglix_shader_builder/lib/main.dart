@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'new_ui.dart';
@@ -6,6 +7,59 @@ import 'my_shaders_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Centralized Framework Error Handling (Prevents uncaught runtime crashes)
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    debugPrint('[Piglix-Error] ${details.exceptionAsString()}');
+  };
+
+  // Centralized Platform Asynchronous Error Handling
+  PlatformDispatcher.instance.onError = (error, stack) {
+    debugPrint('[Piglix-AsyncError] $error\n$stack');
+    return true; // Handled gracefully
+  };
+
+  // Safe Production Fallback for layout errors (Replaces default gray/red screen)
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return Material(
+      color: const Color(0xFF080D14),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.shield_outlined,
+                color: Color(0xFF22C55E),
+                size: 44,
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'SHADER ENGINE NOTICE',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.0,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                details.exceptionAsString(),
+                style: const TextStyle(color: Colors.white54, fontSize: 11),
+                textAlign: TextAlign.center,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  };
+
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

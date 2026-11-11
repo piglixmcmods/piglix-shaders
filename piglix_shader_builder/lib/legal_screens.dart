@@ -259,9 +259,10 @@ class LegalPage extends StatelessWidget {
                 'We may update our Privacy Policy periodically. Any updates will be posted directly to this page with a revised "Last updated" date.',
           ),
           _legalCard(
-            title: '6. Contact Us',
+            title: '6. Official Web Policy & Contact',
             content:
-                'If you have questions regarding our Privacy Policy, contact us at:\n\n'
+                'Official Hosted Policy (Vercel):\nhttps://shader-maker-mcpe-privacy.vercel.app\n\n'
+                'If you have questions regarding our Privacy Policy or data safety, contact us at:\n'
                 'Email: realpiglix@gmail.com',
           ),
         ];
@@ -414,9 +415,8 @@ class AppDrawer extends StatelessWidget {
                   errorBuilder: (ctx, err, stack) => Image.asset(
                     'assets/hero_sunset.webp',
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: const Color(0xFF0E1722),
-                    ),
+                    errorBuilder: (context, error, stackTrace) =>
+                        Container(color: const Color(0xFF0E1722)),
                   ),
                 ),
                 Container(
@@ -443,12 +443,19 @@ class AppDrawer extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 3.5,
+                            ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF0E1722).withValues(alpha: 0.85),
+                              color: const Color(
+                                0xFF0E1722,
+                              ).withValues(alpha: 0.85),
                               borderRadius: BorderRadius.circular(6),
                               border: Border.all(
-                                color: const Color(0xFF22C55E).withValues(alpha: 0.4),
+                                color: const Color(
+                                  0xFF22C55E,
+                                ).withValues(alpha: 0.4),
                                 width: 1,
                               ),
                             ),
@@ -483,9 +490,14 @@ class AppDrawer extends StatelessWidget {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: const Color(0xFF0E1722).withValues(alpha: 0.75),
+                                color: const Color(
+                                  0xFF0E1722,
+                                ).withValues(alpha: 0.75),
                                 shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white24, width: 1),
+                                border: Border.all(
+                                  color: Colors.white24,
+                                  width: 1,
+                                ),
                               ),
                               child: const Icon(
                                 Icons.close_rounded,
@@ -510,14 +522,19 @@ class AppDrawer extends StatelessWidget {
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFF22C55E).withValues(alpha: 0.45),
+                                  color: const Color(
+                                    0xFF22C55E,
+                                  ).withValues(alpha: 0.45),
                                   blurRadius: 16,
                                   spreadRadius: 1,
                                 ),
                               ],
                             ),
                             clipBehavior: Clip.antiAlias,
-                            child: Image.memory(kPiglixLogoBytes, fit: BoxFit.cover),
+                            child: Image.memory(
+                              kPiglixLogoBytes,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                           const SizedBox(width: 14),
                           Expanded(
@@ -598,7 +615,8 @@ class AppDrawer extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const LegalPage(type: LegalType.privacy),
+                        builder: (_) =>
+                            const LegalPage(type: LegalType.privacy),
                       ),
                     );
                   },
@@ -626,7 +644,8 @@ class AppDrawer extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const LegalPage(type: LegalType.trademark),
+                        builder: (_) =>
+                            const LegalPage(type: LegalType.trademark),
                       ),
                     );
                   },
@@ -640,7 +659,8 @@ class AppDrawer extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const LegalPage(type: LegalType.licenses),
+                        builder: (_) =>
+                            const LegalPage(type: LegalType.licenses),
                       ),
                     );
                   },
@@ -681,10 +701,7 @@ class AppDrawer extends StatelessWidget {
                   const SizedBox(width: 8),
                   RichText(
                     text: const TextSpan(
-                      style: TextStyle(
-                        fontSize: 12.5,
-                        letterSpacing: 0.3,
-                      ),
+                      style: TextStyle(fontSize: 12.5, letterSpacing: 0.3),
                       children: [
                         TextSpan(
                           text: 'Created by ',
@@ -742,7 +759,10 @@ class AppDrawer extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: iconColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(9),
-                    border: Border.all(color: iconColor.withValues(alpha: 0.3), width: 1),
+                    border: Border.all(
+                      color: iconColor.withValues(alpha: 0.3),
+                      width: 1,
+                    ),
                   ),
                   child: Icon(icon, color: iconColor, size: 19),
                 ),

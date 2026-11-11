@@ -1,0 +1,44 @@
+[✓] Flutter (Channel stable, 3.44.5, on macOS 27.0.1 26A434 darwin-arm64, locale en-IN) [134ms]
+    • Flutter version 3.44.5 on channel stable at /opt/homebrew/share/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision f94f4fc76b (4 months ago), 2026-07-06 11:19:24 -0700
+    • Engine revision 83675ed276
+    • Dart version 3.12.2
+    • DevTools version 2.57.0
+    • Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-native-assets, enable-swift-package-manager, omit-legacy-version-file, enable-lldb-debugging, enable-uiscene-migration
+
+[!] Android toolchain - develop for Android devices (Android SDK version 37.0.0) [552ms]
+    • Android SDK at /Users/sopanvijaypatil/Library/Android/sdk
+    • Emulator version 36.6.11.0 (build_id 15507667) (CL:N/A)
+    ✗ cmdline-tools component is missing.
+      Try installing or updating Android Studio.
+      Alternatively, download the tools from https://developer.android.com/studio#command-line-tools-only and make sure to set the ANDROID_HOME environment variable.
+      See https://developer.android.com/studio/command-line for more details.
+    ✗ Android license status unknown.
+      Run `flutter doctor --android-licenses` to accept the SDK licenses.
+      See https://flutter.dev/to/macos-android-setup for more details.
+
+[!] Xcode - develop for iOS and macOS [84ms]
+    ✗ Xcode installation is incomplete; a full installation is necessary for iOS and macOS development.
+      Download at: https://developer.apple.com/xcode/
+      Or install Xcode via the App Store.
+      Once installed, run:
+        sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+        sudo xcodebuild -runFirstLaunch
+    ! CocoaPods not installed.
+        CocoaPods is a package manager for iOS or macOS platform code.
+        Without CocoaPods, plugins will not work on iOS or macOS.
+        For more info, see https://flutter.dev/to/platform-plugins
+      For installation instructions, see https://guides.cocoapods.org/using/getting-started.html#installation
+
+[✓] Chrome - develop for the web [30ms]
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Connected device (2 available) [321ms]
+    • macOS (desktop) • macos  • darwin-arm64   • macOS 27.0.1 26A434 darwin-arm64
+    • Chrome (web)    • chrome • web-javascript • Google Chrome 157.0.8103.40
+
+[✓] Network resources [461ms]
+    • All expected network resources are available.
+
+! Doctor found issues in 2 categories.

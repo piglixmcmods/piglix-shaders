@@ -68,12 +68,14 @@ class AnimatedMinecraftIcon extends StatelessWidget {
         fit: BoxFit.contain,
       );
     }
-    return CustomPaint(
-      size: Size(size, size),
-      painter: _VoxelIconPainter(
-        type: type,
-        anim: 0.0, // Static, completely still, zero movement
-        colorOverride: colorOverride,
+    return RepaintBoundary(
+      child: CustomPaint(
+        size: Size(size, size),
+        painter: _VoxelIconPainter(
+          type: type,
+          anim: 0.0, // Static, completely still, zero movement
+          colorOverride: colorOverride,
+        ),
       ),
     );
   }
@@ -206,10 +208,14 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawCircle(
       Offset(cx, cy),
       s * 0.44 * pulse,
-      Paint()..color = (colorOverride ?? const Color(0xFFFFB300)).withValues(alpha: 0.30),
+      Paint()
+        ..color = (colorOverride ?? const Color(0xFFFFB300)).withValues(
+          alpha: 0.30,
+        ),
     );
 
-    final rayPaint = Paint()..color = (colorOverride ?? const Color(0xFFFDD835));
+    final rayPaint = Paint()
+      ..color = (colorOverride ?? const Color(0xFFFDD835));
     final rayOutline = Paint()
       ..color = const Color(0xFF26180B)
       ..style = PaintingStyle.stroke
@@ -299,8 +305,17 @@ class _VoxelIconPainter extends CustomPainter {
 
     // Inner shadow accent (soft lavender blue)
     final shadowPath = Path()
-      ..addOval(Rect.fromCircle(center: Offset(cx - s * 0.03, cy + s * 0.03), radius: outerRadius * 0.88));
-    final innerShadow = Path.combine(PathOperation.intersect, crescent, shadowPath);
+      ..addOval(
+        Rect.fromCircle(
+          center: Offset(cx - s * 0.03, cy + s * 0.03),
+          radius: outerRadius * 0.88,
+        ),
+      );
+    final innerShadow = Path.combine(
+      PathOperation.intersect,
+      crescent,
+      shadowPath,
+    );
     canvas.drawPath(
       innerShadow,
       Paint()..color = const Color(0xFFC7D2FE).withValues(alpha: 0.70),
@@ -309,12 +324,44 @@ class _VoxelIconPainter extends CustomPainter {
     // Small pixel star in the crescent nook (matching user reference)
     final starX = cx + s * 0.18;
     final starY = cy - s * 0.10;
-    final starPaint = Paint()..color = Colors.white.withValues(alpha: 0.40 + 0.60 * twinkle);
-    canvas.drawRect(Rect.fromCenter(center: Offset(starX, starY), width: 3, height: 3), starPaint);
-    canvas.drawRect(Rect.fromCenter(center: Offset(starX - 2.5, starY), width: 2, height: 1.5), starPaint);
-    canvas.drawRect(Rect.fromCenter(center: Offset(starX + 2.5, starY), width: 2, height: 1.5), starPaint);
-    canvas.drawRect(Rect.fromCenter(center: Offset(starX, starY - 2.5), width: 1.5, height: 2), starPaint);
-    canvas.drawRect(Rect.fromCenter(center: Offset(starX, starY + 2.5), width: 1.5, height: 2), starPaint);
+    final starPaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.40 + 0.60 * twinkle);
+    canvas.drawRect(
+      Rect.fromCenter(center: Offset(starX, starY), width: 3, height: 3),
+      starPaint,
+    );
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(starX - 2.5, starY),
+        width: 2,
+        height: 1.5,
+      ),
+      starPaint,
+    );
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(starX + 2.5, starY),
+        width: 2,
+        height: 1.5,
+      ),
+      starPaint,
+    );
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(starX, starY - 2.5),
+        width: 1.5,
+        height: 2,
+      ),
+      starPaint,
+    );
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(starX, starY + 2.5),
+        width: 1.5,
+        height: 2,
+      ),
+      starPaint,
+    );
   }
 
   // 3. CLOUD: High-detail pixel cumulus cloud with 3 puffy domes matching user reference
@@ -324,12 +371,30 @@ class _VoxelIconPainter extends CustomPainter {
 
     // Cloud silhouette path: 3 rounded domes with flat bottom
     final cloudPath = Path()
-      ..addOval(Rect.fromCircle(center: Offset(cx - s * 0.18, y + s * 0.04), radius: s * 0.18)) // Left dome
-      ..addOval(Rect.fromCircle(center: Offset(cx + s * 0.02, y - s * 0.06), radius: s * 0.22)) // Center tall dome
-      ..addOval(Rect.fromCircle(center: Offset(cx + s * 0.20, y + s * 0.02), radius: s * 0.16)) // Right dome
-      ..addRRect(RRect.fromRectAndRadius(
+      ..addOval(
+        Rect.fromCircle(
+          center: Offset(cx - s * 0.18, y + s * 0.04),
+          radius: s * 0.18,
+        ),
+      ) // Left dome
+      ..addOval(
+        Rect.fromCircle(
+          center: Offset(cx + s * 0.02, y - s * 0.06),
+          radius: s * 0.22,
+        ),
+      ) // Center tall dome
+      ..addOval(
+        Rect.fromCircle(
+          center: Offset(cx + s * 0.20, y + s * 0.02),
+          radius: s * 0.16,
+        ),
+      ) // Right dome
+      ..addRRect(
+        RRect.fromRectAndRadius(
           Rect.fromLTWH(cx - s * 0.36, y, s * 0.72, s * 0.22),
-          const Radius.circular(6))); // Flat base
+          const Radius.circular(6),
+        ),
+      ); // Flat base
 
     // Dark bold pixel outline
     canvas.drawPath(
@@ -346,19 +411,49 @@ class _VoxelIconPainter extends CustomPainter {
 
     // Mid billow fill
     final midBody = Path()
-      ..addOval(Rect.fromCircle(center: Offset(cx - s * 0.18, y + s * 0.01), radius: s * 0.16))
-      ..addOval(Rect.fromCircle(center: Offset(cx + s * 0.02, y - s * 0.08), radius: s * 0.20))
-      ..addOval(Rect.fromCircle(center: Offset(cx + s * 0.20, y), radius: s * 0.14))
-      ..addRRect(RRect.fromRectAndRadius(
+      ..addOval(
+        Rect.fromCircle(
+          center: Offset(cx - s * 0.18, y + s * 0.01),
+          radius: s * 0.16,
+        ),
+      )
+      ..addOval(
+        Rect.fromCircle(
+          center: Offset(cx + s * 0.02, y - s * 0.08),
+          radius: s * 0.20,
+        ),
+      )
+      ..addOval(
+        Rect.fromCircle(center: Offset(cx + s * 0.20, y), radius: s * 0.14),
+      )
+      ..addRRect(
+        RRect.fromRectAndRadius(
           Rect.fromLTWH(cx - s * 0.33, y - s * 0.02, s * 0.66, s * 0.16),
-          const Radius.circular(4)));
+          const Radius.circular(4),
+        ),
+      );
     canvas.drawPath(midBody, Paint()..color = const Color(0xFFECEFF1));
 
     // Top bright white highlights
     final topPuff = Path()
-      ..addOval(Rect.fromCircle(center: Offset(cx - s * 0.16, y - s * 0.04), radius: s * 0.12))
-      ..addOval(Rect.fromCircle(center: Offset(cx + s * 0.02, y - s * 0.12), radius: s * 0.15))
-      ..addOval(Rect.fromCircle(center: Offset(cx + s * 0.18, y - s * 0.03), radius: s * 0.10));
+      ..addOval(
+        Rect.fromCircle(
+          center: Offset(cx - s * 0.16, y - s * 0.04),
+          radius: s * 0.12,
+        ),
+      )
+      ..addOval(
+        Rect.fromCircle(
+          center: Offset(cx + s * 0.02, y - s * 0.12),
+          radius: s * 0.15,
+        ),
+      )
+      ..addOval(
+        Rect.fromCircle(
+          center: Offset(cx + s * 0.18, y - s * 0.03),
+          radius: s * 0.10,
+        ),
+      );
     canvas.drawPath(topPuff, Paint()..color = Colors.white);
   }
 
@@ -375,10 +470,19 @@ class _VoxelIconPainter extends CustomPainter {
 
     // Bulb glass path
     final bulbPath = Path()
-      ..addOval(Rect.fromCircle(center: Offset(cx, cy - s * 0.08), radius: s * 0.27))
-      ..addRRect(RRect.fromRectAndRadius(
-          Rect.fromCenter(center: Offset(cx, cy + s * 0.10), width: s * 0.26, height: s * 0.20),
-          const Radius.circular(4)));
+      ..addOval(
+        Rect.fromCircle(center: Offset(cx, cy - s * 0.08), radius: s * 0.27),
+      )
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: Offset(cx, cy + s * 0.10),
+            width: s * 0.26,
+            height: s * 0.20,
+          ),
+          const Radius.circular(4),
+        ),
+      );
 
     // Bold dark outline
     canvas.drawPath(
@@ -396,7 +500,11 @@ class _VoxelIconPainter extends CustomPainter {
     // Bottom warm amber gradient/shade
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromCenter(center: Offset(cx, cy + s * 0.10), width: s * 0.22, height: s * 0.16),
+        Rect.fromCenter(
+          center: Offset(cx, cy + s * 0.10),
+          width: s * 0.22,
+          height: s * 0.16,
+        ),
         const Radius.circular(3),
       ),
       Paint()..color = const Color(0xFFF59E0B),
@@ -437,14 +545,28 @@ class _VoxelIconPainter extends CustomPainter {
     );
 
     // Thread lines
-    final threadPaint = Paint()..color = const Color(0xFF78350F)..strokeWidth = 1.2;
-    canvas.drawLine(Offset(cx - s * 0.08, cy + s * 0.22), Offset(cx + s * 0.08, cy + s * 0.22), threadPaint);
-    canvas.drawLine(Offset(cx - s * 0.08, cy + s * 0.26), Offset(cx + s * 0.08, cy + s * 0.26), threadPaint);
+    final threadPaint = Paint()
+      ..color = const Color(0xFF78350F)
+      ..strokeWidth = 1.2;
+    canvas.drawLine(
+      Offset(cx - s * 0.08, cy + s * 0.22),
+      Offset(cx + s * 0.08, cy + s * 0.22),
+      threadPaint,
+    );
+    canvas.drawLine(
+      Offset(cx - s * 0.08, cy + s * 0.26),
+      Offset(cx + s * 0.08, cy + s * 0.26),
+      threadPaint,
+    );
 
     // Black contact tip
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromCenter(center: Offset(cx, cy + s * 0.31), width: s * 0.10, height: s * 0.04),
+        Rect.fromCenter(
+          center: Offset(cx, cy + s * 0.31),
+          width: s * 0.10,
+          height: s * 0.04,
+        ),
         const Radius.circular(1.5),
       ),
       Paint()..color = const Color(0xFF18181B),
@@ -473,7 +595,13 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(cx, cy - s * 0.36 + 2 * h2)
       ..lineTo(cx - w2 * 0.8, cy - s * 0.32 + h2)
       ..close();
-    canvas.drawPath(topBorder, Paint()..color = const Color(0xFFFFD54F)..style = PaintingStyle.stroke..strokeWidth = 1.2);
+    canvas.drawPath(
+      topBorder,
+      Paint()
+        ..color = const Color(0xFFFFD54F)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2,
+    );
 
     // 2. Left face (Mid golden amber)
     final leftFace = Path()
@@ -491,7 +619,13 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(cx - w2 * 0.15, cy + s * 0.24)
       ..lineTo(cx - w2 * 0.85, cy + s * 0.24 - h2)
       ..close();
-    canvas.drawPath(leftBorder, Paint()..color = const Color(0xFFF57F17)..style = PaintingStyle.stroke..strokeWidth = 1.0);
+    canvas.drawPath(
+      leftBorder,
+      Paint()
+        ..color = const Color(0xFFF57F17)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0,
+    );
 
     // 3. Right face (Deep bronze shadow)
     final rightFace = Path()
@@ -504,8 +638,18 @@ class _VoxelIconPainter extends CustomPainter {
 
     // 4. Corner rivets/studs
     final rivetPaint = Paint()..color = const Color(0xFFFF8F00);
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx, cy - s * 0.30), width: 2, height: 2), Paint()..color = Colors.white);
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx, cy + s * 0.28), width: 2.5, height: 2.5), rivetPaint);
+    canvas.drawRect(
+      Rect.fromCenter(center: Offset(cx, cy - s * 0.30), width: 2, height: 2),
+      Paint()..color = Colors.white,
+    );
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(cx, cy + s * 0.28),
+        width: 2.5,
+        height: 2.5,
+      ),
+      rivetPaint,
+    );
 
     // Diagonal specular gleam sweep
     if (gleamPos >= 0.0 && gleamPos <= 1.0) {
@@ -513,7 +657,11 @@ class _VoxelIconPainter extends CustomPainter {
       canvas.clipPath(topFace);
       final gx = (cx - w2) + (2 * w2) * gleamPos;
       canvas.drawRect(
-        Rect.fromCenter(center: Offset(gx, cy - s * 0.15), width: s * 0.15, height: s * 0.45),
+        Rect.fromCenter(
+          center: Offset(gx, cy - s * 0.15),
+          width: s * 0.15,
+          height: s * 0.45,
+        ),
         Paint()..color = Colors.white.withValues(alpha: 0.70),
       );
       canvas.restore();
@@ -578,8 +726,16 @@ class _VoxelIconPainter extends CustomPainter {
         ..lineTo(px - pw / 2, py)
         ..close();
       canvas.drawPath(p, pinePaint);
-      canvas.drawRect(Rect.fromCenter(center: Offset(px, py + ph * 0.15), width: pw * 0.25, height: ph * 0.3), Paint()..color = const Color(0xFF3E2723));
+      canvas.drawRect(
+        Rect.fromCenter(
+          center: Offset(px, py + ph * 0.15),
+          width: pw * 0.25,
+          height: ph * 0.3,
+        ),
+        Paint()..color = const Color(0xFF3E2723),
+      );
     }
+
     drawPine(cx - s * 0.22, cy + s * 0.26, s * 0.14, s * 0.18);
     drawPine(cx - s * 0.08, cy + s * 0.28, s * 0.10, s * 0.14);
   }
@@ -597,7 +753,11 @@ class _VoxelIconPainter extends CustomPainter {
 
     // 3-Tone oak handle with shadow edge
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(cx, cy + s * 0.14), width: s * 0.13, height: s * 0.42),
+      Rect.fromCenter(
+        center: Offset(cx, cy + s * 0.14),
+        width: s * 0.13,
+        height: s * 0.42,
+      ),
       Paint()..color = const Color(0xFF5D4037),
     );
     // Right shadow edge
@@ -613,7 +773,11 @@ class _VoxelIconPainter extends CustomPainter {
 
     // Charred obsidian torch head collar
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(cx, cy - s * 0.08), width: s * 0.15, height: s * 0.07),
+      Rect.fromCenter(
+        center: Offset(cx, cy - s * 0.08),
+        width: s * 0.15,
+        height: s * 0.07,
+      ),
       Paint()..color = const Color(0xFF212121),
     );
     canvas.drawRect(
@@ -626,22 +790,38 @@ class _VoxelIconPainter extends CustomPainter {
 
     // Outer crimson ember base
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(cx, flameY + s * 0.04), width: s * 0.24, height: s * 0.18),
+      Rect.fromCenter(
+        center: Offset(cx, flameY + s * 0.04),
+        width: s * 0.24,
+        height: s * 0.18,
+      ),
       Paint()..color = const Color(0xFFD32F2F),
     );
     // Mid vivid orange flame
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(cx, flameY), width: s * 0.20, height: s * 0.20),
+      Rect.fromCenter(
+        center: Offset(cx, flameY),
+        width: s * 0.20,
+        height: s * 0.20,
+      ),
       Paint()..color = const Color(0xFFFF6D00),
     );
     // Inner blazing yellow flame
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(cx, flameY - s * 0.02), width: s * 0.13, height: s * 0.13),
+      Rect.fromCenter(
+        center: Offset(cx, flameY - s * 0.02),
+        width: s * 0.13,
+        height: s * 0.13,
+      ),
       Paint()..color = const Color(0xFFFFD600),
     );
     // White-hot core
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(cx, flameY - s * 0.02), width: s * 0.06, height: s * 0.06),
+      Rect.fromCenter(
+        center: Offset(cx, flameY - s * 0.02),
+        width: s * 0.06,
+        height: s * 0.06,
+      ),
       Paint()..color = const Color(0xFFFFFDE7),
     );
 
@@ -652,7 +832,11 @@ class _VoxelIconPainter extends CustomPainter {
       final sx = cx + math.sin(spAnim * 2 * math.pi + i) * (s * 0.12);
       final sy = flameY - s * 0.08 - spAnim * (s * 0.24);
       final sz = s * 0.035 * (1.0 - spAnim * 0.5);
-      canvas.drawRect(Rect.fromCenter(center: Offset(sx, sy), width: sz, height: sz), sparkPaint..color = const Color(0xFFFFD54F).withValues(alpha: 1.0 - spAnim));
+      canvas.drawRect(
+        Rect.fromCenter(center: Offset(sx, sy), width: sz, height: sz),
+        sparkPaint
+          ..color = const Color(0xFFFFD54F).withValues(alpha: 1.0 - spAnim),
+      );
     }
   }
 
@@ -662,41 +846,84 @@ class _VoxelIconPainter extends CustomPainter {
     final y = cy + bob - s * 0.04;
 
     // Ambient aqua halo
-    canvas.drawCircle(Offset(cx, y), s * 0.36, Paint()..color = const Color(0xFF00E5FF).withValues(alpha: 0.20));
+    canvas.drawCircle(
+      Offset(cx, y),
+      s * 0.36,
+      Paint()..color = const Color(0xFF00E5FF).withValues(alpha: 0.20),
+    );
 
     // Teardrop body
     final dropPath = Path()
       ..moveTo(cx, y - s * 0.32)
-      ..cubicTo(cx + s * 0.30, y - s * 0.04, cx + s * 0.28, y + s * 0.28, cx, y + s * 0.30)
-      ..cubicTo(cx - s * 0.28, y + s * 0.28, cx - s * 0.30, y - s * 0.04, cx, y - s * 0.32)
+      ..cubicTo(
+        cx + s * 0.30,
+        y - s * 0.04,
+        cx + s * 0.28,
+        y + s * 0.28,
+        cx,
+        y + s * 0.30,
+      )
+      ..cubicTo(
+        cx - s * 0.28,
+        y + s * 0.28,
+        cx - s * 0.30,
+        y - s * 0.04,
+        cx,
+        y - s * 0.32,
+      )
       ..close();
 
     canvas.drawPath(
       dropPath,
       Paint()
-        ..shader = const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF80D8FF), Color(0xFF00B0FF), Color(0xFF01579B)],
-        ).createShader(Rect.fromCircle(center: Offset(cx, y), radius: s * 0.35)),
+        ..shader =
+            const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF80D8FF), Color(0xFF00B0FF), Color(0xFF01579B)],
+            ).createShader(
+              Rect.fromCircle(center: Offset(cx, y), radius: s * 0.35),
+            ),
     );
 
     // Specular curved glare arc
     final glarePath = Path()
       ..moveTo(cx - s * 0.16, y)
-      ..cubicTo(cx - s * 0.18, y - s * 0.14, cx - s * 0.08, y - s * 0.22, cx, y - s * 0.24);
+      ..cubicTo(
+        cx - s * 0.18,
+        y - s * 0.14,
+        cx - s * 0.08,
+        y - s * 0.22,
+        cx,
+        y - s * 0.24,
+      );
     canvas.drawPath(
       glarePath,
-      Paint()..color = Colors.white.withValues(alpha: 0.90)..style = PaintingStyle.stroke..strokeWidth = 2.0..strokeCap = StrokeCap.round,
+      Paint()
+        ..color = Colors.white.withValues(alpha: 0.90)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.0
+        ..strokeCap = StrokeCap.round,
     );
     // Lower secondary bounce glint
-    canvas.drawCircle(Offset(cx + s * 0.10, y + s * 0.14), s * 0.04, Paint()..color = const Color(0xFFB3E5FC).withValues(alpha: 0.80));
+    canvas.drawCircle(
+      Offset(cx + s * 0.10, y + s * 0.14),
+      s * 0.04,
+      Paint()..color = const Color(0xFFB3E5FC).withValues(alpha: 0.80),
+    );
 
     // Base ripple pool
     final ripR = (anim * 2.0) % 1.0;
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy + s * 0.32), width: s * 0.50 * ripR, height: s * 0.14 * ripR),
-      Paint()..color = const Color(0xFF80D8FF).withValues(alpha: 1.0 - ripR)..style = PaintingStyle.stroke..strokeWidth = 1.2,
+      Rect.fromCenter(
+        center: Offset(cx, cy + s * 0.32),
+        width: s * 0.50 * ripR,
+        height: s * 0.14 * ripR,
+      ),
+      Paint()
+        ..color = const Color(0xFF80D8FF).withValues(alpha: 1.0 - ripR)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2,
     );
   }
 
@@ -730,8 +957,16 @@ class _VoxelIconPainter extends CustomPainter {
 
       // White pixel seafoam caps on crests
       final crestX1 = cx + math.cos(phaseOffset) * (s * 0.20);
-      final crestY1 = wy + math.sin((crestX1 - cx) / s * 9 + phaseOffset) * (s * 0.045) - 2;
-      canvas.drawRect(Rect.fromCenter(center: Offset(crestX1, crestY1), width: s * 0.08, height: s * 0.04), Paint()..color = Colors.white);
+      final crestY1 =
+          wy + math.sin((crestX1 - cx) / s * 9 + phaseOffset) * (s * 0.045) - 2;
+      canvas.drawRect(
+        Rect.fromCenter(
+          center: Offset(crestX1, crestY1),
+          width: s * 0.08,
+          height: s * 0.04,
+        ),
+        Paint()..color = Colors.white,
+      );
     }
   }
 
@@ -740,7 +975,11 @@ class _VoxelIconPainter extends CustomPainter {
     final sparkle = (math.sin(anim * 4 * math.pi) * 0.5 + 0.5).clamp(0.0, 1.0);
 
     // Radiant cyan aura
-    canvas.drawCircle(Offset(cx, cy), s * 0.40, Paint()..color = const Color(0xFF00E5FF).withValues(alpha: 0.30));
+    canvas.drawCircle(
+      Offset(cx, cy),
+      s * 0.40,
+      Paint()..color = const Color(0xFF00E5FF).withValues(alpha: 0.30),
+    );
 
     // Outer dark cyan outline
     final outerPath = Path()
@@ -785,7 +1024,8 @@ class _VoxelIconPainter extends CustomPainter {
 
     // Rotating 4-point star twinkle glint
     if (sparkle > 0.35) {
-      final glintPaint = Paint()..color = Colors.white.withValues(alpha: sparkle);
+      final glintPaint = Paint()
+        ..color = Colors.white.withValues(alpha: sparkle);
       final gx = cx + s * 0.18;
       final gy = cy - s * 0.16;
       final gw = s * 0.18 * sparkle;
@@ -793,8 +1033,16 @@ class _VoxelIconPainter extends CustomPainter {
       canvas.save();
       canvas.translate(gx, gy);
       canvas.rotate(anim * math.pi);
-      canvas.drawLine(Offset(-gw, 0), Offset(gw, 0), glintPaint..strokeWidth = 2.0);
-      canvas.drawLine(Offset(0, -gw), Offset(0, gw), glintPaint..strokeWidth = 2.0);
+      canvas.drawLine(
+        Offset(-gw, 0),
+        Offset(gw, 0),
+        glintPaint..strokeWidth = 2.0,
+      );
+      canvas.drawLine(
+        Offset(0, -gw),
+        Offset(0, gw),
+        glintPaint..strokeWidth = 2.0,
+      );
       canvas.drawCircle(Offset.zero, 1.8, Paint()..color = Colors.white);
       canvas.restore();
     }
@@ -805,10 +1053,16 @@ class _VoxelIconPainter extends CustomPainter {
     final phase = anim * 2 * math.pi;
 
     // Ambient water glow
-    canvas.drawCircle(Offset(cx, cy), s * 0.40, Paint()..color = const Color(0xFF00B0FF).withValues(alpha: 0.18));
+    canvas.drawCircle(
+      Offset(cx, cy),
+      s * 0.40,
+      Paint()..color = const Color(0xFF00B0FF).withValues(alpha: 0.18),
+    );
 
     final causticPaint = Paint()
-      ..color = (colorOverride ?? const Color(0xFF80D8FF)).withValues(alpha: 0.70)
+      ..color = (colorOverride ?? const Color(0xFF80D8FF)).withValues(
+        alpha: 0.70,
+      )
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.8;
 
@@ -822,11 +1076,19 @@ class _VoxelIconPainter extends CustomPainter {
       // Bright photon intersection nodes
       final nx = ox + math.cos(phase + i * 2) * r;
       final ny = oy + math.sin(phase + i * 2) * r;
-      canvas.drawCircle(Offset(nx, ny), 2.2, Paint()..color = Colors.white.withValues(alpha: 0.85));
+      canvas.drawCircle(
+        Offset(nx, ny),
+        2.2,
+        Paint()..color = Colors.white.withValues(alpha: 0.85),
+      );
     }
 
     // Inner bright focus point
-    canvas.drawCircle(Offset(cx, cy), s * 0.06, Paint()..color = const Color(0xFFE0F7FA).withValues(alpha: 0.80));
+    canvas.drawCircle(
+      Offset(cx, cy),
+      s * 0.06,
+      Paint()..color = const Color(0xFFE0F7FA).withValues(alpha: 0.80),
+    );
   }
 
   // 12. CUBE MIRROR: 3D Holographic refractive glass cube with chromatic dispersion sheen
@@ -841,8 +1103,17 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(cx, cy - s * 0.32 + 2 * h2)
       ..lineTo(cx - w2, cy - s * 0.32 + h2)
       ..close();
-    canvas.drawPath(topFace, Paint()..color = const Color(0xFFE0F7FA).withValues(alpha: 0.90));
-    canvas.drawPath(topFace, Paint()..color = Colors.white..style = PaintingStyle.stroke..strokeWidth = 1.2);
+    canvas.drawPath(
+      topFace,
+      Paint()..color = const Color(0xFFE0F7FA).withValues(alpha: 0.90),
+    );
+    canvas.drawPath(
+      topFace,
+      Paint()
+        ..color = Colors.white
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2,
+    );
 
     // Left face (Prism cyan)
     final leftFace = Path()
@@ -851,8 +1122,17 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(cx, cy + s * 0.30)
       ..lineTo(cx - w2, cy + s * 0.30 - h2)
       ..close();
-    canvas.drawPath(leftFace, Paint()..color = const Color(0xFF80DEEA).withValues(alpha: 0.80));
-    canvas.drawPath(leftFace, Paint()..color = const Color(0xFF4DD0E1)..style = PaintingStyle.stroke..strokeWidth = 1.0);
+    canvas.drawPath(
+      leftFace,
+      Paint()..color = const Color(0xFF80DEEA).withValues(alpha: 0.80),
+    );
+    canvas.drawPath(
+      leftFace,
+      Paint()
+        ..color = const Color(0xFF4DD0E1)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0,
+    );
 
     // Right face (Deep refractive turquoise)
     final rightFace = Path()
@@ -861,8 +1141,17 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(cx + w2, cy + s * 0.30 - h2)
       ..lineTo(cx, cy + s * 0.30)
       ..close();
-    canvas.drawPath(rightFace, Paint()..color = const Color(0xFF26C6DA).withValues(alpha: 0.75));
-    canvas.drawPath(rightFace, Paint()..color = const Color(0xFF00ACC1)..style = PaintingStyle.stroke..strokeWidth = 1.0);
+    canvas.drawPath(
+      rightFace,
+      Paint()..color = const Color(0xFF26C6DA).withValues(alpha: 0.75),
+    );
+    canvas.drawPath(
+      rightFace,
+      Paint()
+        ..color = const Color(0xFF00ACC1)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0,
+    );
 
     // Rainbow chromatic dispersion sheen across left face
     final rainbowPaint = Paint()
@@ -871,10 +1160,18 @@ class _VoxelIconPainter extends CustomPainter {
       ).createShader(Rect.fromLTWH(cx - w2, cy - s * 0.15, w2, s * 0.35))
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
-    canvas.drawLine(Offset(cx - w2 * 0.7, cy + s * 0.10), Offset(cx - w2 * 0.2, cy - s * 0.05), rainbowPaint);
+    canvas.drawLine(
+      Offset(cx - w2 * 0.7, cy + s * 0.10),
+      Offset(cx - w2 * 0.2, cy - s * 0.05),
+      rainbowPaint,
+    );
 
     // Specular corner glint
-    canvas.drawCircle(Offset(cx, cy - s * 0.32), 2.2, Paint()..color = Colors.white);
+    canvas.drawCircle(
+      Offset(cx, cy - s * 0.32),
+      2.2,
+      Paint()..color = Colors.white,
+    );
   }
 
   // 13. PEARL: Cosmic Ender Pearl with void core, cyan iris & orbiting Ender particles
@@ -893,10 +1190,16 @@ class _VoxelIconPainter extends CustomPainter {
       Offset(cx, cy),
       s * 0.30,
       Paint()
-        ..shader = const RadialGradient(
-          colors: [Color(0xFF80CBC4), Color(0xFF00695C), Color(0xFF00251A)],
-          stops: [0.0, 0.65, 1.0],
-        ).createShader(Rect.fromCircle(center: Offset(cx - s * 0.08, cy - s * 0.08), radius: s * 0.30)),
+        ..shader =
+            const RadialGradient(
+              colors: [Color(0xFF80CBC4), Color(0xFF00695C), Color(0xFF00251A)],
+              stops: [0.0, 0.65, 1.0],
+            ).createShader(
+              Rect.fromCircle(
+                center: Offset(cx - s * 0.08, cy - s * 0.08),
+                radius: s * 0.30,
+              ),
+            ),
     );
 
     // Swirling cyan iris ring
@@ -910,7 +1213,11 @@ class _VoxelIconPainter extends CustomPainter {
     );
 
     // Specular highlight glint
-    canvas.drawCircle(Offset(cx - s * 0.10, cy - s * 0.10), s * 0.065, Paint()..color = Colors.white.withValues(alpha: 0.95));
+    canvas.drawCircle(
+      Offset(cx - s * 0.10, cy - s * 0.10),
+      s * 0.065,
+      Paint()..color = Colors.white.withValues(alpha: 0.95),
+    );
 
     // 3 Orbiting glowing Ender particles
     for (var i = 0; i < 3; i++) {
@@ -919,8 +1226,15 @@ class _VoxelIconPainter extends CustomPainter {
       final px = cx + math.cos(angle) * pr;
       final py = cy + math.sin(angle) * (pr * 0.6);
       canvas.drawRect(
-        Rect.fromCenter(center: Offset(px, py), width: s * 0.05, height: s * 0.05),
-        Paint()..color = (i == 0 ? const Color(0xFFE040FB) : const Color(0xFF1DE9B6)),
+        Rect.fromCenter(
+          center: Offset(px, py),
+          width: s * 0.05,
+          height: s * 0.05,
+        ),
+        Paint()
+          ..color = (i == 0
+              ? const Color(0xFFE040FB)
+              : const Color(0xFF1DE9B6)),
       );
     }
   }
@@ -950,7 +1264,13 @@ class _VoxelIconPainter extends CustomPainter {
       // Plate body
       canvas.drawPath(path, Paint()..color = colors[i]);
       // Plate beveled rim
-      canvas.drawPath(path, Paint()..color = Colors.white38..style = PaintingStyle.stroke..strokeWidth = 1.2);
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = Colors.white38
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.2,
+      );
 
       // Plate surface texture hint
       if (i == 0) {
@@ -958,18 +1278,42 @@ class _VoxelIconPainter extends CustomPainter {
         canvas.drawCircle(Offset(cx, y), 3, Paint()..color = Colors.white70);
       } else if (i == 1) {
         // Normal map RGB vector splash
-        canvas.drawCircle(Offset(cx - s * 0.08, y), 2.5, Paint()..color = const Color(0xFF00E5FF));
-        canvas.drawCircle(Offset(cx + s * 0.08, y), 2.5, Paint()..color = const Color(0xFFFF4081));
+        canvas.drawCircle(
+          Offset(cx - s * 0.08, y),
+          2.5,
+          Paint()..color = const Color(0xFF00E5FF),
+        );
+        canvas.drawCircle(
+          Offset(cx + s * 0.08, y),
+          2.5,
+          Paint()..color = const Color(0xFFFF4081),
+        );
       } else {
         // Roughness gloss streak
-        canvas.drawLine(Offset(cx - s * 0.12, y), Offset(cx + s * 0.12, y), Paint()..color = Colors.white54..strokeWidth = 1.4);
+        canvas.drawLine(
+          Offset(cx - s * 0.12, y),
+          Offset(cx + s * 0.12, y),
+          Paint()
+            ..color = Colors.white54
+            ..strokeWidth = 1.4,
+        );
       }
     }
 
     // Cyan vertical alignment laser beam linking top to bottom sheet
-    final beamPaint = Paint()..color = const Color(0xFF00E5FF).withValues(alpha: 0.60)..strokeWidth = 1.0;
-    canvas.drawLine(Offset(cx - s * 0.34, cy + float), Offset(cx - s * 0.34, cy + s * 0.18), beamPaint);
-    canvas.drawLine(Offset(cx + s * 0.34, cy + float), Offset(cx + s * 0.34, cy + s * 0.18), beamPaint);
+    final beamPaint = Paint()
+      ..color = const Color(0xFF00E5FF).withValues(alpha: 0.60)
+      ..strokeWidth = 1.0;
+    canvas.drawLine(
+      Offset(cx - s * 0.34, cy + float),
+      Offset(cx - s * 0.34, cy + s * 0.18),
+      beamPaint,
+    );
+    canvas.drawLine(
+      Offset(cx + s * 0.34, cy + float),
+      Offset(cx + s * 0.34, cy + s * 0.18),
+      beamPaint,
+    );
   }
 
   // 15. PICKAXE: High-detail 16x16 Minecraft Diamond Pickaxe with authentic pixel blocks, oak handle & diamond shine
@@ -980,7 +1324,10 @@ class _VoxelIconPainter extends CustomPainter {
     final oy = cy - s * 0.5;
 
     void drawPx(int gx, int gy, Color col) {
-      canvas.drawRect(Rect.fromLTWH(ox + gx * u, oy + gy * u, u, u), Paint()..color = col);
+      canvas.drawRect(
+        Rect.fromLTWH(ox + gx * u, oy + gy * u, u, u),
+        Paint()..color = col,
+      );
     }
 
     // Palette:
@@ -1008,12 +1355,20 @@ class _VoxelIconPainter extends CustomPainter {
         Paint()..color = wLit,
       );
       canvas.drawRect(
-        Rect.fromLTWH(ox + gx * u + u * 0.55, oy + gy * u + u * 0.55, u * 0.45, u * 0.45),
+        Rect.fromLTWH(
+          ox + gx * u + u * 0.55,
+          oy + gy * u + u * 0.55,
+          u * 0.45,
+          u * 0.45,
+        ),
         Paint()..color = wShadow,
       );
       canvas.drawRect(
         Rect.fromLTWH(ox + gx * u, oy + gy * u, u, u),
-        Paint()..color = wDark..style = PaintingStyle.stroke..strokeWidth = 0.8,
+        Paint()
+          ..color = wDark
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.8,
       );
     }
 
@@ -1023,13 +1378,45 @@ class _VoxelIconPainter extends CustomPainter {
     // 2. Diamond Pickaxe Head (classic symmetrical curved diamond picks)
     final headBlocks = <(int, int, Color)>[
       // Top arch crown
-      (8, 2, dBorder), (9, 2, dBorder), (10, 2, dBorder), (11, 2, dBorder), (12, 2, dBorder),
-      (7, 3, dBorder), (8, 3, dWhite), (9, 3, dBright), (10, 3, dBright), (11, 3, dMid), (12, 3, dMid), (13, 3, dBorder),
-      (6, 4, dBorder), (7, 4, dBright), (8, 4, dMid), (9, 4, dTeal), (11, 4, dTeal), (12, 4, dMid), (13, 4, dBorder),
-      (5, 5, dBorder), (6, 5, dBright), (7, 5, dMid), (12, 5, dMid), (13, 5, dBorder),
-      (4, 6, dBorder), (5, 6, dBright), (6, 6, dTeal), (13, 6, dMid), (14, 6, dBorder),
-      (3, 7, dBorder), (4, 7, dBright), (5, 7, dTeal), (13, 7, dMid), (14, 7, dBorder),
-      (2, 8, dBorder), (3, 8, dBright), (4, 8, dDark), (13, 8, dDark), (14, 8, dBorder),
+      (8, 2, dBorder),
+      (9, 2, dBorder),
+      (10, 2, dBorder),
+      (11, 2, dBorder),
+      (12, 2, dBorder),
+      (7, 3, dBorder),
+      (8, 3, dWhite),
+      (9, 3, dBright),
+      (10, 3, dBright),
+      (11, 3, dMid),
+      (12, 3, dMid),
+      (13, 3, dBorder),
+      (6, 4, dBorder),
+      (7, 4, dBright),
+      (8, 4, dMid),
+      (9, 4, dTeal),
+      (11, 4, dTeal),
+      (12, 4, dMid),
+      (13, 4, dBorder),
+      (5, 5, dBorder),
+      (6, 5, dBright),
+      (7, 5, dMid),
+      (12, 5, dMid),
+      (13, 5, dBorder),
+      (4, 6, dBorder),
+      (5, 6, dBright),
+      (6, 6, dTeal),
+      (13, 6, dMid),
+      (14, 6, dBorder),
+      (3, 7, dBorder),
+      (4, 7, dBright),
+      (5, 7, dTeal),
+      (13, 7, dMid),
+      (14, 7, dBorder),
+      (2, 8, dBorder),
+      (3, 8, dBright),
+      (4, 8, dDark),
+      (13, 8, dDark),
+      (14, 8, dBorder),
       (2, 9, dBorder), (3, 9, dMid), (13, 9, dMid), (14, 9, dBorder),
       (2, 10, dBorder), (14, 10, dBorder),
     ];
@@ -1039,16 +1426,24 @@ class _VoxelIconPainter extends CustomPainter {
     }
 
     // Sparkle star glint on crown
-    canvas.drawCircle(Offset(ox + 8.5 * u, oy + 3.5 * u), u * 0.9, Paint()..color = Colors.white.withValues(alpha: 0.9));
+    canvas.drawCircle(
+      Offset(ox + 8.5 * u, oy + 3.5 * u),
+      u * 0.9,
+      Paint()..color = Colors.white.withValues(alpha: 0.9),
+    );
     canvas.drawLine(
       Offset(ox + 8.5 * u - u * 1.5, oy + 3.5 * u),
       Offset(ox + 8.5 * u + u * 1.5, oy + 3.5 * u),
-      Paint()..color = Colors.white..strokeWidth = 1.0,
+      Paint()
+        ..color = Colors.white
+        ..strokeWidth = 1.0,
     );
     canvas.drawLine(
       Offset(ox + 8.5 * u, oy + 3.5 * u - u * 1.5),
       Offset(ox + 8.5 * u, oy + 3.5 * u + u * 1.5),
-      Paint()..color = Colors.white..strokeWidth = 1.0,
+      Paint()
+        ..color = Colors.white
+        ..strokeWidth = 1.0,
     );
 
     canvas.restore();
@@ -1079,11 +1474,16 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(centerVertex.dx, centerVertex.dy)
       ..lineTo(leftTopVertex.dx, leftTopVertex.dy)
       ..close();
-    canvas.drawPath(topLidPath, Paint()..color = const Color(0xFFC78038)); // Warm oak lid
+    canvas.drawPath(
+      topLidPath,
+      Paint()..color = const Color(0xFFC78038),
+    ); // Warm oak lid
     canvas.drawPath(topLidPath, edgeOutline);
 
     // Plank lines on top lid
-    final plankPaint = Paint()..color = const Color(0xFF9E5D20)..strokeWidth = 1.2;
+    final plankPaint = Paint()
+      ..color = const Color(0xFF9E5D20)
+      ..strokeWidth = 1.2;
     canvas.drawLine(
       Offset.lerp(topVertex, leftTopVertex, 0.5)!,
       Offset.lerp(rightTopVertex, centerVertex, 0.5)!,
@@ -1102,13 +1502,26 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(centerBottomVertex.dx, centerBottomVertex.dy)
       ..lineTo(leftBottomVertex.dx, leftBottomVertex.dy)
       ..close();
-    canvas.drawPath(frontFacePath, Paint()..color = const Color(0xFFA55E22)); // Front oak
+    canvas.drawPath(
+      frontFacePath,
+      Paint()..color = const Color(0xFFA55E22),
+    ); // Front oak
     canvas.drawPath(frontFacePath, edgeOutline);
 
     // Horizontal split seam for lid
     final frontSeamLeft = Offset.lerp(leftTopVertex, leftBottomVertex, 0.36)!;
-    final frontSeamCenter = Offset.lerp(centerVertex, centerBottomVertex, 0.36)!;
-    canvas.drawLine(frontSeamLeft, frontSeamCenter, Paint()..color = const Color(0xFF1B120C)..strokeWidth = 1.8);
+    final frontSeamCenter = Offset.lerp(
+      centerVertex,
+      centerBottomVertex,
+      0.36,
+    )!;
+    canvas.drawLine(
+      frontSeamLeft,
+      frontSeamCenter,
+      Paint()
+        ..color = const Color(0xFF1B120C)
+        ..strokeWidth = 1.8,
+    );
 
     // 3. Right Side Face (Shadowed oak)
     final sideFacePath = Path()
@@ -1117,15 +1530,26 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(rightBottomVertex.dx, rightBottomVertex.dy)
       ..lineTo(centerBottomVertex.dx, centerBottomVertex.dy)
       ..close();
-    canvas.drawPath(sideFacePath, Paint()..color = const Color(0xFF783C10)); // Darker shaded oak
+    canvas.drawPath(
+      sideFacePath,
+      Paint()..color = const Color(0xFF783C10),
+    ); // Darker shaded oak
     canvas.drawPath(sideFacePath, edgeOutline);
 
     // Horizontal split seam on side
     final sideSeamRight = Offset.lerp(rightTopVertex, rightBottomVertex, 0.36)!;
-    canvas.drawLine(frontSeamCenter, sideSeamRight, Paint()..color = const Color(0xFF1B120C)..strokeWidth = 1.8);
+    canvas.drawLine(
+      frontSeamCenter,
+      sideSeamRight,
+      Paint()
+        ..color = const Color(0xFF1B120C)
+        ..strokeWidth = 1.8,
+    );
 
     // 4. Black Iron Perimeter Straps
-    final ironBandPaint = Paint()..color = const Color(0xFF263238)..strokeWidth = 2.0;
+    final ironBandPaint = Paint()
+      ..color = const Color(0xFF263238)
+      ..strokeWidth = 2.0;
     canvas.drawLine(leftTopVertex, centerVertex, ironBandPaint);
     canvas.drawLine(leftBottomVertex, centerBottomVertex, ironBandPaint);
     canvas.drawLine(centerBottomVertex, rightBottomVertex, ironBandPaint);
@@ -1133,18 +1557,49 @@ class _VoxelIconPainter extends CustomPainter {
 
     // 5. Silver Latch centered on the front seam
     final latchCenter = Offset.lerp(frontSeamLeft, frontSeamCenter, 0.52)!;
-    final latchRect = Rect.fromCenter(center: latchCenter, width: s * 0.12, height: s * 0.16);
-    canvas.drawRRect(RRect.fromRectAndRadius(latchRect, const Radius.circular(2)), Paint()..color = const Color(0xFFCFD8DC)); // Silver body
-    canvas.drawRect(Rect.fromLTWH(latchRect.left, latchRect.top, latchRect.width, latchRect.height * 0.32), Paint()..color = Colors.white); // Top highlight
-    canvas.drawRect(Rect.fromCenter(center: Offset(latchCenter.dx, latchCenter.dy + s * 0.02), width: s * 0.035, height: s * 0.06), Paint()..color = const Color(0xFF1B120C)); // Keyhole
-    canvas.drawRRect(RRect.fromRectAndRadius(latchRect, const Radius.circular(2)), Paint()..color = const Color(0xFF1B120C)..style = PaintingStyle.stroke..strokeWidth = 1.2); // Outline
+    final latchRect = Rect.fromCenter(
+      center: latchCenter,
+      width: s * 0.12,
+      height: s * 0.16,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(latchRect, const Radius.circular(2)),
+      Paint()..color = const Color(0xFFCFD8DC),
+    ); // Silver body
+    canvas.drawRect(
+      Rect.fromLTWH(
+        latchRect.left,
+        latchRect.top,
+        latchRect.width,
+        latchRect.height * 0.32,
+      ),
+      Paint()..color = Colors.white,
+    ); // Top highlight
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(latchCenter.dx, latchCenter.dy + s * 0.02),
+        width: s * 0.035,
+        height: s * 0.06,
+      ),
+      Paint()..color = const Color(0xFF1B120C),
+    ); // Keyhole
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(latchRect, const Radius.circular(2)),
+      Paint()
+        ..color = const Color(0xFF1B120C)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2,
+    ); // Outline
   }
 
   // 17. GLOBE: 3D Voxel Planet Earth with ocean depth, multi-tone continents & polar ice
   void _drawGlobe(Canvas canvas, double cx, double cy, double s) {
     canvas.save();
     final globeRadius = s * 0.35;
-    final globeRect = Rect.fromCircle(center: Offset(cx, cy), radius: globeRadius);
+    final globeRect = Rect.fromCircle(
+      center: Offset(cx, cy),
+      radius: globeRadius,
+    );
 
     // Clip all globe elements smoothly to the sphere
     canvas.clipPath(Path()..addOval(globeRect));
@@ -1165,15 +1620,39 @@ class _VoxelIconPainter extends CustomPainter {
     final landSavanna = Paint()..color = const Color(0xFF8BC34A);
 
     // Continent 1 (North-west)
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(cx - s * 0.24, cy - s * 0.20, s * 0.20, s * 0.18), const Radius.circular(3)), landForest);
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.18, cy - s * 0.14, s * 0.11, s * 0.10), landSavanna);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(cx - s * 0.24, cy - s * 0.20, s * 0.20, s * 0.18),
+        const Radius.circular(3),
+      ),
+      landForest,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(cx - s * 0.18, cy - s * 0.14, s * 0.11, s * 0.10),
+      landSavanna,
+    );
 
     // Continent 2 (East)
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(cx + s * 0.04, cy - s * 0.12, s * 0.22, s * 0.24), const Radius.circular(3)), landForest);
-    canvas.drawRect(Rect.fromLTWH(cx + s * 0.09, cy - s * 0.06, s * 0.12, s * 0.12), landSavanna);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(cx + s * 0.04, cy - s * 0.12, s * 0.22, s * 0.24),
+        const Radius.circular(3),
+      ),
+      landForest,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(cx + s * 0.09, cy - s * 0.06, s * 0.12, s * 0.12),
+      landSavanna,
+    );
 
     // Continent 3 (South-west)
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(cx - s * 0.18, cy + s * 0.08, s * 0.16, s * 0.15), const Radius.circular(3)), landForest);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(cx - s * 0.18, cy + s * 0.08, s * 0.16, s * 0.15),
+        const Radius.circular(3),
+      ),
+      landForest,
+    );
 
     // North polar ice cap
     canvas.drawArc(
@@ -1198,8 +1677,16 @@ class _VoxelIconPainter extends CustomPainter {
       ..color = Colors.white.withValues(alpha: 0.55)
       ..strokeWidth = 2.2
       ..strokeCap = StrokeCap.round;
-    canvas.drawLine(Offset(cx - s * 0.22, cy - s * 0.04), Offset(cx + s * 0.12, cy - s * 0.04), cloudPaint);
-    canvas.drawLine(Offset(cx - s * 0.08, cy + s * 0.12), Offset(cx + s * 0.22, cy + s * 0.12), cloudPaint);
+    canvas.drawLine(
+      Offset(cx - s * 0.22, cy - s * 0.04),
+      Offset(cx + s * 0.12, cy - s * 0.04),
+      cloudPaint,
+    );
+    canvas.drawLine(
+      Offset(cx - s * 0.08, cy + s * 0.12),
+      Offset(cx + s * 0.22, cy + s * 0.12),
+      cloudPaint,
+    );
 
     canvas.restore();
 
@@ -1225,26 +1712,62 @@ class _VoxelIconPainter extends CustomPainter {
 
     // 8 Beveled gear teeth
     for (var i = 0; i < 4; i++) {
-      canvas.drawRect(Rect.fromCenter(center: Offset.zero, width: s * 0.72, height: s * 0.18), toothLit);
-      canvas.drawRect(Rect.fromLTWH(s * 0.26, -s * 0.09, s * 0.10, s * 0.18), toothShadow);
-      canvas.drawRect(Rect.fromLTWH(-s * 0.36, -s * 0.09, s * 0.10, s * 0.18), toothShadow);
+      canvas.drawRect(
+        Rect.fromCenter(center: Offset.zero, width: s * 0.72, height: s * 0.18),
+        toothLit,
+      );
+      canvas.drawRect(
+        Rect.fromLTWH(s * 0.26, -s * 0.09, s * 0.10, s * 0.18),
+        toothShadow,
+      );
+      canvas.drawRect(
+        Rect.fromLTWH(-s * 0.36, -s * 0.09, s * 0.10, s * 0.18),
+        toothShadow,
+      );
       canvas.rotate(math.pi / 4);
     }
 
     // Outer metallic rim
-    canvas.drawCircle(Offset.zero, s * 0.26, Paint()..color = const Color(0xFF78909C));
-    canvas.drawCircle(Offset.zero, s * 0.26, Paint()..color = Colors.white70..style = PaintingStyle.stroke..strokeWidth = 1.2);
+    canvas.drawCircle(
+      Offset.zero,
+      s * 0.26,
+      Paint()..color = const Color(0xFF78909C),
+    );
+    canvas.drawCircle(
+      Offset.zero,
+      s * 0.26,
+      Paint()
+        ..color = Colors.white70
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2,
+    );
 
     // Recessed dark plate with 4 cutouts
-    canvas.drawCircle(Offset.zero, s * 0.19, Paint()..color = const Color(0xFF263238));
+    canvas.drawCircle(
+      Offset.zero,
+      s * 0.19,
+      Paint()..color = const Color(0xFF263238),
+    );
     for (var i = 0; i < 4; i++) {
-      canvas.drawCircle(Offset(s * 0.12, 0), 2.2, Paint()..color = const Color(0xFF151B1E));
+      canvas.drawCircle(
+        Offset(s * 0.12, 0),
+        2.2,
+        Paint()..color = const Color(0xFF151B1E),
+      );
       canvas.rotate(math.pi / 2);
     }
 
     // Central polished brass hub
-    canvas.drawCircle(Offset.zero, s * 0.09, Paint()..color = const Color(0xFFFFB300));
-    canvas.drawCircle(Offset.zero, s * 0.045, Paint()..color = const Color(0xFF37474F));
+    canvas.drawCircle(
+      Offset.zero,
+      s * 0.09,
+      Paint()..color = const Color(0xFFFFB300),
+    );
+    canvas.drawCircle(
+      Offset.zero,
+      s * 0.045,
+      Paint()..color = const Color(0xFF37474F),
+    );
 
     canvas.restore();
   }
@@ -1259,14 +1782,26 @@ class _VoxelIconPainter extends CustomPainter {
     final w = s * 0.16;
     final h = s * 0.40;
     // Lit facet (Left)
-    canvas.drawRect(Rect.fromLTWH(-w / 2, -h / 2, w * 0.35, h), Paint()..color = const Color(0xFF81C784));
+    canvas.drawRect(
+      Rect.fromLTWH(-w / 2, -h / 2, w * 0.35, h),
+      Paint()..color = const Color(0xFF81C784),
+    );
     // Mid facet (Center)
-    canvas.drawRect(Rect.fromLTWH(-w / 2 + w * 0.35, -h / 2, w * 0.40, h), Paint()..color = const Color(0xFF4CAF50));
+    canvas.drawRect(
+      Rect.fromLTWH(-w / 2 + w * 0.35, -h / 2, w * 0.40, h),
+      Paint()..color = const Color(0xFF4CAF50),
+    );
     // Shadow facet (Right)
-    canvas.drawRect(Rect.fromLTWH(-w / 2 + w * 0.75, -h / 2, w * 0.25, h), Paint()..color = const Color(0xFF2E7D32));
+    canvas.drawRect(
+      Rect.fromLTWH(-w / 2 + w * 0.75, -h / 2, w * 0.25, h),
+      Paint()..color = const Color(0xFF2E7D32),
+    );
 
     // Gold imprint band
-    canvas.drawRect(Rect.fromLTWH(-w / 2, -h * 0.20, w, s * 0.035), Paint()..color = const Color(0xFFFFD54F));
+    canvas.drawRect(
+      Rect.fromLTWH(-w / 2, -h * 0.20, w, s * 0.035),
+      Paint()..color = const Color(0xFFFFD54F),
+    );
 
     // Sharpened conical cedar collar
     final collar = Path()
@@ -1277,7 +1812,11 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawPath(collar, Paint()..color = const Color(0xFFFFE082));
     // Cedar scallop grain
     canvas.drawPath(
-      Path()..moveTo(-w * 0.2, h / 2)..lineTo(0, h / 2 + s * 0.12)..lineTo(w * 0.2, h / 2)..close(),
+      Path()
+        ..moveTo(-w * 0.2, h / 2)
+        ..lineTo(0, h / 2 + s * 0.12)
+        ..lineTo(w * 0.2, h / 2)
+        ..close(),
       Paint()..color = const Color(0xFFFFB74D),
     );
 
@@ -1290,12 +1829,22 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawPath(lead, Paint()..color = const Color(0xFF212121));
 
     // Silver ferrule band
-    canvas.drawRect(Rect.fromLTWH(-w / 2, -h / 2 - s * 0.06, w, s * 0.06), Paint()..color = const Color(0xFFCFD8DC));
-    canvas.drawLine(Offset(-w / 2, -h / 2 - s * 0.03), Offset(w / 2, -h / 2 - s * 0.03), Paint()..color = const Color(0xFF90A4AE));
+    canvas.drawRect(
+      Rect.fromLTWH(-w / 2, -h / 2 - s * 0.06, w, s * 0.06),
+      Paint()..color = const Color(0xFFCFD8DC),
+    );
+    canvas.drawLine(
+      Offset(-w / 2, -h / 2 - s * 0.03),
+      Offset(w / 2, -h / 2 - s * 0.03),
+      Paint()..color = const Color(0xFF90A4AE),
+    );
 
     // Pink rubber eraser
     canvas.drawRRect(
-      RRect.fromRectAndRadius(Rect.fromLTWH(-w / 2, -h / 2 - s * 0.14, w, s * 0.08), const Radius.circular(2)),
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(-w / 2, -h / 2 - s * 0.14, w, s * 0.08),
+        const Radius.circular(2),
+      ),
       Paint()..color = const Color(0xFFF48FB1),
     );
 
@@ -1315,7 +1864,13 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(cx - w2, cy - s * 0.30 + h2)
       ..close();
     canvas.drawPath(topFace, Paint()..color = const Color(0xFFFFFFFF));
-    canvas.drawPath(topFace, Paint()..color = const Color(0xFFCFD8DC)..style = PaintingStyle.stroke..strokeWidth = 1.0);
+    canvas.drawPath(
+      topFace,
+      Paint()
+        ..color = const Color(0xFFCFD8DC)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0,
+    );
 
     // Left face (showing 2 pips)
     final leftFace = Path()
@@ -1325,7 +1880,13 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(cx - w2, cy + s * 0.28 - h2)
       ..close();
     canvas.drawPath(leftFace, Paint()..color = const Color(0xFFECEFF1));
-    canvas.drawPath(leftFace, Paint()..color = const Color(0xFFB0BEC5)..style = PaintingStyle.stroke..strokeWidth = 1.0);
+    canvas.drawPath(
+      leftFace,
+      Paint()
+        ..color = const Color(0xFFB0BEC5)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0,
+    );
 
     // Right face (showing 3 pips)
     final rightFace = Path()
@@ -1335,7 +1896,13 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(cx, cy + s * 0.28)
       ..close();
     canvas.drawPath(rightFace, Paint()..color = const Color(0xFFCFD8DC));
-    canvas.drawPath(rightFace, Paint()..color = const Color(0xFF90A4AE)..style = PaintingStyle.stroke..strokeWidth = 1.0);
+    canvas.drawPath(
+      rightFace,
+      Paint()
+        ..color = const Color(0xFF90A4AE)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0,
+    );
 
     // Pips: Top face center pip (Red / Crimson pip)
     final pip1 = Paint()..color = const Color(0xFFD32F2F);
@@ -1357,9 +1924,19 @@ class _VoxelIconPainter extends CustomPainter {
     final scale = 0.85 + 0.15 * math.sin(anim * 4 * math.pi);
     final scale2 = 0.85 + 0.15 * math.sin((anim + 0.5) * 4 * math.pi);
 
-    void draw8PointStar(double x, double y, double r, Color coreColor, Color auraColor) {
+    void draw8PointStar(
+      double x,
+      double y,
+      double r,
+      Color coreColor,
+      Color auraColor,
+    ) {
       // Chromatic aura
-      canvas.drawCircle(Offset(x, y), r * 1.4, Paint()..color = auraColor.withValues(alpha: 0.35));
+      canvas.drawCircle(
+        Offset(x, y),
+        r * 1.4,
+        Paint()..color = auraColor.withValues(alpha: 0.35),
+      );
 
       final p = Path()
         ..moveTo(x, y - r)
@@ -1376,16 +1953,49 @@ class _VoxelIconPainter extends CustomPainter {
     }
 
     // Primary Diamond Star (Center-left)
-    draw8PointStar(cx - s * 0.08, cy - s * 0.08, s * 0.26 * scale, const Color(0xFF00E5FF), const Color(0xFFE040FB));
+    draw8PointStar(
+      cx - s * 0.08,
+      cy - s * 0.08,
+      s * 0.26 * scale,
+      const Color(0xFF00E5FF),
+      const Color(0xFFE040FB),
+    );
 
     // Secondary Golden Star (Bottom-right)
-    draw8PointStar(cx + s * 0.22, cy + s * 0.14, s * 0.16 * scale2, const Color(0xFFFFD54F), const Color(0xFFFF8F00));
+    draw8PointStar(
+      cx + s * 0.22,
+      cy + s * 0.14,
+      s * 0.16 * scale2,
+      const Color(0xFFFFD54F),
+      const Color(0xFFFF8F00),
+    );
 
     // 3 Orbiting sparkle dust motes
     final motePaint = Paint()..color = Colors.white;
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx + s * 0.10, cy - s * 0.24), width: 2, height: 2), motePaint);
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx - s * 0.26, cy + s * 0.18), width: 2.2, height: 2.2), motePaint);
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx + s * 0.30, cy - s * 0.02), width: 1.8, height: 1.8), motePaint);
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(cx + s * 0.10, cy - s * 0.24),
+        width: 2,
+        height: 2,
+      ),
+      motePaint,
+    );
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(cx - s * 0.26, cy + s * 0.18),
+        width: 2.2,
+        height: 2.2,
+      ),
+      motePaint,
+    );
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(cx + s * 0.30, cy - s * 0.02),
+        width: 1.8,
+        height: 1.8,
+      ),
+      motePaint,
+    );
   }
 
   // 22. GRASS BLOCK: Authentic 3D Isometric Minecraft Grass Block with voxel fringe drops & dirt pebbles
@@ -1410,9 +2020,18 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawPath(topFace, edgeOutline);
 
     // Top grass texture pixels
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.14, cy - s * 0.22, s * 0.08, s * 0.05), Paint()..color = const Color(0xFF66BB6A));
-    canvas.drawRect(Rect.fromLTWH(cx + s * 0.06, cy - s * 0.25, s * 0.07, s * 0.05), Paint()..color = const Color(0xFF388E3C));
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.02, cy - s * 0.14, s * 0.07, s * 0.05), Paint()..color = const Color(0xFF2E7D32));
+    canvas.drawRect(
+      Rect.fromLTWH(cx - s * 0.14, cy - s * 0.22, s * 0.08, s * 0.05),
+      Paint()..color = const Color(0xFF66BB6A),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(cx + s * 0.06, cy - s * 0.25, s * 0.07, s * 0.05),
+      Paint()..color = const Color(0xFF388E3C),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(cx - s * 0.02, cy - s * 0.14, s * 0.07, s * 0.05),
+      Paint()..color = const Color(0xFF2E7D32),
+    );
 
     // 2. Left dirt face
     final leftFace = Path()
@@ -1425,8 +2044,14 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawPath(leftFace, edgeOutline);
 
     // Left dirt pebbles
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.20, cy + s * 0.05, s * 0.06, s * 0.06), Paint()..color = const Color(0xFF8D6E63));
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.10, cy + s * 0.14, s * 0.05, s * 0.05), Paint()..color = const Color(0xFF3E2723));
+    canvas.drawRect(
+      Rect.fromLTWH(cx - s * 0.20, cy + s * 0.05, s * 0.06, s * 0.06),
+      Paint()..color = const Color(0xFF8D6E63),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(cx - s * 0.10, cy + s * 0.14, s * 0.05, s * 0.05),
+      Paint()..color = const Color(0xFF3E2723),
+    );
 
     // 3. Right dirt face (shaded)
     final rightFace = Path()
@@ -1439,8 +2064,14 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawPath(rightFace, edgeOutline);
 
     // Right dirt pebbles
-    canvas.drawRect(Rect.fromLTWH(cx + s * 0.14, cy + s * 0.08, s * 0.06, s * 0.05), Paint()..color = const Color(0xFF3E2723));
-    canvas.drawRect(Rect.fromLTWH(cx + s * 0.06, cy + s * 0.18, s * 0.05, s * 0.05), Paint()..color = const Color(0xFF6D4C41));
+    canvas.drawRect(
+      Rect.fromLTWH(cx + s * 0.14, cy + s * 0.08, s * 0.06, s * 0.05),
+      Paint()..color = const Color(0xFF3E2723),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(cx + s * 0.06, cy + s * 0.18, s * 0.05, s * 0.05),
+      Paint()..color = const Color(0xFF6D4C41),
+    );
 
     // 4. Stepped voxel grass overhang fringe hanging down both sides
     final overLeft = Path()
@@ -1473,33 +2104,92 @@ class _VoxelIconPainter extends CustomPainter {
   // 23. STEVE: High-res pixel-perfect Steve avatar with textured hair, eyes & beard
   void _drawSteve(Canvas canvas, double cx, double cy, double s) {
     // Outer border
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx, cy), width: s * 0.70, height: s * 0.70), Paint()..color = const Color(0xFF2E1C14));
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(cx, cy),
+        width: s * 0.70,
+        height: s * 0.70,
+      ),
+      Paint()..color = const Color(0xFF2E1C14),
+    );
 
     // Head base (Skin tone)
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx, cy), width: s * 0.64, height: s * 0.64), Paint()..color = const Color(0xFFD7A17C));
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(cx, cy),
+        width: s * 0.64,
+        height: s * 0.64,
+      ),
+      Paint()..color = const Color(0xFFD7A17C),
+    );
 
     // Textured brown hair
     final hairPaint = Paint()..color = const Color(0xFF4E342E);
     final hairLight = Paint()..color = const Color(0xFF6D4C41);
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.32, cy - s * 0.32, s * 0.64, s * 0.22), hairPaint);
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.24, cy - s * 0.30, s * 0.20, s * 0.08), hairLight);
+    canvas.drawRect(
+      Rect.fromLTWH(cx - s * 0.32, cy - s * 0.32, s * 0.64, s * 0.22),
+      hairPaint,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(cx - s * 0.24, cy - s * 0.30, s * 0.20, s * 0.08),
+      hairLight,
+    );
     // Sideburns
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.32, cy - s * 0.14, s * 0.12, s * 0.20), hairPaint);
-    canvas.drawRect(Rect.fromLTWH(cx + s * 0.20, cy - s * 0.14, s * 0.12, s * 0.20), hairPaint);
+    canvas.drawRect(
+      Rect.fromLTWH(cx - s * 0.32, cy - s * 0.14, s * 0.12, s * 0.20),
+      hairPaint,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(cx + s * 0.20, cy - s * 0.14, s * 0.12, s * 0.20),
+      hairPaint,
+    );
 
     // Eyes: White sclera + Cyan/Indigo pupils
     final eyeY = cy - s * 0.02;
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.22, eyeY, s * 0.14, s * 0.08), Paint()..color = Colors.white);
-    canvas.drawRect(Rect.fromLTWH(cx + s * 0.08, eyeY, s * 0.14, s * 0.08), Paint()..color = Colors.white);
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.16, eyeY, s * 0.08, s * 0.08), Paint()..color = const Color(0xFF00838F));
-    canvas.drawRect(Rect.fromLTWH(cx + s * 0.14, eyeY, s * 0.08, s * 0.08), Paint()..color = const Color(0xFF00838F));
+    canvas.drawRect(
+      Rect.fromLTWH(cx - s * 0.22, eyeY, s * 0.14, s * 0.08),
+      Paint()..color = Colors.white,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(cx + s * 0.08, eyeY, s * 0.14, s * 0.08),
+      Paint()..color = Colors.white,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(cx - s * 0.16, eyeY, s * 0.08, s * 0.08),
+      Paint()..color = const Color(0xFF00838F),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(cx + s * 0.14, eyeY, s * 0.08, s * 0.08),
+      Paint()..color = const Color(0xFF00838F),
+    );
 
     // Nose
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx, cy + s * 0.08), width: s * 0.12, height: s * 0.08), Paint()..color = const Color(0xFFBD8262));
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(cx, cy + s * 0.08),
+        width: s * 0.12,
+        height: s * 0.08,
+      ),
+      Paint()..color = const Color(0xFFBD8262),
+    );
 
     // Mouth / Trimmed goatee
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx, cy + s * 0.18), width: s * 0.26, height: s * 0.08), Paint()..color = const Color(0xFF4E342E));
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx, cy + s * 0.16), width: s * 0.14, height: s * 0.04), Paint()..color = const Color(0xFF8D6E63));
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(cx, cy + s * 0.18),
+        width: s * 0.26,
+        height: s * 0.08,
+      ),
+      Paint()..color = const Color(0xFF4E342E),
+    );
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(cx, cy + s * 0.16),
+        width: s * 0.14,
+        height: s * 0.04,
+      ),
+      Paint()..color = const Color(0xFF8D6E63),
+    );
   }
 
   // 24. LANTERN: High-detail glowing Minecraft lantern with iron frame & flame bloom matching user reference image 4
@@ -1524,7 +2214,14 @@ class _VoxelIconPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.4;
     canvas.drawCircle(Offset(cx, cy - s * 0.32), s * 0.08, ringPaint);
-    canvas.drawCircle(Offset(cx, cy - s * 0.32), s * 0.08, Paint()..color = const Color(0xFF10171B)..style = PaintingStyle.stroke..strokeWidth = 1.0);
+    canvas.drawCircle(
+      Offset(cx, cy - s * 0.32),
+      s * 0.08,
+      Paint()
+        ..color = const Color(0xFF10171B)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0,
+    );
 
     // 2. Stepped Iron Roof Cap (tiered pyramid)
     final roofCap = Path()
@@ -1534,49 +2231,117 @@ class _VoxelIconPainter extends CustomPainter {
       ..lineTo(cx - s * 0.16, cy - s * 0.24)
       ..close();
     canvas.drawPath(roofCap, Paint()..color = const Color(0xFF37474F));
-    canvas.drawPath(roofCap, Paint()..color = const Color(0xFF10171B)..style = PaintingStyle.stroke..strokeWidth = 2.0);
+    canvas.drawPath(
+      roofCap,
+      Paint()
+        ..color = const Color(0xFF10171B)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.0,
+    );
 
     // Roof Eaves overhang rim
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(cx, cy - s * 0.13), width: s * 0.52, height: s * 0.06),
+      Rect.fromCenter(
+        center: Offset(cx, cy - s * 0.13),
+        width: s * 0.52,
+        height: s * 0.06,
+      ),
       Paint()..color = const Color(0xFF263238),
     );
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(cx, cy - s * 0.13), width: s * 0.52, height: s * 0.06),
-      Paint()..color = const Color(0xFF10171B)..style = PaintingStyle.stroke..strokeWidth = 1.5,
+      Rect.fromCenter(
+        center: Offset(cx, cy - s * 0.13),
+        width: s * 0.52,
+        height: s * 0.06,
+      ),
+      Paint()
+        ..color = const Color(0xFF10171B)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5,
     );
 
     // 3. Glass Chamber Body (illuminated warm amber glass)
-    final glassRect = Rect.fromCenter(center: Offset(cx, cy + s * 0.08), width: s * 0.40, height: s * 0.36);
+    final glassRect = Rect.fromCenter(
+      center: Offset(cx, cy + s * 0.08),
+      width: s * 0.40,
+      height: s * 0.36,
+    );
     canvas.drawRect(glassRect, Paint()..color = const Color(0xFFFFA000));
 
     // 4. Blazing Interior Core Flame
     final flY = cy + s * 0.08 + math.sin(anim * 6 * math.pi) * 1.5;
-    canvas.drawCircle(Offset(cx, flY), s * 0.14 * glow, Paint()..color = const Color(0xFFFF6D00));
-    canvas.drawCircle(Offset(cx, flY - 1), s * 0.09 * glow, Paint()..color = const Color(0xFFFFD54F));
-    canvas.drawCircle(Offset(cx, flY - 2), s * 0.05 * glow, Paint()..color = Colors.white);
+    canvas.drawCircle(
+      Offset(cx, flY),
+      s * 0.14 * glow,
+      Paint()..color = const Color(0xFFFF6D00),
+    );
+    canvas.drawCircle(
+      Offset(cx, flY - 1),
+      s * 0.09 * glow,
+      Paint()..color = const Color(0xFFFFD54F),
+    );
+    canvas.drawCircle(
+      Offset(cx, flY - 2),
+      s * 0.05 * glow,
+      Paint()..color = Colors.white,
+    );
 
     // 5. 4 Wrought-Iron Struts & Glass Crossbars
     final ironPost = Paint()..color = const Color(0xFF263238);
     final postW = s * 0.055;
     // Left post
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.20, cy - s * 0.10, postW, s * 0.36), ironPost);
+    canvas.drawRect(
+      Rect.fromLTWH(cx - s * 0.20, cy - s * 0.10, postW, s * 0.36),
+      ironPost,
+    );
     // Right post
-    canvas.drawRect(Rect.fromLTWH(cx + s * 0.20 - postW, cy - s * 0.10, postW, s * 0.36), ironPost);
+    canvas.drawRect(
+      Rect.fromLTWH(cx + s * 0.20 - postW, cy - s * 0.10, postW, s * 0.36),
+      ironPost,
+    );
     // Center divider
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx, cy + s * 0.08), width: postW * 0.8, height: s * 0.36), ironPost);
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(cx, cy + s * 0.08),
+        width: postW * 0.8,
+        height: s * 0.36,
+      ),
+      ironPost,
+    );
 
     // Outer dark frame outline
-    canvas.drawRect(glassRect, Paint()..color = const Color(0xFF10171B)..style = PaintingStyle.stroke..strokeWidth = 2.0);
+    canvas.drawRect(
+      glassRect,
+      Paint()
+        ..color = const Color(0xFF10171B)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.0,
+    );
 
     // 6. Base Iron Plate with corner feet
-    final baseRect = Rect.fromCenter(center: Offset(cx, cy + s * 0.28), width: s * 0.46, height: s * 0.07);
+    final baseRect = Rect.fromCenter(
+      center: Offset(cx, cy + s * 0.28),
+      width: s * 0.46,
+      height: s * 0.07,
+    );
     canvas.drawRect(baseRect, Paint()..color = const Color(0xFF263238));
-    canvas.drawRect(baseRect, Paint()..color = const Color(0xFF10171B)..style = PaintingStyle.stroke..strokeWidth = 1.6);
+    canvas.drawRect(
+      baseRect,
+      Paint()
+        ..color = const Color(0xFF10171B)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.6,
+    );
 
     // Base feet
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.22, cy + s * 0.31, s * 0.07, s * 0.04), Paint()..color = const Color(0xFF10171B));
-    canvas.drawRect(Rect.fromLTWH(cx + s * 0.15, cy + s * 0.31, s * 0.07, s * 0.04), Paint()..color = const Color(0xFF10171B));
+    canvas.drawRect(
+      Rect.fromLTWH(cx - s * 0.22, cy + s * 0.31, s * 0.07, s * 0.04),
+      Paint()..color = const Color(0xFF10171B),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(cx + s * 0.15, cy + s * 0.31, s * 0.07, s * 0.04),
+      Paint()..color = const Color(0xFF10171B),
+    );
   }
 
   // 25. RAIN CLOUD: Atmospheric 3D Minecraft storm cloud with falling diagonal crystal drops
@@ -1590,20 +2355,51 @@ class _VoxelIconPainter extends CustomPainter {
     final stormHighlight = Paint()..color = const Color(0xFF78909C);
 
     // Bottom shelf
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx, y + s * 0.12), width: s * 0.74, height: s * 0.10), stormShadow);
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(cx, y + s * 0.12),
+        width: s * 0.74,
+        height: s * 0.10,
+      ),
+      stormShadow,
+    );
     // Main body
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx, y), width: s * 0.72, height: s * 0.18), stormBody);
+    canvas.drawRect(
+      Rect.fromCenter(center: Offset(cx, y), width: s * 0.72, height: s * 0.18),
+      stormBody,
+    );
     // Upper puffs
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx - s * 0.12, y - s * 0.09), width: s * 0.32, height: s * 0.16), stormHighlight);
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx + s * 0.14, y - s * 0.06), width: s * 0.26, height: s * 0.12), stormHighlight);
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(cx - s * 0.12, y - s * 0.09),
+        width: s * 0.32,
+        height: s * 0.16,
+      ),
+      stormHighlight,
+    );
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(cx + s * 0.14, y - s * 0.06),
+        width: s * 0.26,
+        height: s * 0.12,
+      ),
+      stormHighlight,
+    );
 
     // 4 Diagonal falling crystal raindrops
-    final dropPaint = Paint()..color = const Color(0xFF40C4FF)..strokeWidth = 2.0..strokeCap = StrokeCap.round;
+    final dropPaint = Paint()
+      ..color = const Color(0xFF40C4FF)
+      ..strokeWidth = 2.0
+      ..strokeCap = StrokeCap.round;
     for (var i = 0; i < 4; i++) {
       final dropAnim = (anim * 2.2 + i * 0.25) % 1.0;
       final x = cx - s * 0.24 + i * (s * 0.16);
       final dy = cy + s * 0.06 + dropAnim * (s * 0.32);
-      canvas.drawLine(Offset(x, dy), Offset(x - s * 0.04, dy + s * 0.10), dropPaint);
+      canvas.drawLine(
+        Offset(x, dy),
+        Offset(x - s * 0.04, dy + s * 0.10),
+        dropPaint,
+      );
     }
   }
 
@@ -1620,8 +2416,15 @@ class _VoxelIconPainter extends CustomPainter {
       final rAlpha = (1.0 - rAnim).clamp(0.0, 1.0);
 
       canvas.drawOval(
-        Rect.fromCenter(center: Offset(cx, cy + s * 0.26), width: rw, height: rh),
-        Paint()..color = const Color(0xFF80D8FF).withValues(alpha: rAlpha * 0.85)..style = PaintingStyle.stroke..strokeWidth = 1.4,
+        Rect.fromCenter(
+          center: Offset(cx, cy + s * 0.26),
+          width: rw,
+          height: rh,
+        ),
+        Paint()
+          ..color = const Color(0xFF80D8FF).withValues(alpha: rAlpha * 0.85)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.4,
       );
     }
 
@@ -1637,13 +2440,29 @@ class _VoxelIconPainter extends CustomPainter {
   void _drawPalette(Canvas canvas, double cx, double cy, double s) {
     // Contoured wooden palette
     final palettePath = Path()
-      ..addOval(Rect.fromCenter(center: Offset(cx, cy), width: s * 0.74, height: s * 0.60));
+      ..addOval(
+        Rect.fromCenter(
+          center: Offset(cx, cy),
+          width: s * 0.74,
+          height: s * 0.60,
+        ),
+      );
     canvas.drawPath(palettePath, Paint()..color = const Color(0xFF8D6E63));
-    canvas.drawPath(palettePath, Paint()..color = const Color(0xFF5D4037)..style = PaintingStyle.stroke..strokeWidth = 1.6);
+    canvas.drawPath(
+      palettePath,
+      Paint()
+        ..color = const Color(0xFF5D4037)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.6,
+    );
 
     // Thumb hole
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx + s * 0.18, cy + s * 0.08), width: s * 0.14, height: s * 0.18),
+      Rect.fromCenter(
+        center: Offset(cx + s * 0.18, cy + s * 0.08),
+        width: s * 0.14,
+        height: s * 0.18,
+      ),
       Paint()..color = const Color(0xFF1E2226),
     );
 
@@ -1667,11 +2486,19 @@ class _VoxelIconPainter extends CustomPainter {
     for (var i = 0; i < 5; i++) {
       final pos = positions[i];
       // Paint drop shadow
-      canvas.drawCircle(Offset(pos.dx + 1, pos.dy + 1), s * 0.07, Paint()..color = Colors.black38);
+      canvas.drawCircle(
+        Offset(pos.dx + 1, pos.dy + 1),
+        s * 0.07,
+        Paint()..color = Colors.black38,
+      );
       // Paint dome
       canvas.drawCircle(pos, s * 0.065, Paint()..color = colors[i]);
       // Specular highlight dot
-      canvas.drawCircle(Offset(pos.dx - 1.5, pos.dy - 1.5), 1.5, Paint()..color = Colors.white.withValues(alpha: 0.90));
+      canvas.drawCircle(
+        Offset(pos.dx - 1.5, pos.dy - 1.5),
+        1.5,
+        Paint()..color = Colors.white.withValues(alpha: 0.90),
+      );
     }
   }
 
@@ -1679,53 +2506,108 @@ class _VoxelIconPainter extends CustomPainter {
   void _drawCamera(Canvas canvas, double cx, double cy, double s) {
     // Camera body (magnesium alloy)
     final bodyR = RRect.fromRectAndRadius(
-      Rect.fromCenter(center: Offset(cx, cy + s * 0.02), width: s * 0.72, height: s * 0.48),
+      Rect.fromCenter(
+        center: Offset(cx, cy + s * 0.02),
+        width: s * 0.72,
+        height: s * 0.48,
+      ),
       const Radius.circular(4),
     );
     canvas.drawRRect(bodyR, Paint()..color = const Color(0xFF37474F));
-    canvas.drawRRect(bodyR, Paint()..color = const Color(0xFF263238)..style = PaintingStyle.stroke..strokeWidth = 1.4);
+    canvas.drawRRect(
+      bodyR,
+      Paint()
+        ..color = const Color(0xFF263238)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.4,
+    );
 
     // Textured leatherette grip (Left)
     canvas.drawRRect(
-      RRect.fromRectAndRadius(Rect.fromLTWH(cx - s * 0.34, cy - s * 0.18, s * 0.14, s * 0.40), const Radius.circular(2)),
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(cx - s * 0.34, cy - s * 0.18, s * 0.14, s * 0.40),
+        const Radius.circular(2),
+      ),
       Paint()..color = const Color(0xFF212121),
     );
 
     // Top control dial and shutter button
-    canvas.drawRect(Rect.fromLTWH(cx - s * 0.22, cy - s * 0.26, s * 0.10, s * 0.06), Paint()..color = const Color(0xFFB0BEC5));
-    canvas.drawRect(Rect.fromLTWH(cx + s * 0.14, cy - s * 0.28, s * 0.08, s * 0.08), Paint()..color = const Color(0xFFECEFF1));
+    canvas.drawRect(
+      Rect.fromLTWH(cx - s * 0.22, cy - s * 0.26, s * 0.10, s * 0.06),
+      Paint()..color = const Color(0xFFB0BEC5),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(cx + s * 0.14, cy - s * 0.28, s * 0.08, s * 0.08),
+      Paint()..color = const Color(0xFFECEFF1),
+    );
 
     // Multi-element optical lens barrel
-    canvas.drawCircle(Offset(cx + s * 0.06, cy + s * 0.04), s * 0.18, Paint()..color = const Color(0xFF212121));
-    canvas.drawCircle(Offset(cx + s * 0.06, cy + s * 0.04), s * 0.15, Paint()..color = const Color(0xFF37474F));
+    canvas.drawCircle(
+      Offset(cx + s * 0.06, cy + s * 0.04),
+      s * 0.18,
+      Paint()..color = const Color(0xFF212121),
+    );
+    canvas.drawCircle(
+      Offset(cx + s * 0.06, cy + s * 0.04),
+      s * 0.15,
+      Paint()..color = const Color(0xFF37474F),
+    );
 
     // Anti-reflective coating reflection (Sapphire-cyan & magenta sheen)
     final lensGlint = Paint()
-      ..shader = const LinearGradient(
-        colors: [Color(0xFF00E5FF), Color(0xFFAB47BC)],
-      ).createShader(Rect.fromCircle(center: Offset(cx + s * 0.06, cy + s * 0.04), radius: s * 0.11));
-    canvas.drawCircle(Offset(cx + s * 0.06, cy + s * 0.04), s * 0.11, lensGlint);
+      ..shader =
+          const LinearGradient(
+            colors: [Color(0xFF00E5FF), Color(0xFFAB47BC)],
+          ).createShader(
+            Rect.fromCircle(
+              center: Offset(cx + s * 0.06, cy + s * 0.04),
+              radius: s * 0.11,
+            ),
+          );
+    canvas.drawCircle(
+      Offset(cx + s * 0.06, cy + s * 0.04),
+      s * 0.11,
+      lensGlint,
+    );
 
     // Specular lens flare dot
-    canvas.drawCircle(Offset(cx + s * 0.02, cy), 2.2, Paint()..color = Colors.white.withValues(alpha: 0.90));
+    canvas.drawCircle(
+      Offset(cx + s * 0.02, cy),
+      2.2,
+      Paint()..color = Colors.white.withValues(alpha: 0.90),
+    );
 
     // Blinking red recording tally LED
     final blink = (math.sin(anim * 4 * math.pi) > 0);
     canvas.drawCircle(
       Offset(cx - s * 0.26, cy - s * 0.12),
       2.5,
-      Paint()..color = blink ? const Color(0xFFFF1744) : const Color(0xFFB71C1C),
+      Paint()
+        ..color = blink ? const Color(0xFFFF1744) : const Color(0xFFB71C1C),
     );
   }
 
   // 29. CONTRAST: Circular aperture dial with calibrated notches & high-contrast Yin-Yang transition
   void _drawContrast(Canvas canvas, double cx, double cy, double s) {
     // Brushed metallic aperture ring
-    canvas.drawCircle(Offset(cx, cy), s * 0.36, Paint()..color = const Color(0xFF78909C));
-    canvas.drawCircle(Offset(cx, cy), s * 0.36, Paint()..color = const Color(0xFFCFD8DC)..style = PaintingStyle.stroke..strokeWidth = 1.2);
+    canvas.drawCircle(
+      Offset(cx, cy),
+      s * 0.36,
+      Paint()..color = const Color(0xFF78909C),
+    );
+    canvas.drawCircle(
+      Offset(cx, cy),
+      s * 0.36,
+      Paint()
+        ..color = const Color(0xFFCFD8DC)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2,
+    );
 
     // Calibrated aperture tick marks
-    final tickPaint = Paint()..color = Colors.white70..strokeWidth = 1.2;
+    final tickPaint = Paint()
+      ..color = Colors.white70
+      ..strokeWidth = 1.2;
     for (var i = 0; i < 8; i++) {
       final a = i * (math.pi / 4);
       final x1 = cx + math.cos(a) * (s * 0.32);
@@ -1736,28 +2618,54 @@ class _VoxelIconPainter extends CustomPainter {
     }
 
     // Inner dial: Dark half (Obsidian)
-    canvas.drawCircle(Offset(cx, cy), s * 0.30, Paint()..color = const Color(0xFF1A1A1A));
+    canvas.drawCircle(
+      Offset(cx, cy),
+      s * 0.30,
+      Paint()..color = const Color(0xFF1A1A1A),
+    );
 
     // Light half (Pure diamond white)
     final lightHalf = Path()
-      ..addArc(Rect.fromCircle(center: Offset(cx, cy), radius: s * 0.30), -math.pi / 2, math.pi)
+      ..addArc(
+        Rect.fromCircle(center: Offset(cx, cy), radius: s * 0.30),
+        -math.pi / 2,
+        math.pi,
+      )
       ..close();
     canvas.drawPath(lightHalf, Paint()..color = Colors.white);
 
     // Center contrast pips
-    canvas.drawCircle(Offset(cx, cy - s * 0.14), s * 0.05, Paint()..color = const Color(0xFF1A1A1A));
-    canvas.drawCircle(Offset(cx, cy + s * 0.14), s * 0.05, Paint()..color = Colors.white);
+    canvas.drawCircle(
+      Offset(cx, cy - s * 0.14),
+      s * 0.05,
+      Paint()..color = const Color(0xFF1A1A1A),
+    );
+    canvas.drawCircle(
+      Offset(cx, cy + s * 0.14),
+      s * 0.05,
+      Paint()..color = Colors.white,
+    );
   }
 
   // 30. FILM: Authentic 35mm motion picture celluloid strip with miniature sunset gradient frame
   void _drawFilm(Canvas canvas, double cx, double cy, double s) {
     // Film strip celluloid body
     final filmR = RRect.fromRectAndRadius(
-      Rect.fromCenter(center: Offset(cx, cy), width: s * 0.68, height: s * 0.52),
+      Rect.fromCenter(
+        center: Offset(cx, cy),
+        width: s * 0.68,
+        height: s * 0.52,
+      ),
       const Radius.circular(3),
     );
     canvas.drawRRect(filmR, Paint()..color = const Color(0xFF1E2226));
-    canvas.drawRRect(filmR, Paint()..color = const Color(0xFF37474F)..style = PaintingStyle.stroke..strokeWidth = 1.4);
+    canvas.drawRRect(
+      filmR,
+      Paint()
+        ..color = const Color(0xFF37474F)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.4,
+    );
 
     // Top and bottom sprocket perforation tracks (3 on top, 3 on bottom)
     final holePaint = Paint()..color = const Color(0xFFECEFF1);
@@ -1767,13 +2675,37 @@ class _VoxelIconPainter extends CustomPainter {
     for (var i = 0; i < 3; i++) {
       final hx = cx - s * 0.22 + i * (s * 0.22);
       // Top sprocket hole
-      canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromCenter(center: Offset(hx, cy - s * 0.19), width: holeW, height: holeH), const Radius.circular(1)), holePaint);
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: Offset(hx, cy - s * 0.19),
+            width: holeW,
+            height: holeH,
+          ),
+          const Radius.circular(1),
+        ),
+        holePaint,
+      );
       // Bottom sprocket hole
-      canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromCenter(center: Offset(hx, cy + s * 0.19), width: holeW, height: holeH), const Radius.circular(1)), holePaint);
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: Offset(hx, cy + s * 0.19),
+            width: holeW,
+            height: holeH,
+          ),
+          const Radius.circular(1),
+        ),
+        holePaint,
+      );
     }
 
     // Central frame window showing miniature vibrant Minecraft sunset exposure!
-    final frameRect = Rect.fromCenter(center: Offset(cx, cy), width: s * 0.46, height: s * 0.24);
+    final frameRect = Rect.fromCenter(
+      center: Offset(cx, cy),
+      width: s * 0.46,
+      height: s * 0.24,
+    );
     canvas.drawRect(
       frameRect,
       Paint()
@@ -1796,7 +2728,9 @@ class _VoxelIconPainter extends CustomPainter {
     canvas.drawLine(
       Offset(cx - s * 0.30, cy - s * 0.23),
       Offset(cx + s * 0.30, cy - s * 0.23),
-      Paint()..color = Colors.white54..strokeWidth = 1.0,
+      Paint()
+        ..color = Colors.white54
+        ..strokeWidth = 1.0,
     );
   }
 
@@ -1865,6 +2799,7 @@ class _VoxelIconPainter extends CustomPainter {
           ..strokeWidth = 0.8,
       );
     }
+
     drawCornerPlate(topVertex, leftTopVertex, rightTopVertex);
     drawCornerPlate(rightTopVertex, topVertex, centerVertex);
     drawCornerPlate(centerVertex, rightTopVertex, leftTopVertex);
@@ -1955,8 +2890,14 @@ class _VoxelIconPainter extends CustomPainter {
 
     // 4. Crimson Ribbon Bookmark dangling from inside the pages over the bottom corner
     final ribbonOrigin = Offset.lerp(centerVertex, centerBottomVertex, 0.50)!;
-    final ribbonMid = Offset(ribbonOrigin.dx + s * 0.04, ribbonOrigin.dy + s * 0.12);
-    final ribbonTip = Offset(ribbonOrigin.dx + s * 0.06, ribbonOrigin.dy + s * 0.22);
+    final ribbonMid = Offset(
+      ribbonOrigin.dx + s * 0.04,
+      ribbonOrigin.dy + s * 0.12,
+    );
+    final ribbonTip = Offset(
+      ribbonOrigin.dx + s * 0.06,
+      ribbonOrigin.dy + s * 0.22,
+    );
     final ribbonWidth = s * 0.06;
 
     final ribbonPath = Path()
@@ -1976,7 +2917,11 @@ class _VoxelIconPainter extends CustomPainter {
         ..strokeWidth = 0.8,
     );
     // Gold bookmark tassel tip
-    canvas.drawCircle(ribbonTip, s * 0.02, Paint()..color = const Color(0xFFFBBF24));
+    canvas.drawCircle(
+      ribbonTip,
+      s * 0.02,
+      Paint()..color = const Color(0xFFFBBF24),
+    );
   }
 
   // 32. RELOAD: Authentic Minecraft Pixelated Circular Refresh Arrows
@@ -2001,7 +2946,8 @@ class _VoxelIconPainter extends CustomPainter {
     final ox = cx - s * 0.5;
     final oy = cy - s * 0.5;
 
-    final fillPaint = Paint()..color = (colorOverride ?? const Color(0xFF22C55E));
+    final fillPaint = Paint()
+      ..color = (colorOverride ?? const Color(0xFF22C55E));
     final highlightPaint = Paint()..color = const Color(0xFF86EFAC);
     final shadowPaint = Paint()..color = const Color(0xFF14532D);
 
@@ -2009,9 +2955,20 @@ class _VoxelIconPainter extends CustomPainter {
       for (var x = 0; x < 14; x++) {
         if (matrix[y][x] == '#') {
           final rect = Rect.fromLTWH(ox + x * u, oy + y * u, u, u);
-          canvas.drawRect(Rect.fromLTWH(rect.left, rect.top + u * 0.15, rect.width, rect.height), shadowPaint);
+          canvas.drawRect(
+            Rect.fromLTWH(
+              rect.left,
+              rect.top + u * 0.15,
+              rect.width,
+              rect.height,
+            ),
+            shadowPaint,
+          );
           canvas.drawRect(rect, fillPaint);
-          canvas.drawRect(Rect.fromLTWH(rect.left, rect.top, u * 0.45, u * 0.45), highlightPaint);
+          canvas.drawRect(
+            Rect.fromLTWH(rect.left, rect.top, u * 0.45, u * 0.45),
+            highlightPaint,
+          );
         }
       }
     }
@@ -2019,6 +2976,7 @@ class _VoxelIconPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _VoxelIconPainter oldDelegate) {
-    return oldDelegate.type != type || oldDelegate.colorOverride != colorOverride;
+    return oldDelegate.type != type ||
+        oldDelegate.colorOverride != colorOverride;
   }
 }

@@ -467,7 +467,11 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
         elevation: 0,
         centerTitle: false,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+            size: 20,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Row(
@@ -481,7 +485,10 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
                 border: Border.all(color: const Color(0xFF22C55E), width: 1.2),
               ),
               child: const Center(
-                child: AnimatedMinecraftIcon(type: VoxelIconType.enchantedBook, size: 22),
+                child: AnimatedMinecraftIcon(
+                  type: VoxelIconType.enchantedBook,
+                  size: 22,
+                ),
               ),
             ),
             const SizedBox(width: 10),
@@ -532,18 +539,27 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
                       child: GestureDetector(
                         onTap: () => setState(() => _selectedCategory = cat),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 7,
+                          ),
                           decoration: BoxDecoration(
-                            color: isSel ? const Color(0xFF22C55E) : palette.cardElevated,
+                            color: isSel
+                                ? const Color(0xFF22C55E)
+                                : palette.cardElevated,
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: isSel ? const Color(0xFF4ADE80) : palette.border,
+                              color: isSel
+                                  ? const Color(0xFF4ADE80)
+                                  : palette.border,
                               width: 1.0,
                             ),
                             boxShadow: isSel
                                 ? [
                                     BoxShadow(
-                                      color: const Color(0xFF22C55E).withValues(alpha: 0.3),
+                                      color: const Color(
+                                        0xFF22C55E,
+                                      ).withValues(alpha: 0.3),
                                       blurRadius: 8,
                                       offset: const Offset(0, 2),
                                     ),
@@ -553,7 +569,9 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
                           child: Text(
                             cat,
                             style: TextStyle(
-                              color: isSel ? Colors.black : palette.textSecondary,
+                              color: isSel
+                                  ? Colors.black
+                                  : palette.textSecondary,
                               fontSize: 11,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 0.6,
@@ -572,16 +590,13 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 6, 16, 32),
             sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final p = presets[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 14),
-                    child: _buildPresetCard(context, p, palette),
-                  );
-                },
-                childCount: presets.length,
-              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final p = presets[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: _buildPresetCard(context, p, palette),
+                );
+              }, childCount: presets.length),
             ),
           ),
         ],
@@ -634,7 +649,11 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
               ),
               child: Row(
                 children: const [
-                  Icon(Icons.wb_twilight_rounded, size: 12, color: Colors.white),
+                  Icon(
+                    Icons.wb_twilight_rounded,
+                    size: 12,
+                    color: Colors.white,
+                  ),
                   SizedBox(width: 4),
                   Text(
                     'DAWN',
@@ -660,7 +679,11 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
                     ),
                   ),
                   Spacer(),
-                  Icon(Icons.nights_stay_rounded, size: 12, color: Colors.white),
+                  Icon(
+                    Icons.nights_stay_rounded,
+                    size: 12,
+                    color: Colors.white,
+                  ),
                   SizedBox(width: 4),
                   Text(
                     'NIGHT',
@@ -760,14 +783,23 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
                       backgroundColor: const Color(0xFF22C55E),
                       foregroundColor: Colors.black,
                       elevation: 0,
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: const [
-                        Icon(Icons.check_rounded, size: 15, color: Colors.black),
+                        Icon(
+                          Icons.check_rounded,
+                          size: 15,
+                          color: Colors.black,
+                        ),
                         SizedBox(width: 4),
                         Text(
                           'APPLY',
@@ -822,4 +854,3 @@ class PresetsModalSheet extends StatelessWidget {
     return ShaderPresetsScreen(onSelectPreset: onSelectPreset);
   }
 }
-

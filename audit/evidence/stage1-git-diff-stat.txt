@@ -1,0 +1,45 @@
+ .github/workflows/ci.yml                           |   45 +
+ AUDIT_REPORT.md                                    |  138 ++
+ docs/index.html                                    |  174 ++
+ piglix_shader_builder/android/.gitignore           |    1 +
+ piglix_shader_builder/android/app/build.gradle.kts |   38 +-
+ .../android/app/proguard-rules.pro                 |   11 +
+ .../android/app/src/main/AndroidManifest.xml       |   13 +-
+ .../piglixlabs/shadermakerformcpe/MainActivity.kt  |   22 +-
+ .../Mirrored Minecraft Sunset Lakeside Nap.webp    |  Bin 86154 -> 0 bytes
+ piglix_shader_builder/assets/app_icon.png          |  Bin 545488 -> 0 bytes
+ piglix_shader_builder/assets/banner.png            |  Bin 2641442 -> 0 bytes
+ piglix_shader_builder/assets/banner.webp           |  Bin 180584 -> 0 bytes
+ piglix_shader_builder/assets/banner_image.webp     |  Bin 421764 -> 0 bytes
+ .../assets/base_shader_6mb_backup.zip              |  Bin 6785772 -> 0 bytes
+ piglix_shader_builder/assets/block_light_bg.jpg    |  Bin 804448 -> 0 bytes
+ piglix_shader_builder/assets/fog_density_bg.jpg    |  Bin 765999 -> 0 bytes
+ piglix_shader_builder/assets/fonts/Minecraft.otf   |  Bin 11424 -> 0 bytes
+ .../assets/fonts/Silkscreen-Bold.ttf               |  Bin 30632 -> 0 bytes
+ .../assets/fonts/Silkscreen-Regular.ttf            |  Bin 32220 -> 0 bytes
+ .../assets/global_metalness_bg.jpg                 |  Bin 791787 -> 0 bytes
+ .../assets/light_intensity_bg.jpg                  |  Bin 1034697 -> 0 bytes
+ piglix_shader_builder/assets/mc_landscape.jpg      |  Bin 861052 -> 0 bytes
+ piglix_shader_builder/assets/mc_night.jpg          |  Bin 861052 -> 0 bytes
+ .../assets/minecraft_shader_lake.jpg               |  Bin 137662 -> 0 bytes
+ .../assets/mirrored_sunset_lakeside_nap.webp       |  Bin 86154 -> 0 bytes
+ .../assets/night_brightness_bg.jpg                 |  Bin 709106 -> 0 bytes
+ piglix_shader_builder/assets/sun_multiplier_bg.jpg |  Bin 893375 -> 0 bytes
+ piglix_shader_builder/assets/wind_waves_bg.jpg     |  Bin 959681 -> 0 bytes
+ piglix_shader_builder/lib/banner_bytes.dart        |    4 -
+ piglix_shader_builder/lib/io_real.dart             |  110 +-
+ piglix_shader_builder/lib/io_stub.dart             |   27 +
+ piglix_shader_builder/lib/legal_screens.dart       |   45 +-
+ piglix_shader_builder/lib/main.dart                |   70 +-
+ piglix_shader_builder/lib/minecraft_icons.dart     |   72 +-
+ piglix_shader_builder/lib/my_shaders_screen.dart   |  270 ++-
+ piglix_shader_builder/lib/new_ui.dart              | 1126 +++++++---
+ piglix_shader_builder/lib/shader_presets.dart      |   14 +-
+ piglix_shader_builder/lib/sunset_banner_data.dart  | 1442 ------------
+ piglix_shader_builder/lib/theme_controller.dart    |   26 +-
+ .../lib/water_lake_banner_data.dart                | 2301 --------------------
+ piglix_shader_builder/pubspec.lock                 |  104 +-
+ piglix_shader_builder/pubspec.yaml                 |   28 +-
+ piglix_shader_builder/test/shader_store_test.dart  |  143 ++
+ privacy_policy_web/index.html                      |  174 ++
+ 44 files changed, 2091 insertions(+), 4307 deletions(-)

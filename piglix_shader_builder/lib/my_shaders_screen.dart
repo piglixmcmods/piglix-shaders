@@ -9,11 +9,11 @@ import 'minecraft_icons.dart';
 import 'io_stub.dart' if (dart.library.io) 'io_real.dart';
 
 // ─── OBSIDIAN & EMERALD PALETTE (MATCHING HOME SCREEN) ────────────────────────
-const _bg = Color(0xFF080D14);          // Deep obsidian dark
-const _surface = Color(0xFF0E1722);     // Deep midnight slate surface
-const _card = Color(0xFF0E1722);        // Card background
-const _border = Color(0xFF1E293B);      // Crisp slate border
-const _green = Color(0xFF22C55E);       // Vibrant emerald green accent
+const _bg = Color(0xFF080D14); // Deep obsidian dark
+const _surface = Color(0xFF0E1722); // Deep midnight slate surface
+const _card = Color(0xFF0E1722); // Card background
+const _border = Color(0xFF1E293B); // Crisp slate border
+const _green = Color(0xFF22C55E); // Vibrant emerald green accent
 
 /// Model for a saved or generated shader
 class UserShaderItem {
@@ -71,7 +71,9 @@ class UserShaderItem {
 
   factory UserShaderItem.fromJson(Map<String, dynamic> json) {
     return UserShaderItem(
-      id: json['id'] as String? ?? 'shader_${DateTime.now().millisecondsSinceEpoch}',
+      id:
+          json['id'] as String? ??
+          'shader_${DateTime.now().millisecondsSinceEpoch}',
       name: json['name'] as String? ?? 'Piglix Shader',
       date: DateTime.tryParse(json['date'] as String? ?? '') ?? DateTime.now(),
       byteSize: json['byteSize'] as int? ?? 0,
@@ -93,7 +95,9 @@ class UserShaderStore {
 
     try {
       final dirPath = await getShadersDirectoryPath();
-      final manifestJson = await readNativeString('$dirPath/shaders_manifest.json');
+      final manifestJson = await readNativeString(
+        '$dirPath/shaders_manifest.json',
+      );
       if (manifestJson != null && manifestJson.isNotEmpty) {
         try {
           final List<dynamic> list = jsonDecode(manifestJson) as List<dynamic>;
@@ -104,7 +108,9 @@ class UserShaderStore {
             }
           }
         } on FormatException catch (e) {
-          debugPrint('[Piglix] Corrupt shaders_manifest.json, repairing from disk: $e');
+          debugPrint(
+            '[Piglix] Corrupt shaders_manifest.json, repairing from disk: $e',
+          );
           await _repairManifestFromDisk(dirPath);
         }
       } else {
@@ -174,7 +180,10 @@ class UserShaderStore {
     try {
       final path = dirPath ?? await getShadersDirectoryPath();
       final jsonList = shaders.map((e) => e.toJson()).toList();
-      await writeNativeString('$path/shaders_manifest.json', jsonEncode(jsonList));
+      await writeNativeString(
+        '$path/shaders_manifest.json',
+        jsonEncode(jsonList),
+      );
     } catch (e) {
       debugPrint('[Piglix] Error saving shaders_manifest.json: $e');
     }
@@ -241,11 +250,7 @@ class MyShadersScreen extends StatefulWidget {
   final Function(String shaderName)? onEditShader;
   final VoidCallback? onStartNew;
 
-  const MyShadersScreen({
-    super.key,
-    this.onEditShader,
-    this.onStartNew,
-  });
+  const MyShadersScreen({super.key, this.onEditShader, this.onStartNew});
 
   @override
   State<MyShadersScreen> createState() => _MyShadersScreenState();
@@ -271,7 +276,9 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
             fontSize: 13,
           ),
         ),
-        backgroundColor: isError ? const Color(0xFF5D1E1E) : const Color(0xFF262422),
+        backgroundColor: isError
+            ? const Color(0xFF5D1E1E)
+            : const Color(0xFF262422),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -286,7 +293,9 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
   }
 
   Future<void> _downloadPack(UserShaderItem item) async {
-    final pName = item.name.endsWith('.mcpack') ? item.name : '${item.name}.mcpack';
+    final pName = item.name.endsWith('.mcpack')
+        ? item.name
+        : '${item.name}.mcpack';
     final bytes = item.bytes;
     if (bytes == null || bytes.isEmpty) {
       _snack('❌ Shader file data is empty or missing.', isError: true);
@@ -327,18 +336,24 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
   }
 
   Future<void> _openWithMinecraft(UserShaderItem item) async {
-    final pName = item.name.endsWith('.mcpack') ? item.name : '${item.name}.mcpack';
+    final pName = item.name.endsWith('.mcpack')
+        ? item.name
+        : '${item.name}.mcpack';
     final bytes = item.bytes;
     if (kIsWeb) {
       if (bytes != null && bytes.isNotEmpty) {
-        final blob = html.Blob([Uint8List.fromList(bytes)], 'application/octet-stream');
+        final blob = html.Blob([
+          Uint8List.fromList(bytes),
+        ], 'application/octet-stream');
         final url = html.Url.createObjectUrlFromBlob(blob);
         html.AnchorElement(href: url)
           ..setAttribute('download', pName)
           ..click();
         html.Url.revokeObjectUrl(url);
       }
-      _snack('📦 .mcpack downloaded! Open from Downloads to install in Minecraft.');
+      _snack(
+        '📦 .mcpack downloaded! Open from Downloads to install in Minecraft.',
+      );
     } else {
       if (bytes != null && bytes.isNotEmpty) {
         try {
@@ -367,7 +382,10 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
       if (f != null) {
         final bytes = await f.readAsBytes();
         if (bytes.isNotEmpty) {
-          final name = f.name.replaceAll(RegExp(r'\.(mcpack|zip)$', caseSensitive: false), '');
+          final name = f.name.replaceAll(
+            RegExp(r'\.(mcpack|zip)$', caseSensitive: false),
+            '',
+          );
           await UserShaderStore.addShader(
             name: name,
             bytes: bytes,
@@ -404,7 +422,10 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel', style: TextStyle(color: Colors.white54)),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.white54),
+            ),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -449,7 +470,11 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
         backgroundColor: _surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+            size: 20,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Row(
@@ -471,7 +496,11 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
         actions: [
           TextButton.icon(
             onPressed: _importPack,
-            icon: const Icon(Icons.file_upload_outlined, color: _green, size: 18),
+            icon: const Icon(
+              Icons.file_upload_outlined,
+              color: _green,
+              size: 18,
+            ),
             label: const Text(
               'IMPORT',
               style: TextStyle(
@@ -492,51 +521,60 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
       body: SafeArea(
         child: items.isEmpty
             ? _buildEmptyState()
-            : ListView(
+            : ListView.builder(
                 physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-                children: [
-                  // Info banner
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: _card,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: _border),
-                    ),
-                    child: Row(
-                      children: [
-                        const AnimatedMinecraftIcon(type: VoxelIconType.sparkles, size: 24),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${items.length} SAVED SHADER${items.length == 1 ? '' : 'S'}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 13,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              const Text(
-                                'Tap to open directly in Minecraft or export your .mcpack files.',
-                                style: TextStyle(color: Colors.white54, fontSize: 11),
-                              ),
-                            ],
-                          ),
+                itemCount: items.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: _card,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: _border),
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // List of Shader Cards
-                  ...items.map((item) => _buildShaderCard(item)),
-                ],
+                        child: Row(
+                          children: [
+                            const AnimatedMinecraftIcon(
+                              type: VoxelIconType.sparkles,
+                              size: 24,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${items.length} SAVED SHADER${items.length == 1 ? '' : 'S'}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 13,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  const Text(
+                                    'Tap to open directly in Minecraft or export your .mcpack files.',
+                                    style: TextStyle(
+                                      color: Colors.white54,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  final item = items[index - 1];
+                  return RepaintBoundary(child: _buildShaderCard(item));
+                },
               ),
       ),
     );
@@ -583,7 +621,10 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                     ],
                   ),
                   child: const Center(
-                    child: AnimatedMinecraftIcon(type: VoxelIconType.chest, size: 24),
+                    child: AnimatedMinecraftIcon(
+                      type: VoxelIconType.chest,
+                      size: 24,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -608,11 +649,17 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                       Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
                               color: _green.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: _green.withValues(alpha: 0.5), width: 0.8),
+                              border: Border.all(
+                                color: _green.withValues(alpha: 0.5),
+                                width: 0.8,
+                              ),
                             ),
                             child: const Text(
                               'VIBRANT',
@@ -626,7 +673,10 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                           const SizedBox(width: 8),
                           Text(
                             '$sizeKb KB • ${_formatDate(item.date)}',
-                            style: const TextStyle(color: Colors.white38, fontSize: 11),
+                            style: const TextStyle(
+                              color: Colors.white38,
+                              fontSize: 11,
+                            ),
                           ),
                         ],
                       ),
@@ -636,7 +686,11 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
 
                 // Delete Button
                 IconButton(
-                  icon: const Icon(Icons.delete_outline_rounded, color: Colors.white30, size: 20),
+                  icon: const Icon(
+                    Icons.delete_outline_rounded,
+                    color: Colors.white30,
+                    size: 20,
+                  ),
                   tooltip: 'Delete',
                   onPressed: () => _deleteShader(item),
                 ),
@@ -678,7 +732,9 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _green,
                         foregroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                         padding: EdgeInsets.zero,
                       ),
                     ),
@@ -701,7 +757,11 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                       ),
                       padding: EdgeInsets.zero,
                     ),
-                    child: const Icon(Icons.download_rounded, size: 18, color: _green),
+                    child: const Icon(
+                      Icons.download_rounded,
+                      size: 18,
+                      color: _green,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -726,7 +786,11 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                       ),
                       padding: EdgeInsets.zero,
                     ),
-                    child: const Icon(Icons.tune_rounded, size: 17, color: Colors.white70),
+                    child: const Icon(
+                      Icons.tune_rounded,
+                      size: 17,
+                      color: Colors.white70,
+                    ),
                   ),
                 ),
               ],
@@ -753,7 +817,10 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                 border: Border.all(color: _border),
               ),
               child: const Center(
-                child: AnimatedMinecraftIcon(type: VoxelIconType.chest, size: 48),
+                child: AnimatedMinecraftIcon(
+                  type: VoxelIconType.chest,
+                  size: 48,
+                ),
               ),
             ),
             const SizedBox(height: 18),
@@ -782,9 +849,17 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: _green,
                 foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                textStyle: const TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 22,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.0,
+                ),
               ),
             ),
           ],

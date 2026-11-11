@@ -4,7 +4,9 @@ import 'package:path_provider/path_provider.dart';
 
 Future<String?> getNativeDownloadPath() async {
   try {
-    final dir = await getExternalStorageDirectory() ?? await getApplicationDocumentsDirectory();
+    final dir =
+        await getExternalStorageDirectory() ??
+        await getApplicationDocumentsDirectory();
     return dir.path;
   } catch (_) {
     return null;
@@ -104,8 +106,13 @@ Future<List<NativePackFileInfo>> listNativePacks(String dirPath) async {
     for (final e in entities) {
       if (e is io.File && e.path.endsWith('.mcpack')) {
         final stat = await e.stat();
-        final rawName = e.uri.pathSegments.isNotEmpty ? e.uri.pathSegments.last : 'Piglix Shader';
-        final cleanName = rawName.replaceAll('.mcpack', '').replaceAll('shader_', '').replaceAll('_', ' ');
+        final rawName = e.uri.pathSegments.isNotEmpty
+            ? e.uri.pathSegments.last
+            : 'Piglix Shader';
+        final cleanName = rawName
+            .replaceAll('.mcpack', '')
+            .replaceAll('shader_', '')
+            .replaceAll('_', ' ');
         result.add(
           NativePackFileInfo(
             path: e.path,

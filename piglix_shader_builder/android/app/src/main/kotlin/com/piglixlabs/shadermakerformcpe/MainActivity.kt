@@ -59,6 +59,37 @@ class MainActivity : FlutterActivity() {
                 } else {
                     result.error("INVALID_PATH", "filePath is null", null)
                 }
+            } else if (call.method == "shareFile") {
+                val filePath = call.argument<String>("filePath")
+                val title = call.argument<String>("title") ?: "Share Shader Pack"
+                if (filePath != null) {
+                    val file = File(filePath)
+                    if (file.exists()) {
+                        try {
+                            val uri: Uri = FileProvider.getUriForFile(
+                                this,
+                                "${applicationContext.packageName}.fileprovider",
+                                file
+                            )
+                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                type = "application/octet-stream"
+                                putExtra(Intent.EXTRA_STREAM, uri)
+                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            }
+                            val chooser = Intent.createChooser(shareIntent, title).apply {
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
+                            startActivity(chooser)
+                            result.success(true)
+                        } catch (e: Exception) {
+                            result.error("SHARE_FAILED", e.localizedMessage, null)
+                        }
+                    } else {
+                        result.error("FILE_NOT_FOUND", "File does not exist at $filePath", null)
+                    }
+                } else {
+                    result.error("INVALID_PATH", "filePath is null", null)
+                }
             } else {
                 result.notImplemented()
             }

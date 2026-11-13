@@ -240,7 +240,7 @@ void main() {
       );
     });
 
-    testWidgets('Export tab renders Validation Report and Recommended In-Game Settings',
+    testWidgets('Export tab renders Validation Report and Pack Identity cleanly',
         (WidgetTester tester) async {
       // With <= 20 point-light blocks, Validation Report shows all checks passed.
       const cleanCfg = VVShaderConfig(
@@ -264,9 +264,9 @@ void main() {
         findsOneWidget,
       );
 
-      final recCard = find.text('Recommended In-Game Settings');
-      await tester.ensureVisible(recCard);
-      expect(recCard, findsOneWidget);
+      final qualityCard = find.text('All In-Game Quality Modes (Low to Ultra)');
+      await tester.ensureVisible(qualityCard);
+      expect(qualityCard, findsOneWidget);
     });
 
     testWidgets('Sky tab switches large single-scene preview cleanly without text badges',

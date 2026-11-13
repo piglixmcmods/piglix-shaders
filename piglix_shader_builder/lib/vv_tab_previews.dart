@@ -5890,22 +5890,26 @@ class VVPerfPreviewBanner extends StatelessWidget {
 class VVExportPreviewBanner extends StatelessWidget {
   final Uint8List packIconBytes;
   final String packName;
-  final List<int> version;
+  final List<int>? version;
   final bool isValid;
   final int tierCount;
+  final int? fileSizeInBytes;
 
   const VVExportPreviewBanner({
     super.key,
     required this.packIconBytes,
     required this.packName,
-    required this.version,
+    this.version,
     required this.isValid,
     required this.tierCount,
+    this.fileSizeInBytes,
   });
 
   @override
   Widget build(BuildContext context) {
-    final verStr = version.length >= 3 ? '${version[0]}.${version[1]}.${version[2]}' : '1.0.0';
+    final hasFinalSize = fileSizeInBytes != null && fileSizeInBytes! > 0;
+    final sizeKbStr = hasFinalSize ? (fileSizeInBytes! / 1024.0).toStringAsFixed(1) : null;
+
     return VVPixelBox(
       fillColor: _kCard,
       borderColor: isValid ? _kEmerald.withValues(alpha: 0.65) : _kBorder,
@@ -5945,13 +5949,41 @@ class VVExportPreviewBanner extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  'v$verStr · $tierCount ${tierCount == 1 ? 'Profile' : 'Subpack Tiers'}',
-                  style: const TextStyle(
-                    color: Colors.white54,
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w600,
-                  ),
+                Row(
+                  children: [
+                    if (hasFinalSize) ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: _kEmerald.withValues(alpha: 0.18),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(color: _kEmerald.withValues(alpha: 0.6), width: 1),
+                        ),
+                        child: Text(
+                          '$sizeKbStr KB',
+                          style: const TextStyle(
+                            color: _kEmerald,
+                            fontFamily: 'monospace',
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                    ],
+                    Flexible(
+                      child: Text(
+                        tierCount == 1 ? '1 Quality Mode' : 'All Quality Modes (4 Tiers)',
+                        style: const TextStyle(
+                          color: Colors.white54,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -5962,13 +5994,16 @@ class VVExportPreviewBanner extends StatelessWidget {
             borderWidth: 1.2,
             step: 2.0,
             hasShadow: false,
-            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
             child: Text(
-              isValid ? 'READY' : 'FIX ERRORS',
+              !isValid
+                  ? 'FIX ERRORS'
+                  : (hasFinalSize ? '$sizeKbStr KB' : 'READY'),
               style: TextStyle(
                 color: isValid ? _kEmerald : const Color(0xFFF87171),
-                fontSize: 10.5,
+                fontSize: 11,
                 fontWeight: FontWeight.w700,
+                fontFamily: hasFinalSize ? 'monospace' : null,
               ),
             ),
           ),

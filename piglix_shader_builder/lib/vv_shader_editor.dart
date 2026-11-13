@@ -500,6 +500,27 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
     }
   }
 
+  Future<void> _sharePack() async {
+    if (_generatedPackBytes == null) return;
+    final pName = _generatedPackName ?? 'piglix_shader.mcpack';
+    if (kIsWeb) {
+      await _downloadPack();
+      return;
+    }
+    try {
+      final tp = await getNativeTempPath();
+      final path = '$tp/$pName';
+      await writeNativeFile(path, _generatedPackBytes!);
+      const platform = MethodChannel('com.piglix.shader/launcher');
+      await platform.invokeMethod('shareFile', {
+        'filePath': path,
+        'title': 'Share $pName',
+      });
+    } catch (e) {
+      _snack('Share error: $e', isError: true);
+    }
+  }
+
   // ── UI BUILD ─────────────────────────────────────────────────────────────
 
   @override
@@ -852,72 +873,76 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         bottom: 10 + MediaQuery.of(context).padding.bottom,
       ),
       child: (_isGenerated && _generatedPackBytes != null)
-          ? Column(
-              mainAxisSize: MainAxisSize.min,
+          ? Row(
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: _openWithMinecraft,
-                        behavior: HitTestBehavior.opaque,
-                        child: VVPixelBox(
-                          fillColor: const Color(0xFF22C55E),
-                          borderColor: const Color(0xFF86EFAC),
-                          borderWidth: 1.5,
-                          step: 3.0,
-                          hasShadow: true,
-                          child: const SizedBox(
-                            height: 48,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.play_arrow_rounded, color: Colors.black),
-                                SizedBox(width: 6),
-                                Text(
-                                  'OPEN WITH MINECRAFT',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 0.6,
-                                  ),
-                                ),
-                              ],
+                Expanded(
+                  child: GestureDetector(
+                    onTap: _openWithMinecraft,
+                    behavior: HitTestBehavior.opaque,
+                    child: VVPixelBox(
+                      fillColor: const Color(0xFF22C55E),
+                      borderColor: const Color(0xFF86EFAC),
+                      borderWidth: 1.5,
+                      step: 3.0,
+                      hasShadow: true,
+                      child: const SizedBox(
+                        height: 48,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.play_arrow_rounded, color: Colors.black),
+                            SizedBox(width: 6),
+                            Text(
+                              'OPEN WITH MINECRAFT',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.6,
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    GestureDetector(
-                      onTap: _downloadPack,
-                      behavior: HitTestBehavior.opaque,
-                      child: VVPixelBox(
-                        fillColor: kVVCard,
-                        borderColor: accent,
-                        borderWidth: 1.4,
-                        step: 2.5,
-                        hasShadow: false,
-                        child: SizedBox(
-                          height: 48,
-                          width: 48,
-                          child: Icon(Icons.download_rounded, color: accent),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-                const SizedBox(height: 6),
-                GestureDetector(
-                  onTap: () => setState(() {
-                    _isGenerated = false;
-                  }),
-                  child: Text(
-                    'Continue Editing (${(_generatedPackBytes!.length / 1024).toStringAsFixed(0)} KB)',
-                    style: TextStyle(
-                      color: accent,
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w700,
+                const SizedBox(width: 8),
+                Tooltip(
+                  message: 'Download .mcpack',
+                  child: GestureDetector(
+                    onTap: _downloadPack,
+                    behavior: HitTestBehavior.opaque,
+                    child: VVPixelBox(
+                      fillColor: kVVCard,
+                      borderColor: accent,
+                      borderWidth: 1.4,
+                      step: 2.5,
+                      hasShadow: false,
+                      child: SizedBox(
+                        height: 48,
+                        width: 48,
+                        child: Icon(Icons.download_rounded, color: accent),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Tooltip(
+                  message: 'Share .mcpack',
+                  child: GestureDetector(
+                    onTap: _sharePack,
+                    behavior: HitTestBehavior.opaque,
+                    child: VVPixelBox(
+                      fillColor: kVVCard,
+                      borderColor: accent,
+                      borderWidth: 1.4,
+                      step: 2.5,
+                      hasShadow: false,
+                      child: SizedBox(
+                        height: 48,
+                        width: 48,
+                        child: Icon(Icons.share_rounded, color: accent),
+                      ),
                     ),
                   ),
                 ),

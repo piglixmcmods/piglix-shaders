@@ -13,7 +13,6 @@ import 'vv_config.dart';
 import 'vv_editor_widgets.dart';
 import 'vv_generator.dart';
 import 'vv_tab_previews.dart';
-import 'vv_guide_modal.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Shared Preset Tables (matching vv_generator.dart & vv_biomes.dart)
@@ -1960,7 +1959,7 @@ class VVExportTab extends StatefulWidget {
   final ValidationReport validationReport;
   final List<int>? generatedPackBytes;
   final String? generatedPackName;
-  final VoidCallback onExportPack;
+  final VoidCallback? onExportPack;
   final VoidCallback? onDownloadPack;
   final VoidCallback? onOpenInMinecraft;
 
@@ -1973,7 +1972,7 @@ class VVExportTab extends StatefulWidget {
     required this.validationReport,
     required this.generatedPackBytes,
     required this.generatedPackName,
-    required this.onExportPack,
+    this.onExportPack,
     this.onDownloadPack,
     this.onOpenInMinecraft,
   });
@@ -2025,75 +2024,10 @@ class _VVExportTabState extends State<VVExportTab> {
     super.dispose();
   }
 
-  List<int> get _normalizedVersion {
-    final v = widget.config.packVersion;
-    if (v.length == 3) return [v[0], v[1], v[2]];
-    return [1, 0, 0];
-  }
-
-  void _stepVersion(int index, int delta) {
-    final next = List<int>.from(_normalizedVersion);
-    next[index] = (next[index] + delta).clamp(0, 999);
-    widget.onConfigChanged(widget.config.copyWith(packVersion: next));
-  }
-
-  Widget _buildVersionStepper(String label, int value, int index) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-      decoration: BoxDecoration(
-        color: kVVSurface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: kVVBorder),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            '$label ',
-            style: const TextStyle(color: Colors.white54, fontSize: 11),
-          ),
-          InkWell(
-            borderRadius: BorderRadius.circular(5),
-            onTap: value > 0 ? () => _stepVersion(index, -1) : null,
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: Icon(
-                Icons.remove_rounded,
-                size: 14,
-                color: value > 0 ? Colors.white70 : Colors.white24,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: Text(
-              '$value',
-              style: const TextStyle(
-                color: Colors.white,
-                fontFamily: 'monospace',
-                fontSize: 12.5,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          InkWell(
-            borderRadius: BorderRadius.circular(5),
-            onTap: () => _stepVersion(index, 1),
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: Icon(Icons.add_rounded, size: 14, color: _accent),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final cfg = widget.config;
     final report = widget.validationReport;
-    final ver = _normalizedVersion;
     final bytes = widget.generatedPackBytes;
 
     final int tierCount = cfg.performance.exportAllTiers ? 4 : 1;
@@ -2104,9 +2038,10 @@ class _VVExportTabState extends State<VVExportTab> {
         VVExportPreviewBanner(
           packIconBytes: widget.packIconBytes,
           packName: cfg.packName,
-          version: ver,
+          version: cfg.packVersion,
           isValid: report.isValid,
           tierCount: tierCount,
+          fileSizeInBytes: bytes?.length,
         ),
         const SizedBox(height: 12),
 
@@ -2276,29 +2211,10 @@ class _VVExportTabState extends State<VVExportTab> {
                   widget.onConfigChanged(cfg.copyWith(packDescription: v)),
             ),
             const SizedBox(height: 12),
-            const Text(
-              'Pack Version [major, minor, patch]',
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _buildVersionStepper('Maj', ver[0], 0),
-                _buildVersionStepper('Min', ver[1], 1),
-                _buildVersionStepper('Pat', ver[2], 2),
-              ],
-            ),
-            const SizedBox(height: 8),
             VVSwitchRow(
-              label: 'Include lower-tier subpacks',
+              label: 'All In-Game Quality Modes (Low to Ultra)',
               tooltip:
-                  'Includes Low, Medium, High & Ultra hardware subpacks in the exported .mcpack.',
+                  'Adds an in-game slider to choose Low, Medium, High, or Ultra graphics inside Minecraft settings.',
               value: cfg.performance.exportAllTiers,
               accent: _accent,
               onChanged: (v) => widget.onConfigChanged(
@@ -2451,229 +2367,8 @@ class _VVExportTabState extends State<VVExportTab> {
               ),
           ],
         ),
-        const SizedBox(height: 12),
-
-        // 3. Recommended In-Game Settings Card
-        VVSectionCard(
-          title: 'Recommended In-Game Settings',
-          accent: const Color(0xFF7DD3FC),
-          children: [
-            const _InGameSettingRow(
-              label: 'Video -> Graphics Mode',
-              value: 'Vibrant Visuals',
-            ),
-            const _InGameSettingRow(
-              label: 'Bloom · Brightness / Gamma',
-              value: 'ON · 50%',
-            ),
-            const _InGameSettingRow(
-              label: 'Reflections & Shadow Quality',
-              value: 'Match your subpack tier',
-            ),
-            const _InGameSettingRow(
-              label: 'Upscaling',
-              value: 'TAAU (Recommended) or Bilinear',
-            ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () => showMinecraftGuideModal(context),
-                icon: const Icon(Icons.help_outline_rounded, size: 16),
-                label: const Text(
-                  'OPEN STEP-BY-STEP ACTIVATION GUIDE',
-                  style: TextStyle(
-                    fontFamily: 'PixelifySans',
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF7DD3FC),
-                  side: const BorderSide(color: Color(0xFF7DD3FC)),
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-
-        // 4. Export & Share Actions
-        VVSectionCard(
-          title: 'Export & Share',
-          accent: _accent,
-          children: [
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: report.isValid ? widget.onExportPack : null,
-                icon: const Icon(Icons.inventory_2_rounded, size: 18),
-                label: const Text('GENERATE .MCPACK'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _accent,
-                  foregroundColor: Colors.black,
-                  disabledBackgroundColor: kVVBorder,
-                  disabledForegroundColor: Colors.white38,
-                  padding: const EdgeInsets.symmetric(vertical: 13),
-                  textStyle: const TextStyle(
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.5,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ),
-            if (bytes != null) ...[
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(11),
-                decoration: BoxDecoration(
-                  color: kVVSurface,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: _accent.withValues(alpha: 0.5)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.check_circle_rounded, size: 16, color: _accent),
-                        const SizedBox(width: 7),
-                        Expanded(
-                          child: Text(
-                            widget.generatedPackName ?? '${cfg.packSlug}.mcpack',
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12.5,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          '${(bytes.length / 1024.0).toStringAsFixed(1)} KB',
-                          style: TextStyle(
-                            color: _accent,
-                            fontFamily: 'monospace',
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: widget.onDownloadPack,
-                            icon: const Icon(Icons.download_rounded, size: 16),
-                            label: const Text('Download .mcpack'),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: kVVCard,
-                              side: BorderSide(
-                                color: _accent.withValues(alpha: 0.55),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              textStyle: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: widget.onOpenInMinecraft,
-                            icon: const Icon(Icons.sports_esports_rounded, size: 16),
-                            label: const Text('Open in Minecraft'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: _accent.withValues(alpha: 0.2),
-                              foregroundColor: _accent,
-                              elevation: 0,
-                              side: BorderSide(
-                                color: _accent.withValues(alpha: 0.65),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              textStyle: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ],
-        ),
         const SizedBox(height: 24),
       ],
-    );
-  }
-}
-
-class _InGameSettingRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _InGameSettingRow({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        decoration: BoxDecoration(
-          color: kVVSurface,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: kVVBorder),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                label,
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              value,
-              style: const TextStyle(
-                color: Color(0xFF7DD3FC),
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

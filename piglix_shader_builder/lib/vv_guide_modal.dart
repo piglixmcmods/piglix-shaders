@@ -3,17 +3,28 @@ import 'minecraft_icons.dart';
 import 'vv_tab_previews.dart';
 
 /// Official Screenshot Asset Registry.
-/// Drop your official Minecraft screenshots in `assets/screenshots/` and point
-/// these paths to them. When null, authentic Minecraft UI pixelated mockups
-/// render automatically.
+/// Drop your official screenshots in `public/screenshots/` or `assets/screenshots/`
+/// and assign them here, or pass custom paths.
+/// When null or empty, an elegant Minecraft-themed empty placeholder renders.
 class OfficialGuideScreenshots {
-  static String? step1Import;
-  static String? step2GlobalResources;
-  static String? step3VideoSettings;
-  static String? step4InGameWorld;
+  static String? step1Generate;
+  static String? step2WhatYouGet;
+  static String? step3Import;
+  static String? step4Activate;
+  static String? step5Play;
+
+  // Backwards compatibility aliases
+  static String? get step1Import => step3Import;
+  static set step1Import(String? v) => step3Import = v;
+  static String? get step2GlobalResources => step4Activate;
+  static set step2GlobalResources(String? v) => step4Activate = v;
+  static String? get step3VideoSettings => step5Play;
+  static set step3VideoSettings(String? v) => step5Play = v;
+  static String? get step4InGameWorld => step5Play;
+  static set step4InGameWorld(String? v) => step5Play = v;
 }
 
-/// Helper to display the unified Minecraft In-Game Guide Modal from ANY `?` button in the app.
+/// Helper to display the unified Minecraft In-Game Guide Modal from ANY `?` button.
 Future<void> showMinecraftGuideModal(
   BuildContext context, {
   int initialTab = 0,
@@ -23,7 +34,7 @@ Future<void> showMinecraftGuideModal(
 }) {
   return showDialog<void>(
     context: context,
-    barrierColor: Colors.black.withValues(alpha: 0.75),
+    barrierColor: Colors.black.withValues(alpha: 0.82),
     builder: (ctx) => VVMinecraftGuideModal(
       initialTab: initialTab,
       initialStep: initialStep,
@@ -33,7 +44,117 @@ Future<void> showMinecraftGuideModal(
   );
 }
 
-/// Unified, Modern, Pixelated Minecraft In-Game Activation & Help Guide
+class _GuideStep {
+  final String num;
+  final String tabLabel;
+  final String title;
+  final String pathTag;
+  final String desc;
+  final List<String> bullets;
+  final VoxelIconType icon;
+  final String fileName;
+  final String? Function() getAsset;
+
+  const _GuideStep({
+    required this.num,
+    required this.tabLabel,
+    required this.title,
+    required this.pathTag,
+    required this.desc,
+    required this.bullets,
+    required this.icon,
+    required this.fileName,
+    required this.getAsset,
+  });
+}
+
+final List<_GuideStep> _kGuideSteps = [
+  _GuideStep(
+    num: '01',
+    tabLabel: 'GENERATE',
+    title: 'Customize & Generate .mcpack',
+    pathTag: 'Piglix Builder > Customize > Export Tab',
+    desc:
+        'Tweak your sky, sun glow, water, and fog in the Builder. When ready, switch to the Export tab to compile your pack.',
+    bullets: [
+      'Adjust Sunlight, Shadows, Water clarity, and Fog to your preference.',
+      'Open the Export tab (Tab 8) and confirm the Validation Report shows all checks passed.',
+      'Tap "GENERATE .MCPACK" in the bottom action bar to build your shader package.',
+    ],
+    icon: VoxelIconType.goldBlock,
+    fileName: 'step1_generate.png',
+    getAsset: () => OfficialGuideScreenshots.step1Generate,
+  ),
+  _GuideStep(
+    num: '02',
+    tabLabel: 'WHAT YOU GET',
+    title: 'What You Get in Your Shader Pack',
+    pathTag: 'Pack Output: Bedrock Vibrant Visuals PBR',
+    desc:
+        'Your generated .mcpack file contains full official Bedrock Deferred Technical Preview PBR shaders:',
+    bullets: [
+      '☀️ Atmospheric Sky & Sun/Moon directional light scattering.',
+      '🌊 Real-time water surface reflections, waves, and prismatic seabed caustics.',
+      '🌫️ Volumetric air and ground mist tailored across all 87 biomes.',
+      '⚡ All 4 Quality Modes (Low, Medium, High, Ultra) built into one slider.',
+    ],
+    icon: VoxelIconType.chest,
+    fileName: 'step2_what_you_get.png',
+    getAsset: () => OfficialGuideScreenshots.step2WhatYouGet,
+  ),
+  _GuideStep(
+    num: '03',
+    tabLabel: 'IMPORT',
+    title: 'One-Tap Import into Minecraft',
+    pathTag: 'Piglix Bottom Bar > "OPEN WITH MINECRAFT" or "Share"',
+    desc:
+        'Send your generated shader package directly into Minecraft Bedrock with a single tap:',
+    bullets: [
+      'Tap "OPEN WITH MINECRAFT" in the bottom bar to launch Minecraft automatically.',
+      'Or tap the Share button beside it to share the file to Discord, Drive, or WhatsApp.',
+      'Minecraft will open with "Import Started..." followed by "Successfully imported".',
+    ],
+    icon: VoxelIconType.pickaxe,
+    fileName: 'step3_import.png',
+    getAsset: () => OfficialGuideScreenshots.step3Import,
+  ),
+  _GuideStep(
+    num: '04',
+    tabLabel: 'ACTIVATE',
+    title: 'Activate in Global Resources',
+    pathTag: 'Minecraft > Settings > Global Resources > MY PACKS',
+    desc:
+        'Activate your shader pack in Minecraft so it applies to all your worlds:',
+    bullets: [
+      'In Minecraft, open Settings -> Global Resources -> MY PACKS.',
+      'Select your shader pack and press "ACTIVATE".',
+      'Under the ACTIVE section, move your shader pack to the VERY TOP.',
+      'Optional: Tap the gear icon on the pack to slide between Low, Medium, High, or Ultra.',
+    ],
+    icon: VoxelIconType.gear,
+    fileName: 'step4_activate.png',
+    getAsset: () => OfficialGuideScreenshots.step4Activate,
+  ),
+  _GuideStep(
+    num: '05',
+    tabLabel: 'PLAY',
+    title: 'Turn On Vibrant Visuals & Play',
+    pathTag: 'Minecraft > Settings > Video > Graphics Mode > Vibrant Visuals',
+    desc:
+        'Switch on Minecraft\'s official deferred shader pipeline and launch your world:',
+    bullets: [
+      'Go to Minecraft Settings -> Video -> Graphics Mode and choose "Vibrant Visuals".',
+      'Set Brightness / Gamma to 50% (prevents overexposed daylight and washed-out shadows).',
+      'Turn Bloom: ON and set Upscaling: TAAU for smooth antialiased geometry.',
+      'Launch any world and enjoy your custom Vibrant Visuals shaders!',
+    ],
+    icon: VoxelIconType.sparkles,
+    fileName: 'step5_play.png',
+    getAsset: () => OfficialGuideScreenshots.step5Play,
+  ),
+];
+
+/// Simple, Horizontal Step-by-Step Minecraft Activation Guide (Yellow Dark Theme)
 class VVMinecraftGuideModal extends StatefulWidget {
   final int initialTab;
   final int initialStep;
@@ -53,23 +174,37 @@ class VVMinecraftGuideModal extends StatefulWidget {
 }
 
 class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
-  late int _activeTab; // 0 = Step Flow, 1 = Screenshots, 2 = In-Game Settings, 3 = Shader Controls
-  late int _currentStep; // 0..3
+  // Yellow Dark Theme Color Palette
+  static const Color _kGoldPrimary = Color(0xFFFBBF24); // Minecraft Gold
+  static const Color _kBgModal = Color(0xFF111114);
+  static const Color _kBgCard = Color(0xFF18181D);
+  static const Color _kBorder = Color(0xFF2E2E38);
+
+  late final PageController _pageController;
+  late int _currentStep;
 
   @override
   void initState() {
     super.initState();
-    _activeTab = widget.initialTab;
-    _currentStep = widget.initialStep.clamp(0, 3);
+    _currentStep = widget.initialStep.clamp(0, _kGuideSteps.length - 1);
+    _pageController = PageController(initialPage: _currentStep);
   }
 
-  static const Color _bgModal = Color(0xFF0C131D);
-  static const Color _bgCard = Color(0xFF131D2A);
-  static const Color _borderColor = Color(0xFF1E293B);
-  static const Color _kEmerald = Color(0xFF22C55E);
-  static const Color _kCyan = Color(0xFF38BDF8);
-  static const Color _kGold = Color(0xFFF59E0B);
-  static const Color _kPurple = Color(0xFFA855F7);
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _goToStep(int index) {
+    if (index < 0 || index >= _kGuideSteps.length) return;
+    setState(() => _currentStep = index);
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOutCubic,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,11 +219,11 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
         child: ConstrainedBox(
           constraints: BoxConstraints(
             maxWidth: 520,
-            maxHeight: media.size.height * 0.88,
+            maxHeight: media.size.height * 0.90,
           ),
           child: VVPixelBox(
-            fillColor: _bgModal,
-            borderColor: _borderColor,
+            fillColor: _kBgModal,
+            borderColor: _kGoldPrimary.withValues(alpha: 0.65),
             borderWidth: 2.0,
             step: 3.5,
             hasShadow: true,
@@ -102,23 +237,23 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                 if (widget.parameterTitle != null)
                   _buildParameterAlertCard(isCompact),
 
-                // 2. Pixelated Stepped Tab Bar
-                _buildPixelTabBar(isCompact),
+                // 2. Horizontal Step Tabs Bar
+                _buildHorizontalStepTabs(isCompact),
 
-                // 3. Tab Body
+                // 3. Smooth Horizontal PageView Carousel
                 Flexible(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
-                    child: switch (_activeTab) {
-                      1 => _buildScreenshotsGalleryTab(),
-                      2 => _buildInGameSettingsTab(),
-                      3 => _buildShaderControlsGuideTab(),
-                      _ => _buildStepFlowTab(),
+                  child: PageView.builder(
+                    controller: _pageController,
+                    physics: const BouncingScrollPhysics(),
+                    onPageChanged: (i) => setState(() => _currentStep = i),
+                    itemCount: _kGuideSteps.length,
+                    itemBuilder: (ctx, index) {
+                      return _buildStepPage(ctx, _kGuideSteps[index], isCompact);
                     },
                   ),
                 ),
 
-                // 4. Modal Footer with Pixelated Action Buttons
+                // 4. Modal Footer with Prev, Dots, and Next Actions
                 _buildModalFooter(context),
               ],
             ),
@@ -131,10 +266,10 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
   // ─── 1. MODAL HEADER ────────────────────────────────────────────────────────
   Widget _buildModalHeader(BuildContext context, bool isCompact) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 14, 12, 12),
+      padding: const EdgeInsets.fromLTRB(14, 12, 10, 12),
       decoration: const BoxDecoration(
-        color: Color(0xFF111A24),
-        border: Border(bottom: BorderSide(color: _borderColor, width: 1.5)),
+        color: Color(0xFF141418),
+        border: Border(bottom: BorderSide(color: _kBorder, width: 1.4)),
       ),
       child: Row(
         children: [
@@ -142,13 +277,13 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: _kEmerald.withValues(alpha: 0.15),
+              color: _kGoldPrimary.withValues(alpha: 0.18),
               borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: _kEmerald, width: 1.2),
+              border: Border.all(color: _kGoldPrimary, width: 1.2),
             ),
             alignment: Alignment.center,
             child: const AnimatedMinecraftIcon(
-              type: VoxelIconType.grassBlock,
+              type: VoxelIconType.goldBlock,
               size: 20,
             ),
           ),
@@ -159,27 +294,26 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  'MINECRAFT ACTIVATION GUIDE',
+                  'MINECRAFT SHADER GUIDE',
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: 'PixelifySans',
-                    fontSize: 14.5,
+                    fontSize: 13.5,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.6,
                   ),
                 ),
                 Text(
-                  'Official Bedrock Vibrant Visuals Workflow',
+                  'Bedrock Vibrant Visuals Setup',
                   style: TextStyle(
-                    color: _kCyan.withValues(alpha: 0.9),
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
+                    color: _kGoldPrimary,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
             ),
           ),
-          // Close button
           IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.close_rounded, color: Colors.white60, size: 20),
@@ -196,26 +330,27 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
   Widget _buildParameterAlertCard(bool isCompact) {
     return Container(
       margin: const EdgeInsets.fromLTRB(14, 10, 14, 2),
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: _kCyan.withValues(alpha: 0.08),
+        color: _kGoldPrimary.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: _kCyan.withValues(alpha: 0.4)),
+        border: Border.all(color: _kGoldPrimary.withValues(alpha: 0.45), width: 1.2),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline_rounded, size: 16, color: _kCyan),
+          const Icon(Icons.lightbulb_outline_rounded, size: 16, color: _kGoldPrimary),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.parameterTitle!,
+                  'Quick Tip: ${widget.parameterTitle!}',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 12,
+                    fontFamily: 'PixelifySans',
+                    fontSize: 11.5,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -224,7 +359,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                   Text(
                     widget.parameterTooltip!,
                     style: const TextStyle(
-                      color: Color(0xFF94A3B8),
+                      color: Color(0xFFD4D4D8),
                       fontSize: 11,
                       height: 1.3,
                     ),
@@ -238,411 +373,89 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
     );
   }
 
-  // ─── 2. PIXELATED TAB BAR ───────────────────────────────────────────────────
-  Widget _buildPixelTabBar(bool isCompact) {
-    final tabs = [
-      (label: 'FLOW', icon: Icons.linear_scale_rounded),
-      (label: 'SCREENSHOTS', icon: Icons.photo_library_outlined),
-      (label: 'SETTINGS', icon: Icons.tune_rounded),
-      (label: 'CONTROLS', icon: Icons.help_outline_rounded),
-    ];
-
+  // ─── 2. HORIZONTAL STEP TABS ────────────────────────────────────────────────
+  Widget _buildHorizontalStepTabs(bool isCompact) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: _borderColor)),
+        color: Color(0xFF141418),
+        border: Border(bottom: BorderSide(color: _kBorder, width: 1.2)),
       ),
-      child: Row(
-        children: [
-          for (int i = 0; i < tabs.length; i++) ...[
-            if (i > 0) const SizedBox(width: 6),
-            Expanded(
-              child: GestureDetector(
-                onTap: () => setState(() => _activeTab = i),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  decoration: BoxDecoration(
-                    color: _activeTab == i
-                        ? _kEmerald.withValues(alpha: 0.16)
-                        : const Color(0xFF131D2A),
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(
-                      color: _activeTab == i ? _kEmerald : _borderColor,
-                      width: 1.2,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      tabs[i].label,
-                      style: TextStyle(
-                        fontFamily: 'PixelifySans',
-                        fontSize: isCompact ? 10.5 : 11.5,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.5,
-                        color: _activeTab == i ? _kEmerald : Colors.white60,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  // ─── TAB 1: STEP-BY-STEP FLOW ───────────────────────────────────────────────
-  Widget _buildStepFlowTab() {
-    final steps = [
-      (
-        stepNum: '01',
-        title: 'Export & Import .mcpack',
-        color: _kEmerald,
-        icon: VoxelIconType.chest,
-        pathTag: 'Piglix > Generate .mcpack > Open with Minecraft',
-        desc:
-            'Generate your shader package in Piglix and send it to Minecraft Bedrock with one tap.',
-        bullets: [
-          'Go to the Export tab (Tab 8) and tap "GENERATE .MCPACK".',
-          'Select "Open with Minecraft" in your device share sheet.',
-          'Minecraft will launch with an "Import Started..." notification.',
-        ],
-        mockupType: _MockupType.importToast,
-        screenshotAsset: OfficialGuideScreenshots.step1Import,
-      ),
-      (
-        stepNum: '02',
-        title: 'Activate in Global Resources',
-        color: _kCyan,
-        icon: VoxelIconType.gear,
-        pathTag: 'Minecraft > Settings > Global Resources > Active (Top)',
-        desc:
-            'Load your shader pack at the top of Active packs and choose your subpack tier.',
-        bullets: [
-          'In Minecraft, open Settings -> Global Resources -> MY PACKS.',
-          'Tap your pack and press "ACTIVATE".',
-          'In the ACTIVE section, move your shader pack to the VERY TOP.',
-          'Tap the gear icon on the pack to pick your tier: Lite, Medium, High, or Ultra.',
-        ],
-        mockupType: _MockupType.globalResources,
-        screenshotAsset: OfficialGuideScreenshots.step2GlobalResources,
-      ),
-      (
-        stepNum: '03',
-        title: 'Enable Vibrant Visuals Mode',
-        color: _kGold,
-        icon: VoxelIconType.diamond,
-        pathTag: 'Settings > Video > Graphics Mode > Vibrant Visuals',
-        desc:
-            'Switch the Minecraft graphics engine to Deferred Technical Preview ("Vibrant Visuals").',
-        bullets: [
-          'In Minecraft Settings, go down to "Video".',
-          'Under Graphics Mode, choose "Vibrant Visuals".',
-          'Set Brightness / Gamma to 50% for optimal balanced lighting.',
-          'Enable "Bloom: ON" and set "Upscaling: TAAU" for sharp, crisp visuals.',
-        ],
-        mockupType: _MockupType.videoSettings,
-        screenshotAsset: OfficialGuideScreenshots.step3VideoSettings,
-      ),
-      (
-        stepNum: '04',
-        title: 'Launch World & Verify Shaders',
-        color: _kPurple,
-        icon: VoxelIconType.sparkles,
-        pathTag: 'Play > World Settings > Experiments > Render Dragon Features',
-        desc:
-            'Hop into your world to see dynamic sunlight, wave reflections, and volumetric mist!',
-        bullets: [
-          'If creating an experimental world, ensure "Render Dragon Features for Creators" is ON.',
-          'Enter the world — look at the directional sun glow, water caustics, and soft shadows!',
-          'If shadows look dark, check that Brightness is set to 50% in Video settings.',
-        ],
-        mockupType: _MockupType.inGameWorld,
-        screenshotAsset: OfficialGuideScreenshots.step4InGameWorld,
-      ),
-    ];
-
-    final current = steps[_currentStep];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Stepper pills selector
-        Row(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        child: Row(
           children: [
-            for (int i = 0; i < steps.length; i++) ...[
-              if (i > 0)
-                Expanded(
-                  child: Container(
-                    height: 2,
-                    color: i <= _currentStep ? _kEmerald : _borderColor,
-                  ),
-                ),
+            for (int i = 0; i < _kGuideSteps.length; i++) ...[
+              if (i > 0) const SizedBox(width: 6),
               GestureDetector(
-                onTap: () => setState(() => _currentStep = i),
-                child: Container(
-                  width: 32,
-                  height: 32,
+                onTap: () => _goToStep(i),
+                behavior: HitTestBehavior.opaque,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeInOut,
+                  padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                   decoration: BoxDecoration(
                     color: _currentStep == i
-                        ? steps[i].color
-                        : (_currentStep > i
-                            ? _kEmerald.withValues(alpha: 0.25)
-                            : _bgCard),
-                    shape: BoxShape.circle,
+                        ? _kGoldPrimary
+                        : const Color(0xFF1E1E24),
+                    borderRadius: BorderRadius.circular(6),
                     border: Border.all(
-                      color: _currentStep == i ? Colors.white : _borderColor,
-                      width: _currentStep == i ? 1.8 : 1.2,
+                      color: _currentStep == i ? _kGoldPrimary : _kBorder,
+                      width: 1.2,
                     ),
+                    boxShadow: _currentStep == i
+                        ? [
+                            BoxShadow(
+                              color: _kGoldPrimary.withValues(alpha: 0.35),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ]
+                        : null,
                   ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    steps[i].stepNum,
-                    style: TextStyle(
-                      fontFamily: 'PixelifySans',
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: _currentStep == i
-                          ? Colors.black
-                          : (_currentStep > i ? _kEmerald : Colors.white60),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-        const SizedBox(height: 16),
-
-        // Step Card
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: _bgCard,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: current.color.withValues(alpha: 0.5), width: 1.4),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Step header
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: current.color,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      'STEP ${current.stepNum}',
-                      style: const TextStyle(
-                        fontFamily: 'PixelifySans',
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      current.title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  AnimatedMinecraftIcon(type: current.icon, size: 20),
-                ],
-              ),
-              const SizedBox(height: 10),
-
-              // Breadcrumb path tag
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.45),
-                  borderRadius: BorderRadius.circular(5),
-                  border: Border.all(color: _borderColor),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.folder_open_rounded, size: 13, color: current.color),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        current.pathTag,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${i + 1}. ${_kGuideSteps[i].tabLabel}',
                         style: TextStyle(
-                          color: current.color,
-                          fontSize: 10.5,
                           fontFamily: 'PixelifySans',
-                          fontWeight: FontWeight.w600,
+                          fontSize: isCompact ? 10 : 11,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.4,
+                          color: _currentStep == i ? Colors.black : Colors.white70,
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-
-              Text(
-                current.desc,
-                style: const TextStyle(
-                  color: Color(0xFF94A3B8),
-                  fontSize: 12,
-                  height: 1.4,
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // Screenshot / Mockup Preview Container
-              _buildOfficialScreenshotContainer(
-                title: current.title,
-                mockupType: current.mockupType,
-                color: current.color,
-                assetPath: current.screenshotAsset,
-              ),
-              const SizedBox(height: 12),
-
-              // Step bullet points
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final bullet in current.bullets) ...[
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(Icons.check_circle_rounded, size: 14, color: current.color),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              bullet,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 11.5,
-                                height: 1.35,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ],
               ),
             ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  // ─── TAB 2: OFFICIAL SCREENSHOTS GALLERY ────────────────────────────────────
-  Widget _buildScreenshotsGalleryTab() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Icon(Icons.add_photo_alternate_outlined, size: 16, color: _kEmerald),
-            const SizedBox(width: 6),
-            const Text(
-              'OFFICIAL MINECRAFT SCREENSHOT SLOTS',
-              style: TextStyle(
-                fontFamily: 'PixelifySans',
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: _kEmerald,
-                letterSpacing: 0.5,
-              ),
-            ),
           ],
         ),
-        const SizedBox(height: 6),
-        const Text(
-          'Each step contains an official screenshot slot. You can drop in real in-game screenshots by setting OfficialGuideScreenshots paths, or view the built-in Minecraft UI previews below:',
-          style: TextStyle(
-            color: Color(0xFF94A3B8),
-            fontSize: 11.5,
-            height: 1.4,
-          ),
-        ),
-        const SizedBox(height: 14),
-
-        _buildGalleryItem(
-          step: '01',
-          title: 'Import Toast Notification',
-          desc: 'Shows Minecraft importing the .mcpack file after tapping Open with Minecraft.',
-          mockupType: _MockupType.importToast,
-          color: _kEmerald,
-          assetPath: OfficialGuideScreenshots.step1Import,
-        ),
-        const SizedBox(height: 12),
-        _buildGalleryItem(
-          step: '02',
-          title: 'Global Resources Pack & Gear Tier',
-          desc: 'Shows the shader pack placed at the top of Active packs with resolution subpacks.',
-          mockupType: _MockupType.globalResources,
-          color: _kCyan,
-          assetPath: OfficialGuideScreenshots.step2GlobalResources,
-        ),
-        const SizedBox(height: 12),
-        _buildGalleryItem(
-          step: '03',
-          title: 'Video Settings · Vibrant Visuals',
-          desc: 'Shows Graphics Mode set to Vibrant Visuals with Bloom ON and Gamma 50%.',
-          mockupType: _MockupType.videoSettings,
-          color: _kGold,
-          assetPath: OfficialGuideScreenshots.step3VideoSettings,
-        ),
-        const SizedBox(height: 12),
-        _buildGalleryItem(
-          step: '04',
-          title: 'In-Game World Rendering',
-          desc: 'Shows dynamic directional sunlight, realistic water ripples, and fog in action.',
-          mockupType: _MockupType.inGameWorld,
-          color: _kPurple,
-          assetPath: OfficialGuideScreenshots.step4InGameWorld,
-        ),
-      ],
+      ),
     );
   }
 
-  Widget _buildGalleryItem({
-    required String step,
-    required String title,
-    required String desc,
-    required _MockupType mockupType,
-    required Color color,
-    String? assetPath,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: _bgCard,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: _borderColor),
-      ),
+  // ─── 3. STEP CONTENT PAGE ───────────────────────────────────────────────────
+  Widget _buildStepPage(BuildContext context, _GuideStep step, bool isCompact) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Step pill badge & Title
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                 decoration: BoxDecoration(
-                  color: color,
+                  color: _kGoldPrimary,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  'STEP $step',
+                  'STEP ${step.num}',
                   style: const TextStyle(
                     fontFamily: 'PixelifySans',
                     fontSize: 10,
@@ -654,320 +467,100 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  title,
+                  step.title,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 12.5,
+                    fontSize: 13,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
+              AnimatedMinecraftIcon(type: step.icon, size: 20),
             ],
           ),
-          const SizedBox(height: 6),
-          Text(
-            desc,
-            style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
-          ),
-          const SizedBox(height: 10),
-          _buildOfficialScreenshotContainer(
-            title: title,
-            mockupType: mockupType,
-            color: color,
-            assetPath: assetPath,
-          ),
-        ],
-      ),
-    );
-  }
+          const SizedBox(height: 8),
 
-  // ─── TAB 3: RECOMMENDED IN-GAME SETTINGS ────────────────────────────────────
-  Widget _buildInGameSettingsTab() {
-    final settings = [
-      (
-        category: 'GRAPHICS MODE',
-        setting: 'Video -> Graphics Mode',
-        value: 'Vibrant Visuals',
-        why: 'Enables official Deferred Technical Preview PBR pipeline.',
-        icon: Icons.auto_awesome_rounded,
-        color: _kEmerald,
-      ),
-      (
-        category: 'BRIGHTNESS',
-        setting: 'Brightness / Gamma',
-        value: '50% (Default)',
-        why: 'Values above 70% cause overexposed daylight and washed-out shadows.',
-        icon: Icons.brightness_6_rounded,
-        color: _kGold,
-      ),
-      (
-        category: 'POST-PROCESSING',
-        setting: 'Bloom & Reflections',
-        value: 'ON · Matches Subpack',
-        why: 'Enables realistic emissive glows and glossy water specular hits.',
-        icon: Icons.lens_blur_rounded,
-        color: _kCyan,
-      ),
-      (
-        category: 'RESOLUTION SCALING',
-        setting: 'Upscaling Quality',
-        value: 'TAAU (Recommended)',
-        why: 'Temporal Anti-Aliasing gives razor sharp geometry without jagged edges.',
-        icon: Icons.hd_rounded,
-        color: _kPurple,
-      ),
-      (
-        category: 'EXPERIMENTS',
-        setting: 'World Experiments',
-        value: 'Render Dragon Features: ON',
-        why: 'Required for custom biomes and local point-light blocks.',
-        icon: Icons.science_outlined,
-        color: const Color(0xFFF43F5E),
-      ),
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Icon(Icons.tune_rounded, size: 16, color: _kCyan),
-            const SizedBox(width: 6),
-            const Text(
-              'RECOMMENDED IN-GAME CONFIGURATION',
-              style: TextStyle(
-                fontFamily: 'PixelifySans',
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: _kCyan,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 6),
-        const Text(
-          'For the best visual fidelity and stable framerates, apply these exact settings in Minecraft:',
-          style: TextStyle(
-            color: Color(0xFF94A3B8),
-            fontSize: 11.5,
-            height: 1.4,
-          ),
-        ),
-        const SizedBox(height: 12),
-
-        for (final s in settings) ...[
+          // Breadcrumb Path Tag
           Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            padding: const EdgeInsets.all(11),
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
             decoration: BoxDecoration(
-              color: _bgCard,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: _borderColor),
+              color: Colors.black.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(color: _kBorder),
             ),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    color: s.color.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: s.color.withValues(alpha: 0.6)),
-                  ),
-                  alignment: Alignment.center,
-                  child: Icon(s.icon, size: 15, color: s.color),
-                ),
-                const SizedBox(width: 10),
+                const Icon(Icons.folder_open_rounded, size: 13, color: _kGoldPrimary),
+                const SizedBox(width: 6),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              s.setting,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: s.color.withValues(alpha: 0.18),
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: s.color, width: 0.8),
-                            ),
-                            child: Text(
-                              s.value,
-                              style: TextStyle(
-                                color: s.color,
-                                fontFamily: 'PixelifySans',
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        s.why,
-                        style: const TextStyle(
-                          color: Color(0xFF94A3B8),
-                          fontSize: 11,
-                          height: 1.3,
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    step.pathTag,
+                    style: const TextStyle(
+                      color: _kGoldPrimary,
+                      fontSize: 10.5,
+                      fontFamily: 'PixelifySans',
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
           ),
-        ],
-      ],
-    );
-  }
+          const SizedBox(height: 10),
 
-  // ─── TAB 4: SHADER CONTROLS GUIDE ───────────────────────────────────────────
-  Widget _buildShaderControlsGuideTab() {
-    final sections = [
-      (
-        tab: 'TAB 0: SKY & ATMOSPHERE',
-        color: _kCyan,
-        icon: VoxelIconType.sun,
-        items: [
-          ('Sun / Moon Position', 'Sets orbital sunrise/sunset direction and noon elevation.'),
-          ('Horizon Haze', 'Controls atmospheric light scattering gradient where sky meets ground.'),
-          ('Rayleigh / Mie Scattering', 'Simulates realistic physical sun halo glow and dusk/dawn redness.'),
-        ],
-      ),
-      (
-        tab: 'TAB 1: LIGHTING & CAVES',
-        color: _kGold,
-        icon: VoxelIconType.torch,
-        items: [
-          ('Sunlight / Ambient', 'Directional illumination on blocks and shadows under trees.'),
-          ('Cave Ambient', 'Ambient visibility in pitch black underground caverns.'),
-          ('Block Lights', 'Point-light emission colors for Torches, Lanterns, and Glowstone.'),
-        ],
-      ),
-      (
-        tab: 'TAB 2: FOG & MIST',
-        color: _kEmerald,
-        icon: VoxelIconType.rainCloud,
-        items: [
-          ('Air Fog Start / End', 'Distance where distance mist begins and turns 100% opaque.'),
-          ('Ground Mist Density', 'Pools thick volumetric mist billows in canyon basins.'),
-          ('Weather Fog', 'Simulates heavy storm downpours and low-hanging rain curtains.'),
-        ],
-      ),
-      (
-        tab: 'TAB 3: WATER & CAUSTICS',
-        color: _kCyan,
-        icon: VoxelIconType.caustics,
-        items: [
-          ('Water Clarity (CDOM)', 'Balances crystal clear water vs murky marsh water.'),
-          ('Caustics Shimmer', 'Animated sunlight prismatic web reflections on seabed blocks.'),
-          ('Wave Height / Speed', 'Simulates gentle ocean swells or lively river rapids.'),
-        ],
-      ),
-      (
-        tab: 'TAB 4: COLOR GRADING',
-        color: _kPurple,
-        icon: VoxelIconType.palette,
-        items: [
-          ('Tone Mapping Operator', 'Reinhard, ACES, or Neutral filmic color response.'),
-          ('Temperature / Gain', 'Warm sunset golden hour vs crisp cool morning sky.'),
-        ],
-      ),
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Icon(Icons.help_outline_rounded, size: 16, color: _kEmerald),
-            const SizedBox(width: 6),
-            const Text(
-              'WHAT EACH SHADER SLIDER CONTROLS',
-              style: TextStyle(
-                fontFamily: 'PixelifySans',
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: _kEmerald,
-                letterSpacing: 0.5,
-              ),
+          // Description
+          Text(
+            step.desc,
+            style: const TextStyle(
+              color: Color(0xFFD4D4D8),
+              fontSize: 12,
+              height: 1.4,
             ),
-          ],
-        ),
-        const SizedBox(height: 6),
-        const Text(
-          'Quick reference for all Piglix Shader Builder controls and their official JSON outputs:',
-          style: TextStyle(
-            color: Color(0xFF94A3B8),
-            fontSize: 11.5,
           ),
-        ),
-        const SizedBox(height: 12),
+          const SizedBox(height: 12),
 
-        for (final sec in sections) ...[
+          // Official Screenshot Placeholder / Slot
+          _buildScreenshotPlaceholder(
+            title: step.title,
+            fileName: step.fileName,
+            assetPath: step.getAsset(),
+            accent: _kGoldPrimary,
+          ),
+          const SizedBox(height: 12),
+
+          // Key Action Bullets
           Container(
-            margin: const EdgeInsets.only(bottom: 10),
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: _bgCard,
+              color: _kBgCard,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: _borderColor),
+              border: Border.all(color: _kBorder),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    AnimatedMinecraftIcon(type: sec.icon, size: 16),
-                    const SizedBox(width: 8),
-                    Text(
-                      sec.tab,
-                      style: TextStyle(
-                        fontFamily: 'PixelifySans',
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: sec.color,
-                        letterSpacing: 0.4,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                for (final item in sec.items) ...[
+                for (final bullet in step.bullets) ...[
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
+                    padding: const EdgeInsets.symmetric(vertical: 3),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('• ', style: TextStyle(color: sec.color, fontWeight: FontWeight.bold)),
-                        Text(
-                          '${item.$1}: ',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.w600,
-                          ),
+                        const Icon(
+                          Icons.check_circle_rounded,
+                          size: 15,
+                          color: _kGoldPrimary,
                         ),
+                        const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            item.$2,
+                            bullet,
                             style: const TextStyle(
-                              color: Color(0xFF94A3B8),
+                              color: Colors.white,
                               fontSize: 11.5,
+                              height: 1.35,
                             ),
                           ),
                         ),
@@ -979,72 +572,77 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
             ),
           ),
         ],
-      ],
+      ),
     );
   }
 
-  // ─── OFFICIAL SCREENSHOT & MOCKUP CONTAINER ─────────────────────────────────
-  Widget _buildOfficialScreenshotContainer({
+  // ─── OFFICIAL SCREENSHOT SLOT (EMPTY PLACEHOLDER BY DEFAULT) ────────────────
+  Widget _buildScreenshotPlaceholder({
     required String title,
-    required _MockupType mockupType,
-    required Color color,
+    required String fileName,
     String? assetPath,
+    required Color accent,
   }) {
+    final hasAsset = assetPath != null && assetPath.trim().isNotEmpty;
+
     return Container(
       width: double.infinity,
-      height: 140,
+      height: 145,
       decoration: BoxDecoration(
-        color: const Color(0xFF090D14),
+        color: const Color(0xFF0D0D10),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.4), width: 1.2),
+        border: Border.all(
+          color: hasAsset ? accent.withValues(alpha: 0.6) : accent.withValues(alpha: 0.35),
+          width: 1.2,
+        ),
       ),
       clipBehavior: Clip.antiAlias,
       child: Stack(
         children: [
-          // If asset path exists, show image with error fallback to mockup
-          if (assetPath != null && assetPath.isNotEmpty)
+          if (hasAsset)
             Positioned.fill(
               child: Image.asset(
                 assetPath,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) =>
-                    _buildPixelatedMockup(mockupType, color),
+                    _buildEmptySlotContent(fileName, accent),
               ),
             )
           else
-            // High-fidelity authentic Minecraft UI Mockup
             Positioned.fill(
-              child: _buildPixelatedMockup(mockupType, color),
+              child: _buildEmptySlotContent(fileName, accent),
             ),
-
-          // Screenshot slot status badge on top-right
+          // Top right status pill
           Positioned(
-            top: 6,
-            right: 6,
+            top: 7,
+            right: 7,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2.5),
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.75),
+                color: Colors.black.withValues(alpha: 0.85),
                 borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: color.withValues(alpha: 0.6)),
+                border: Border.all(
+                  color: hasAsset ? const Color(0xFF4ADE80) : accent.withValues(alpha: 0.5),
+                  width: 0.8,
+                ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    assetPath != null ? Icons.check_circle_rounded : Icons.photo_camera_outlined,
+                    hasAsset ? Icons.check_circle_rounded : Icons.photo_camera_outlined,
                     size: 11,
-                    color: color,
+                    color: hasAsset ? const Color(0xFF4ADE80) : accent,
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    assetPath != null ? 'OFFICIAL SCREENSHOT' : 'MINECRAFT UI PREVIEW',
+                    hasAsset ? 'OFFICIAL SCREENSHOT' : 'SCREENSHOT PLACEHOLDER',
                     style: TextStyle(
                       fontFamily: 'PixelifySans',
                       fontSize: 8.5,
                       fontWeight: FontWeight.w700,
-                      color: color,
-                      letterSpacing: 0.5,
+                      color: hasAsset ? const Color(0xFF4ADE80) : accent,
+                      letterSpacing: 0.4,
                     ),
                   ),
                 ],
@@ -1056,335 +654,81 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
     );
   }
 
-  // ─── AUTHENTIC MINECRAFT UI MOCKUPS ─────────────────────────────────────────
-  Widget _buildPixelatedMockup(_MockupType type, Color accent) {
-    return switch (type) {
-      _MockupType.importToast => _mockupImportToast(accent),
-      _MockupType.globalResources => _mockupGlobalResources(accent),
-      _MockupType.videoSettings => _mockupVideoSettings(accent),
-      _MockupType.inGameWorld => _mockupInGameWorld(accent),
-    };
-  }
-
-  Widget _mockupImportToast(Color accent) {
+  Widget _buildEmptySlotContent(String fileName, Color accent) {
     return Container(
-      color: const Color(0xFF18181B),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      alignment: Alignment.center,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Minecraft Title Top Bar Mockup
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
-              color: const Color(0xFF27272A),
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: const Color(0xFF3F3F46)),
+              color: accent.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+              border: Border.all(color: accent.withValues(alpha: 0.4), width: 1.2),
             ),
-            child: Row(
-              children: [
-                const AnimatedMinecraftIcon(type: VoxelIconType.grassBlock, size: 16),
-                const SizedBox(width: 8),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Import Started...',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        'Successfully imported "Piglix Shader Pack.mcpack"',
-                        style: TextStyle(
-                          color: Color(0xFF4ADE80),
-                          fontSize: 9.5,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(Icons.check_circle_rounded, size: 16, color: accent),
-              ],
+            child: Icon(
+              Icons.add_photo_alternate_outlined,
+              size: 18,
+              color: accent,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 7),
           const Text(
-            'Minecraft Notification Toast',
-            style: TextStyle(color: Colors.white38, fontSize: 9.5, fontFamily: 'PixelifySans'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _mockupGlobalResources(Color accent) {
-    return Container(
-      color: const Color(0xFF141923),
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Text(
-                'GLOBAL RESOURCES',
-                style: TextStyle(
-                  fontFamily: 'PixelifySans',
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white70,
-                ),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(3),
-                ),
-                child: Text(
-                  'ACTIVE (1)',
-                  style: TextStyle(
-                    fontFamily: 'PixelifySans',
-                    fontSize: 8.5,
-                    color: accent,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          // Active Pack Card with Gear
-          Container(
-            padding: const EdgeInsets.all(7),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1F2937),
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: accent, width: 1.2),
-            ),
-            child: Row(
-              children: [
-                const AnimatedMinecraftIcon(type: VoxelIconType.chest, size: 16),
-                const SizedBox(width: 6),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Piglix Vibrant Visuals Pack',
-                        style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        'Subpack: High (1024x Shadows + Caustics)',
-                        style: TextStyle(color: Colors.white60, fontSize: 8.5),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.black45,
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: Colors.white30),
-                  ),
-                  child: const Icon(Icons.settings, size: 12, color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 6),
-          // Subpack Slider Mockup
-          Row(
-            children: [
-              const Text('Resolution:', style: TextStyle(color: Colors.white38, fontSize: 8.5)),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Container(
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.black54,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                  child: FractionallySizedBox(
-                    alignment: Alignment.centerLeft,
-                    widthFactor: 0.75,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: accent,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                'HIGH',
-                style: TextStyle(
-                  fontFamily: 'PixelifySans',
-                  fontSize: 9,
-                  color: accent,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _mockupVideoSettings(Color accent) {
-    return Container(
-      color: const Color(0xFF141A22),
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'VIDEO SETTINGS',
+            'Official Screenshot Placeholder',
             style: TextStyle(
+              color: Colors.white,
               fontFamily: 'PixelifySans',
-              fontSize: 10,
+              fontSize: 11,
               fontWeight: FontWeight.w700,
-              color: Colors.white70,
+              letterSpacing: 0.4,
             ),
           ),
-          const SizedBox(height: 8),
-          _mockupSettingRow('Graphics Mode:', 'Vibrant Visuals', accent, isHighlight: true),
-          const SizedBox(height: 5),
-          _mockupSettingRow('Brightness:', '50%', Colors.white70),
-          const SizedBox(height: 5),
-          _mockupSettingRow('Bloom:', 'ON', const Color(0xFF22C55E)),
-          const SizedBox(height: 5),
-          _mockupSettingRow('Upscaling:', 'TAAU', const Color(0xFF38BDF8)),
-        ],
-      ),
-    );
-  }
-
-  Widget _mockupSettingRow(String label, String value, Color col, {bool isHighlight = false}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
-      decoration: BoxDecoration(
-        color: isHighlight ? col.withValues(alpha: 0.15) : const Color(0xFF1E2632),
-        borderRadius: BorderRadius.circular(3),
-        border: Border.all(color: isHighlight ? col : const Color(0xFF2D3748)),
-      ),
-      child: Row(
-        children: [
-          Text(label, style: const TextStyle(color: Colors.white70, fontSize: 9.5)),
-          const Spacer(),
+          const SizedBox(height: 3),
           Text(
-            value,
-            style: TextStyle(
-              color: col,
-              fontFamily: 'PixelifySans',
+            'Drop image into: public/$fileName or assets/$fileName',
+            style: const TextStyle(
+              color: Colors.white38,
+              fontFamily: 'monospace',
               fontSize: 9.5,
-              fontWeight: FontWeight.w700,
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
     );
   }
 
-  Widget _mockupInGameWorld(Color accent) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF38BDF8), Color(0xFFBAE6FD), Color(0xFF15803D), Color(0xFF047857)],
-          stops: [0.0, 0.45, 0.45, 1.0],
-        ),
-      ),
-      child: Stack(
-        children: [
-          // Sun block in sky
-          Positioned(
-            top: 14,
-            left: 28,
-            child: Container(
-              width: 18,
-              height: 18,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(color: Colors.yellow.withValues(alpha: 0.7), blurRadius: 10),
-                ],
-              ),
-            ),
-          ),
-          // Water pool with waves
-          Positioned(
-            bottom: 0,
-            right: 0,
-            width: 120,
-            height: 38,
-            child: Container(
-              color: const Color(0xFF0284C7).withValues(alpha: 0.85),
-              alignment: Alignment.center,
-              child: const Text(
-                '~ Caustic Waves ~',
-                style: TextStyle(color: Colors.white70, fontSize: 8.5, fontFamily: 'PixelifySans'),
-              ),
-            ),
-          ),
-          // Center In-Game HUD overlay
-          Positioned(
-            bottom: 8,
-            left: 12,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(3),
-              ),
-              child: const Text(
-                'Piglix Vibrant Visuals Active',
-                style: TextStyle(color: Colors.white, fontSize: 8.5, fontFamily: 'PixelifySans'),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ─── 4. MODAL FOOTER WITH PIXELATED BUTTONS ─────────────────────────────────
+  // ─── 4. MODAL FOOTER ────────────────────────────────────────────────────────
   Widget _buildModalFooter(BuildContext context) {
+    final isLast = _currentStep == _kGuideSteps.length - 1;
+
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
       decoration: const BoxDecoration(
-        color: Color(0xFF111A24),
-        border: Border(top: BorderSide(color: _borderColor)),
+        color: Color(0xFF141418),
+        border: Border(top: BorderSide(color: _kBorder, width: 1.2)),
       ),
       child: Row(
         children: [
-          // Previous step button (if in step flow tab)
-          if (_activeTab == 0 && _currentStep > 0) ...[
+          // Previous button
+          if (_currentStep > 0) ...[
             GestureDetector(
-              onTap: () => setState(() => _currentStep--),
+              onTap: () => _goToStep(_currentStep - 1),
+              behavior: HitTestBehavior.opaque,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B),
+                  color: const Color(0xFF22222A),
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: Colors.white24),
+                  border: Border.all(color: _kBorder),
                 ),
                 child: const Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.arrow_back_rounded, size: 13, color: Colors.white70),
+                    Icon(Icons.arrow_back_rounded, size: 14, color: Colors.white70),
                     SizedBox(width: 4),
                     Text(
                       'PREV',
@@ -1402,41 +746,64 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
             const SizedBox(width: 8),
           ],
 
-          // Next / Got It Button
+          // Step Dots Indicator
           Expanded(
-            child: GestureDetector(
-              onTap: () {
-                if (_activeTab == 0 && _currentStep < 3) {
-                  setState(() => _currentStep++);
-                } else {
-                  Navigator.pop(context);
-                }
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 9),
-                decoration: BoxDecoration(
-                  color: _kEmerald,
-                  borderRadius: BorderRadius.circular(6),
-                  boxShadow: [
-                    BoxShadow(
-                      color: _kEmerald.withValues(alpha: 0.35),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (int i = 0; i < _kGuideSteps.length; i++)
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 240),
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    width: _currentStep == i ? 16 : 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: _currentStep == i ? _kGoldPrimary : Colors.white24,
+                      borderRadius: BorderRadius.circular(3),
                     ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    (_activeTab == 0 && _currentStep < 3) ? 'NEXT STEP >' : 'GOT IT · READY TO PLAY',
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+
+          // Next / Ready Button
+          GestureDetector(
+            onTap: () {
+              if (!isLast) {
+                _goToStep(_currentStep + 1);
+              } else {
+                Navigator.pop(context);
+              }
+            },
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
+              decoration: BoxDecoration(
+                color: _kGoldPrimary,
+                borderRadius: BorderRadius.circular(6),
+                boxShadow: [
+                  BoxShadow(
+                    color: _kGoldPrimary.withValues(alpha: 0.35),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    isLast ? 'READY TO PLAY ✓' : 'NEXT STEP >',
                     style: const TextStyle(
                       fontFamily: 'PixelifySans',
-                      fontSize: 12,
+                      fontSize: 11.5,
                       fontWeight: FontWeight.w800,
                       color: Colors.black,
                       letterSpacing: 0.5,
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
@@ -1444,11 +811,4 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
       ),
     );
   }
-}
-
-enum _MockupType {
-  importToast,
-  globalResources,
-  videoSettings,
-  inGameWorld,
 }

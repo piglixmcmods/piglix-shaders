@@ -67,6 +67,7 @@ flutter:
   assets:
     - assets/base_shader.zip
     - assets/hero_sunset.webp
+    - assets/screenshots/
 
   fonts:
     - family: PixelifySans

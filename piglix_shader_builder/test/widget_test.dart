@@ -340,5 +340,48 @@ void main() {
         expect(banner().activeLightGroupIndex, entry.idx);
       }
     });
+
+    testWidgets(
+        'VVMinecraftGuideModal renders Yellow Dark Theme with 5 horizontal steps & empty screenshot slot',
+        (WidgetTester tester) async {
+      await pumpEditor(tester);
+
+      // Open guide modal via top help button (?)
+      final helpBtn = find.byTooltip('How to use in Minecraft');
+      expect(helpBtn, findsOneWidget);
+      await tester.tap(helpBtn);
+      await tester.pumpAndSettle();
+
+      // Verify Yellow Dark Theme Header & Guide
+      expect(find.text('MINECRAFT SHADER GUIDE'), findsOneWidget);
+      expect(find.text('1. GENERATE'), findsOneWidget);
+      expect(find.text('2. WHAT YOU GET'), findsOneWidget);
+      expect(find.text('3. IMPORT'), findsOneWidget);
+      expect(find.text('4. ACTIVATE'), findsOneWidget);
+      expect(find.text('5. PLAY'), findsOneWidget);
+
+      // Verify empty screenshot placeholder
+      expect(find.text('Official Screenshot Placeholder'), findsOneWidget);
+      expect(find.text('SCREENSHOT PLACEHOLDER'), findsOneWidget);
+
+      // Tap NEXT STEP > to advance to Step 2
+      await tester.tap(find.text('NEXT STEP >'));
+      await tester.pumpAndSettle();
+      expect(find.text('STEP 02'), findsOneWidget);
+      expect(find.text('PREV'), findsOneWidget);
+
+      // Tap direct tab "5. PLAY" after ensuring it is visible in the horizontal scroll view
+      final playTab = find.text('5. PLAY');
+      await tester.ensureVisible(playTab);
+      await tester.tap(playTab);
+      await tester.pumpAndSettle();
+      expect(find.text('STEP 05'), findsOneWidget);
+      expect(find.text('READY TO PLAY ✓'), findsOneWidget);
+
+      // Tap READY TO PLAY ✓ to dismiss modal
+      await tester.tap(find.text('READY TO PLAY ✓'));
+      await tester.pumpAndSettle();
+      expect(find.text('MINECRAFT SHADER GUIDE'), findsNothing);
+    });
   });
 }

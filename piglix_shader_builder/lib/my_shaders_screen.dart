@@ -6,6 +6,7 @@ import 'package:universal_html/html.dart' as html;
 import 'package:file_saver/file_saver.dart';
 import 'package:file_picker/file_picker.dart';
 import 'minecraft_icons.dart';
+import 'vv_global_nav_bar.dart';
 import 'io_stub.dart' if (dart.library.io) 'io_real.dart';
 
 // ─── OBSIDIAN & EMERALD PALETTE (MATCHING HOME SCREEN) ────────────────────────
@@ -248,15 +249,27 @@ class UserShaderStore {
 /// Screen displaying the user's previously generated shaders
 class MyShadersScreen extends StatefulWidget {
   final Function(String shaderName)? onEditShader;
+  final void Function(UserShaderItem item)? onEditShaderItem;
   final VoidCallback? onStartNew;
+  final VoidCallback? onOpenPresets;
+  final VoidCallback? onOpenSettings;
 
-  const MyShadersScreen({super.key, this.onEditShader, this.onStartNew});
+  const MyShadersScreen({
+    super.key,
+    this.onEditShader,
+    this.onEditShaderItem,
+    this.onStartNew,
+    this.onOpenPresets,
+    this.onOpenSettings,
+  });
 
   @override
   State<MyShadersScreen> createState() => _MyShadersScreenState();
 }
 
 class _MyShadersScreenState extends State<MyShadersScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -465,67 +478,86 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
     final items = UserShaderStore.shaders;
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: _bg,
-      appBar: AppBar(
-        backgroundColor: _surface,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.white,
-            size: 20,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Row(
-          children: [
-            AnimatedMinecraftIcon(type: VoxelIconType.chest, size: 22),
-            SizedBox(width: 10),
-            Text(
-              'MY SHADERS',
-              style: TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 16,
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
-                letterSpacing: 1.2,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton.icon(
-            onPressed: _importPack,
-            icon: const Icon(
-              Icons.file_upload_outlined,
-              color: _green,
-              size: 18,
-            ),
-            label: const Text(
-              'IMPORT',
-              style: TextStyle(
-                color: _green,
-                fontWeight: FontWeight.w900,
-                fontSize: 11,
-                letterSpacing: 0.8,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(color: _border, height: 1),
-        ),
+      drawerScrimColor: Colors.black.withValues(alpha: 0.72),
+      drawerEdgeDragWidth: 36,
+      drawer: VvGlobalDrawer(
+        currentTab: VvNavTab.gallery,
+        onOpenEditor: () {
+          widget.onStartNew?.call();
+        },
+        onOpenMyShaders: () {},
+        onOpenPresets: () {
+          widget.onOpenPresets?.call();
+        },
+        onOpenUpload: _importPack,
       ),
       body: SafeArea(
-        child: items.isEmpty
-            ? _buildEmptyState()
-            : ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-                itemCount: items.length + 1,
-                itemBuilder: (context, index) {
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // ── Header: Green vertical line + Title + Import button (No top home, no mini line below) ──
+            Container(
+              color: _surface,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 3.5,
+                    height: 22,
+                    decoration: BoxDecoration(
+                      color: _green,
+                      borderRadius: BorderRadius.circular(2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: _green.withValues(alpha: 0.6),
+                          blurRadius: 6,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
+                    'My Shaders',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                  const Spacer(),
+                  TextButton.icon(
+                    onPressed: _importPack,
+                    icon: const Icon(
+                      Icons.file_upload_outlined,
+                      color: _green,
+                      size: 18,
+                    ),
+                    label: const Text(
+                      'IMPORT',
+                      style: TextStyle(
+                        color: _green,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 11,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // ── Content ──
+            Expanded(
+              child: items.isEmpty
+                  ? _buildEmptyState()
+                  : ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                      itemCount: items.length + 1,
+                      itemBuilder: (context, index) {
                   if (index == 0) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 16),
@@ -551,7 +583,7 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                                     '${items.length} SAVED SHADER${items.length == 1 ? '' : 'S'}',
                                     style: const TextStyle(
                                       color: Colors.white,
-                                      fontWeight: FontWeight.w900,
+                                      fontWeight: FontWeight.w700,
                                       fontSize: 13,
                                       letterSpacing: 0.5,
                                     ),
@@ -576,6 +608,18 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                   return RepaintBoundary(child: _buildShaderCard(item));
                 },
               ),
+            ),
+            // ── Bottom Navigation Bar (Shared Component: VvGlobalBottomNav) ──
+            VvGlobalBottomNav(
+              currentTab: VvNavTab.gallery,
+              onOpenHome: () => Navigator.popUntil(context, (r) => r.isFirst),
+              onOpenBuilder: () => widget.onStartNew?.call(),
+              onOpenGallery: () {},
+              onOpenPresets: () => widget.onOpenPresets?.call(),
+              onOpenSettings: () => _scaffoldKey.currentState?.openDrawer(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -638,7 +682,7 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                         item.name,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w700,
                           fontSize: 14,
                           letterSpacing: 0.5,
                         ),
@@ -666,7 +710,7 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                               style: TextStyle(
                                 color: _green,
                                 fontSize: 9,
-                                fontWeight: FontWeight.w900,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),
@@ -725,7 +769,7 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                         'OPEN IN MINECRAFT',
                         style: TextStyle(
                           fontSize: 11,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w700,
                           letterSpacing: 0.8,
                         ),
                       ),
@@ -772,8 +816,9 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                   width: 38,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pop(context);
-                      if (widget.onEditShader != null) {
+                      if (widget.onEditShaderItem != null) {
+                        widget.onEditShaderItem!(item);
+                      } else if (widget.onEditShader != null) {
                         widget.onEditShader!(item.name);
                       }
                     },
@@ -828,7 +873,7 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
               'No Saved Shaders Yet',
               style: TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 fontSize: 18,
               ),
             ),
@@ -857,7 +902,7 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 textStyle: const TextStyle(
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                   letterSpacing: 1.0,
                 ),
               ),
@@ -868,3 +913,4 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
     );
   }
 }
+

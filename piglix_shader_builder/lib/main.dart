@@ -41,8 +41,8 @@ void main() async {
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 14,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.0,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
                 ),
               ),
               const SizedBox(height: 8),
@@ -90,10 +90,6 @@ class PiglixProApp extends StatelessWidget {
               secondary: palette.surface,
               surface: palette.surface,
             ),
-            fontFamily: 'PixelifySans',
-            textTheme: ThemeData.light().textTheme.apply(
-              fontFamily: 'PixelifySans',
-            ),
             useMaterial3: true,
           ),
           darkTheme: ThemeData(
@@ -103,10 +99,6 @@ class PiglixProApp extends StatelessWidget {
               primary: Color(0xFF22C55E),
               secondary: Color(0xFF0E1722),
               surface: Color(0xFF0E1722),
-            ),
-            fontFamily: 'PixelifySans',
-            textTheme: ThemeData.dark().textTheme.apply(
-              fontFamily: 'PixelifySans',
             ),
             useMaterial3: true,
           ),

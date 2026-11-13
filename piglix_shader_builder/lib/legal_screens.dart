@@ -113,7 +113,7 @@ class LegalPage extends StatelessWidget {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 22,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 letterSpacing: 0.5,
                 height: 1.25,
               ),
@@ -129,7 +129,7 @@ class LegalPage extends StatelessWidget {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 22,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 letterSpacing: 0.5,
                 height: 1.25,
               ),
@@ -154,7 +154,7 @@ class LegalPage extends StatelessWidget {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 22,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 letterSpacing: 0.5,
               ),
             ),
@@ -178,7 +178,7 @@ class LegalPage extends StatelessWidget {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 22,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 letterSpacing: 0.5,
               ),
             ),
@@ -476,7 +476,7 @@ class AppDrawer extends StatelessWidget {
                                   style: TextStyle(
                                     color: Color(0xFF4ADE80),
                                     fontSize: 9.5,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w600,
                                     letterSpacing: 1.2,
                                   ),
                                 ),
@@ -550,7 +550,7 @@ class AppDrawer extends StatelessWidget {
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 19,
-                                        fontWeight: FontWeight.w900,
+                                        fontWeight: FontWeight.w700,
                                         letterSpacing: -0.3,
                                       ),
                                     ),
@@ -559,7 +559,7 @@ class AppDrawer extends StatelessWidget {
                                       style: TextStyle(
                                         color: Color(0xFF22C55E),
                                         fontSize: 19,
-                                        fontWeight: FontWeight.w900,
+                                        fontWeight: FontWeight.w700,
                                         letterSpacing: -0.3,
                                       ),
                                     ),
@@ -571,7 +571,7 @@ class AppDrawer extends StatelessWidget {
                                   style: TextStyle(
                                     color: Color(0xFF94A3B8),
                                     fontSize: 9.5,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w600,
                                     letterSpacing: 1.2,
                                   ),
                                 ),
@@ -600,7 +600,7 @@ class AppDrawer extends StatelessWidget {
                     style: TextStyle(
                       color: Color(0xFF64748B),
                       fontSize: 10.5,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                       letterSpacing: 1.5,
                     ),
                   ),
@@ -714,7 +714,7 @@ class AppDrawer extends StatelessWidget {
                           text: 'Piglix Labs',
                           style: TextStyle(
                             color: Color(0xFF22C55E),
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],

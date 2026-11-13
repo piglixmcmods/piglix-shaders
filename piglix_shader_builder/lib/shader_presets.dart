@@ -1,6 +1,10 @@
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'minecraft_icons.dart';
+import 'piglix_logo_data.dart';
 import 'theme_controller.dart';
+import 'vv_global_nav_bar.dart';
 
 /// Complete configuration for a production-grade Vibrant Visuals shader preset.
 class ShaderPresetConfig {
@@ -373,21 +377,375 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
   ),
 ];
 
+// ─────────────────────────────────────────────────────────────────
+//  PRESET & GALLERY PACKAGE ICON GENERATOR
+// ─────────────────────────────────────────────────────────────────
+
+Color presetAccentColor(ShaderPresetConfig p) {
+  switch (p.id) {
+    case 'ultra_vibrant':
+      return const Color(0xFF22C55E);
+    case 'pink_atmosphere':
+      return const Color(0xFFF472B6);
+    case 'cinematic_realism':
+      return const Color(0xFF38BDF8);
+    case 'midnight_cyber':
+      return const Color(0xFFA855F7);
+    case 'golden_hour':
+      return const Color(0xFFF59E0B);
+    case 'vanilla_plus':
+    default:
+      return const Color(0xFF4ADE80);
+  }
+}
+
+final Map<String, Uint8List> _presetIconCache = {};
+
+/// Generates or retrieves from cache an authentic Minecraft-style 128x128 PNG package image
+/// for a curated preset using its accent, atmospheric lighting colors, and name initials.
+Future<Uint8List> getOrGeneratePresetPackIcon(ShaderPresetConfig preset) async {
+  final cached = _presetIconCache[preset.id];
+  if (cached != null && cached.isNotEmpty) return cached;
+
+  try {
+    const double size = 128.0;
+    final recorder = ui.PictureRecorder();
+    final canvas = ui.Canvas(
+      recorder,
+      const Rect.fromLTWH(0, 0, 128, 128),
+    );
+
+    final accent = presetAccentColor(preset);
+    const bgDark = Color(0xFF0F172A);
+    const bgDeep = Color(0xFF020617);
+
+    // 1. Background linear gradient
+    final bgPaint = ui.Paint()
+      ..shader = ui.Gradient.linear(
+        const Offset(0, 0),
+        const Offset(128, 128),
+        [bgDark, bgDeep],
+      );
+    canvas.drawRect(
+      const Rect.fromLTWH(0, 0, 128, 128),
+      bgPaint,
+    );
+
+    // 2. Minecraft pixel grid pattern
+    final gridPaint = ui.Paint()..color = Colors.white.withValues(alpha: 0.035);
+    for (double i = 0; i < size; i += 16) {
+      canvas.drawLine(Offset(i, 0), Offset(i, size), gridPaint);
+      canvas.drawLine(Offset(0, i), Offset(size, i), gridPaint);
+    }
+
+    // 3. Ambient atmospheric radial glow
+    final glowPaint = ui.Paint()
+      ..shader = ui.Gradient.radial(
+        const Offset(64, 64),
+        size * 0.55,
+        [accent.withValues(alpha: 0.35), accent.withValues(alpha: 0.0)],
+      );
+    canvas.drawCircle(const Offset(64, 64), size * 0.55, glowPaint);
+
+    // 4. Outer Minecraft pixel border
+    final borderPaint = ui.Paint()
+      ..color = accent
+      ..style = ui.PaintingStyle.stroke
+      ..strokeWidth = 4.0;
+    canvas.drawRect(
+      const Rect.fromLTWH(2, 2, 124, 124),
+      borderPaint,
+    );
+
+    // 5. Inner highlight border
+    final innerBorder = ui.Paint()
+      ..color = Colors.white.withValues(alpha: 0.16)
+      ..style = ui.PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    canvas.drawRect(
+      const Rect.fromLTWH(6, 6, 116, 116),
+      innerBorder,
+    );
+
+    // 6. Central isometric Minecraft block
+    // Top face
+    final topFace = ui.Path()
+      ..moveTo(64, 30)
+      ..lineTo(92, 46)
+      ..lineTo(64, 62)
+      ..lineTo(36, 46)
+      ..close();
+    final topPaint = ui.Paint()
+      ..color = Color.lerp(preset.noonColor, Colors.white, 0.28) ?? accent;
+    canvas.drawPath(topFace, topPaint);
+
+    // Left face
+    final leftFace = ui.Path()
+      ..moveTo(36, 46)
+      ..lineTo(64, 62)
+      ..lineTo(64, 94)
+      ..lineTo(36, 78)
+      ..close();
+    final leftPaint = ui.Paint()
+      ..color = Color.lerp(preset.morningColor, Colors.black, 0.22) ?? accent;
+    canvas.drawPath(leftFace, leftPaint);
+
+    // Right face
+    final rightFace = ui.Path()
+      ..moveTo(64, 62)
+      ..lineTo(92, 46)
+      ..lineTo(92, 78)
+      ..lineTo(64, 94)
+      ..close();
+    final rightPaint = ui.Paint()
+      ..color = Color.lerp(preset.waterColor, Colors.black, 0.42) ?? accent;
+    canvas.drawPath(rightFace, rightPaint);
+
+    // Block outline edges
+    final blockEdgePaint = ui.Paint()
+      ..color = Colors.black.withValues(alpha: 0.55)
+      ..style = ui.PaintingStyle.stroke
+      ..strokeWidth = 1.8;
+    canvas.drawPath(topFace, blockEdgePaint);
+    canvas.drawPath(leftFace, blockEdgePaint);
+    canvas.drawPath(rightFace, blockEdgePaint);
+
+    // 7. Initials banner
+    final initials = preset.name
+        .split(RegExp(r'\s+'))
+        .where((s) => s.isNotEmpty)
+        .take(2)
+        .map((s) => s[0].toUpperCase())
+        .join();
+
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: initials.isNotEmpty ? initials : 'VV',
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 17,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 1.0,
+          shadows: [
+            Shadow(
+              color: Colors.black,
+              offset: Offset(1.5, 1.5),
+              blurRadius: 3,
+            ),
+          ],
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+    textPainter.paint(
+      canvas,
+      Offset(
+        (size - textPainter.width) / 2,
+        size - textPainter.height - 8,
+      ),
+    );
+
+    final picture = recorder.endRecording();
+    final img = await picture.toImage(128, 128);
+    picture.dispose();
+    final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
+    img.dispose();
+
+    if (byteData != null) {
+      final res = byteData.buffer.asUint8List();
+      _presetIconCache[preset.id] = res;
+      return res;
+    }
+  } catch (_) {}
+
+  return kPiglixLogoBytes;
+}
+
+/// Generates or retrieves from cache an authentic Minecraft-style 128x128 PNG package image
+/// for an edited gallery pack item using its preview color and pack initials.
+Future<Uint8List> generateShaderItemPackIcon(String name, Color? previewColor) async {
+  final accent = previewColor ?? const Color(0xFF10B981);
+  final cacheKey = 'gallery_${name}_${accent.toARGB32()}';
+  final cached = _presetIconCache[cacheKey];
+  if (cached != null && cached.isNotEmpty) return cached;
+
+  try {
+    const double size = 128.0;
+    final recorder = ui.PictureRecorder();
+    final canvas = ui.Canvas(
+      recorder,
+      const Rect.fromLTWH(0, 0, 128, 128),
+    );
+
+    const bgDark = Color(0xFF0F172A);
+    const bgDeep = Color(0xFF020617);
+
+    // 1. Background linear gradient
+    final bgPaint = ui.Paint()
+      ..shader = ui.Gradient.linear(
+        const Offset(0, 0),
+        const Offset(128, 128),
+        [bgDark, bgDeep],
+      );
+    canvas.drawRect(
+      const Rect.fromLTWH(0, 0, 128, 128),
+      bgPaint,
+    );
+
+    // 2. Minecraft pixel grid
+    final gridPaint = ui.Paint()..color = Colors.white.withValues(alpha: 0.04);
+    for (double i = 0; i < size; i += 16) {
+      canvas.drawLine(Offset(i, 0), Offset(i, size), gridPaint);
+      canvas.drawLine(Offset(0, i), Offset(size, i), gridPaint);
+    }
+
+    // 3. Center ambient glow
+    final glowPaint = ui.Paint()
+      ..shader = ui.Gradient.radial(
+        const Offset(64, 64),
+        size * 0.55,
+        [accent.withValues(alpha: 0.4), accent.withValues(alpha: 0.0)],
+      );
+    canvas.drawCircle(const Offset(64, 64), size * 0.55, glowPaint);
+
+    // 4. Outer border
+    final borderPaint = ui.Paint()
+      ..color = accent
+      ..style = ui.PaintingStyle.stroke
+      ..strokeWidth = 4.0;
+    canvas.drawRect(
+      const Rect.fromLTWH(2, 2, 124, 124),
+      borderPaint,
+    );
+
+    // 5. Inner border
+    final innerBorder = ui.Paint()
+      ..color = Colors.white.withValues(alpha: 0.18)
+      ..style = ui.PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    canvas.drawRect(
+      const Rect.fromLTWH(6, 6, 116, 116),
+      innerBorder,
+    );
+
+    // 6. Central isometric cube
+    final topFace = ui.Path()
+      ..moveTo(64, 30)
+      ..lineTo(92, 46)
+      ..lineTo(64, 62)
+      ..lineTo(36, 46)
+      ..close();
+    final topPaint = ui.Paint()
+      ..color = Color.lerp(accent, Colors.white, 0.3) ?? accent;
+    canvas.drawPath(topFace, topPaint);
+
+    final leftFace = ui.Path()
+      ..moveTo(36, 46)
+      ..lineTo(64, 62)
+      ..lineTo(64, 94)
+      ..lineTo(36, 78)
+      ..close();
+    final leftPaint = ui.Paint()
+      ..color = Color.lerp(accent, Colors.black, 0.25) ?? accent;
+    canvas.drawPath(leftFace, leftPaint);
+
+    final rightFace = ui.Path()
+      ..moveTo(64, 62)
+      ..lineTo(92, 46)
+      ..lineTo(92, 78)
+      ..lineTo(64, 94)
+      ..close();
+    final rightPaint = ui.Paint()
+      ..color = Color.lerp(accent, Colors.black, 0.45) ?? accent;
+    canvas.drawPath(rightFace, rightPaint);
+
+    final blockEdgePaint = ui.Paint()
+      ..color = Colors.black.withValues(alpha: 0.6)
+      ..style = ui.PaintingStyle.stroke
+      ..strokeWidth = 1.8;
+    canvas.drawPath(topFace, blockEdgePaint);
+    canvas.drawPath(leftFace, blockEdgePaint);
+    canvas.drawPath(rightFace, blockEdgePaint);
+
+    // 7. Initials banner
+    final initials = name
+        .split(RegExp(r'\s+'))
+        .where((s) => s.isNotEmpty)
+        .take(2)
+        .map((s) => s[0].toUpperCase())
+        .join();
+
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: initials.isNotEmpty ? initials : 'VV',
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 17,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 1.0,
+          shadows: [
+            Shadow(
+              color: Colors.black,
+              offset: Offset(1.5, 1.5),
+              blurRadius: 3,
+            ),
+          ],
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+    textPainter.paint(
+      canvas,
+      Offset(
+        (size - textPainter.width) / 2,
+        size - textPainter.height - 8,
+      ),
+    );
+
+    final picture = recorder.endRecording();
+    final img = await picture.toImage(128, 128);
+    picture.dispose();
+    final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
+    img.dispose();
+
+    if (byteData != null) {
+      final res = byteData.buffer.asUint8List();
+      _presetIconCache[cacheKey] = res;
+      return res;
+    }
+  } catch (_) {}
+
+  return kPiglixLogoBytes;
+}
+
 /// Dedicated full-screen page for exploring, previewing and applying curated shader presets.
 class ShaderPresetsScreen extends StatefulWidget {
   final Function(ShaderPresetConfig) onSelectPreset;
+  final VoidCallback? onOpenBuilder;
+  final VoidCallback? onOpenGallery;
+  final VoidCallback? onOpenSettings;
 
-  const ShaderPresetsScreen({super.key, required this.onSelectPreset});
+  const ShaderPresetsScreen({
+    super.key,
+    required this.onSelectPreset,
+    this.onOpenBuilder,
+    this.onOpenGallery,
+    this.onOpenSettings,
+  });
 
   @override
   State<ShaderPresetsScreen> createState() => _ShaderPresetsScreenState();
 }
 
 class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String _selectedCategory = 'ALL';
 
   final List<String> _categories = [
     'ALL',
+    'POPULAR',
     'CINEMATIC',
     'ATMOSPHERE',
     'NIGHT & CYBER',
@@ -396,6 +754,15 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
 
   List<ShaderPresetConfig> _filteredPresets() {
     switch (_selectedCategory) {
+      case 'POPULAR':
+        return kDefaultShaderPresets
+            .where(
+              (p) =>
+                  p.rating >= 4.9 ||
+                  p.id == 'ultra_vibrant' ||
+                  p.id == 'vanilla_plus',
+            )
+            .toList();
       case 'CINEMATIC':
         return kDefaultShaderPresets
             .where(
@@ -437,23 +804,12 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
     }
   }
 
-  Color _getPresetAccent(String id) {
-    switch (id) {
-      case 'ultra_vibrant':
-        return const Color(0xFF22C55E);
-      case 'pink_atmosphere':
-        return const Color(0xFFF472B6);
-      case 'cinematic_realism':
-        return const Color(0xFF38BDF8);
-      case 'midnight_cyber':
-        return const Color(0xFFA855F7);
-      case 'golden_hour':
-        return const Color(0xFFF59E0B);
-      case 'vanilla_plus':
-      default:
-        return const Color(0xFF4ADE80);
-    }
-  }
+  Color _getPresetAccent(String id) => presetAccentColor(
+        kDefaultShaderPresets.firstWhere(
+          (p) => p.id == id,
+          orElse: () => kDefaultShaderPresets.first,
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -461,143 +817,142 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
     final presets = _filteredPresets();
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: palette.bg,
+      drawer: VvGlobalDrawer(
+        currentTab: VvNavTab.presets,
+        onOpenEditor: widget.onOpenBuilder,
+        onOpenMyShaders: widget.onOpenGallery,
+        onOpenPresets: () {},
+      ),
       appBar: AppBar(
         backgroundColor: palette.surface,
         elevation: 0,
         centerTitle: false,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.white,
-            size: 20,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
+        automaticallyImplyLeading: false,
+        titleSpacing: 16,
         title: Row(
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 3.5,
+              height: 18,
               decoration: BoxDecoration(
-                color: const Color(0xFF22C55E).withValues(alpha: 0.18),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFF22C55E), width: 1.2),
-              ),
-              child: const Center(
-                child: AnimatedMinecraftIcon(
-                  type: VoxelIconType.enchantedBook,
-                  size: 22,
-                ),
+                color: const Color(0xFF22C55E),
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
             const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'SHADER PRESETS',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.8,
+            const Text(
+              'SHADER PRESETS',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.8,
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                // 1. Category Filter Bar
+                SliverToBoxAdapter(
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      child: Row(
+                        children: _categories.map((cat) {
+                          final isSel = _selectedCategory == cat;
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: GestureDetector(
+                              onTap: () => setState(() => _selectedCategory = cat),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 7,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: isSel
+                                      ? const Color(0xFF22C55E)
+                                      : palette.surface,
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: isSel
+                                        ? const Color(0xFF4ADE80)
+                                        : palette.border,
+                                    width: 1.0,
+                                  ),
+                                  boxShadow: isSel
+                                      ? [
+                                          BoxShadow(
+                                            color: const Color(
+                                              0xFF22C55E,
+                                            ).withValues(alpha: 0.3),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ]
+                                      : null,
+                                ),
+                                child: Text(
+                                  cat,
+                                  style: TextStyle(
+                                    color: isSel
+                                        ? Colors.black
+                                        : palette.textSecondary,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.6,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   ),
                 ),
-                Text(
-                  'Curated Vibrant Visuals looks',
-                  style: TextStyle(
-                    color: palette.textSecondary,
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w600,
+
+                // 2. Presets List
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 6, 16, 32),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final p = presets[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 14),
+                        child: _buildPresetCard(context, p, palette),
+                      );
+                    }, childCount: presets.length),
                   ),
                 ),
               ],
             ),
-          ],
-        ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1.0),
-          child: Container(color: palette.border, height: 1.0),
-        ),
-      ),
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          // 1. Category Filter Bar
-          SliverToBoxAdapter(
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                child: Row(
-                  children: _categories.map((cat) {
-                    final isSel = _selectedCategory == cat;
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: GestureDetector(
-                        onTap: () => setState(() => _selectedCategory = cat),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 7,
-                          ),
-                          decoration: BoxDecoration(
-                            color: isSel
-                                ? const Color(0xFF22C55E)
-                                : palette.cardElevated,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: isSel
-                                  ? const Color(0xFF4ADE80)
-                                  : palette.border,
-                              width: 1.0,
-                            ),
-                            boxShadow: isSel
-                                ? [
-                                    BoxShadow(
-                                      color: const Color(
-                                        0xFF22C55E,
-                                      ).withValues(alpha: 0.3),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ]
-                                : null,
-                          ),
-                          child: Text(
-                            cat,
-                            style: TextStyle(
-                              color: isSel
-                                  ? Colors.black
-                                  : palette.textSecondary,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.6,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
           ),
 
-          // 2. Presets List
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 6, 16, 32),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                final p = presets[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 14),
-                  child: _buildPresetCard(context, p, palette),
-                );
-              }, childCount: presets.length),
-            ),
+          // Shared Bottom Navigation Bar (Consistent with Home & Gallery)
+          VvGlobalBottomNav(
+            currentTab: VvNavTab.presets,
+            onOpenHome: () => Navigator.popUntil(context, (r) => r.isFirst),
+            onOpenBuilder: () => widget.onOpenBuilder?.call(),
+            onOpenGallery: () => widget.onOpenGallery?.call(),
+            onOpenPresets: () {},
+            onOpenSettings: () {
+              if (widget.onOpenSettings != null) {
+                widget.onOpenSettings!();
+              } else {
+                _scaffoldKey.currentState?.openDrawer();
+              }
+            },
           ),
         ],
       ),
@@ -617,7 +972,7 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
       borderRadius: BorderRadius.circular(16),
       child: Container(
         decoration: BoxDecoration(
-          color: palette.cardElevated,
+          color: palette.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: palette.border, width: 1.2),
           boxShadow: [
@@ -746,7 +1101,7 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
                             height: 1.25,
                             fontWeight: FontWeight.w500,
                           ),
-                          maxLines: 2,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 8),

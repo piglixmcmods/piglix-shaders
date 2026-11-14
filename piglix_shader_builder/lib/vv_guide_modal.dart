@@ -297,17 +297,16 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                   'MINECRAFT SHADER GUIDE',
                   style: TextStyle(
                     color: Colors.white,
-                    fontFamily: 'PixelifySans',
-                    fontSize: 13.5,
+                    fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    letterSpacing: 0.6,
+                    letterSpacing: 0.3,
                   ),
                 ),
                 Text(
                   'Bedrock Vibrant Visuals Setup',
                   style: TextStyle(
                     color: _kGoldPrimary,
-                    fontSize: 10.5,
+                    fontSize: 11,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -349,8 +348,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                   'Quick Tip: ${widget.parameterTitle!}',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontFamily: 'PixelifySans',
-                    fontSize: 11.5,
+                    fontSize: 12,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -360,7 +358,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                     widget.parameterTooltip!,
                     style: const TextStyle(
                       color: Color(0xFFD4D4D8),
-                      fontSize: 11,
+                      fontSize: 11.5,
                       height: 1.3,
                     ),
                   ),
@@ -420,10 +418,9 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                       Text(
                         '${i + 1}. ${_kGuideSteps[i].tabLabel}',
                         style: TextStyle(
-                          fontFamily: 'PixelifySans',
-                          fontSize: isCompact ? 10 : 11,
+                          fontSize: isCompact ? 10.5 : 11.5,
                           fontWeight: FontWeight.w700,
-                          letterSpacing: 0.4,
+                          letterSpacing: 0.2,
                           color: _currentStep == i ? Colors.black : Colors.white70,
                         ),
                       ),
@@ -457,8 +454,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                 child: Text(
                   'STEP ${step.num}',
                   style: const TextStyle(
-                    fontFamily: 'PixelifySans',
-                    fontSize: 10,
+                    fontSize: 10.5,
                     fontWeight: FontWeight.w800,
                     color: Colors.black,
                   ),
@@ -470,7 +466,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                   step.title,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 13,
+                    fontSize: 13.5,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -498,8 +494,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                     step.pathTag,
                     style: const TextStyle(
                       color: _kGoldPrimary,
-                      fontSize: 10.5,
-                      fontFamily: 'PixelifySans',
+                      fontSize: 11,
                       fontWeight: FontWeight.w600,
                     ),
                     maxLines: 1,
@@ -638,11 +633,10 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                   Text(
                     hasAsset ? 'OFFICIAL SCREENSHOT' : 'SCREENSHOT PLACEHOLDER',
                     style: TextStyle(
-                      fontFamily: 'PixelifySans',
-                      fontSize: 8.5,
+                      fontSize: 9,
                       fontWeight: FontWeight.w700,
                       color: hasAsset ? const Color(0xFF4ADE80) : accent,
-                      letterSpacing: 0.4,
+                      letterSpacing: 0.3,
                     ),
                   ),
                 ],
@@ -680,19 +674,16 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
             'Official Screenshot Placeholder',
             style: TextStyle(
               color: Colors.white,
-              fontFamily: 'PixelifySans',
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: FontWeight.w700,
-              letterSpacing: 0.4,
             ),
           ),
           const SizedBox(height: 3),
           Text(
             'Drop image into: public/$fileName or assets/$fileName',
             style: const TextStyle(
-              color: Colors.white38,
-              fontFamily: 'monospace',
-              fontSize: 9.5,
+              color: Colors.white54,
+              fontSize: 10,
             ),
             textAlign: TextAlign.center,
           ),
@@ -733,8 +724,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                     Text(
                       'PREV',
                       style: TextStyle(
-                        fontFamily: 'PixelifySans',
-                        fontSize: 11,
+                        fontSize: 11.5,
                         fontWeight: FontWeight.w700,
                         color: Colors.white70,
                       ),
@@ -796,11 +786,10 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                   Text(
                     isLast ? 'READY TO PLAY ✓' : 'NEXT STEP >',
                     style: const TextStyle(
-                      fontFamily: 'PixelifySans',
-                      fontSize: 11.5,
+                      fontSize: 12,
                       fontWeight: FontWeight.w800,
                       color: Colors.black,
-                      letterSpacing: 0.5,
+                      letterSpacing: 0.3,
                     ),
                   ),
                 ],

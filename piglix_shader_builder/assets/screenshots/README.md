@@ -9,3 +9,4 @@ Drop your official Minecraft screenshots here to display them directly inside th
 - `step5_play.png`: Minecraft Video Settings with "Vibrant Visuals", Bloom ON, Brightness 50%, and in-game visuals.
 
 If any file is absent, an elegant Minecraft-themed screenshot placeholder is displayed automatically.
+

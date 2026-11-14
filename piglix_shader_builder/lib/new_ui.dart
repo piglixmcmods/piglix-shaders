@@ -763,7 +763,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
     );
   }
 
-  // 3. CTA Button: START GENERATING with Centered Minecraft Mojang Font & Pixelated Border
+  // 3. CTA Button: START GENERATING with Centered Simple Font & Pixelated Border
   Widget _buildStartBuildingButton() {
     const s = 4.0;
     return SizedBox(
@@ -801,21 +801,15 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                   'START GENERATING',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontFamily: 'PixelifySans',
                     color: Colors.white,
-                    fontSize: 18.5,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1.2,
+                    fontSize: 16.5,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.8,
                     shadows: [
                       Shadow(
-                        color: Colors.black87,
+                        color: Colors.black54,
                         blurRadius: 4,
-                        offset: Offset(0, 2),
-                      ),
-                      Shadow(
-                        color: Color(0xFF0F5132),
-                        blurRadius: 2,
-                        offset: Offset(1, 1),
+                        offset: Offset(0, 1.5),
                       ),
                     ],
                   ),

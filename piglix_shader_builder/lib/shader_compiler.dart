@@ -889,6 +889,7 @@ class ShaderPackCompiler {
           '0.750000': sunIllumScale * 0.17 * cfg.morningRayIntensity,
           '0.770000': sunIllumScale * 0.67 * cfg.morningRayIntensity,
           '0.827000': sunIllumScale * 1.18,
+          '1.000000': sunIllumScale,
         },
         'color': {
           '0.000000': noonSunRgb,
@@ -904,6 +905,7 @@ class ShaderPackCompiler {
           '0.770000': _rgb(cfg.rayMorningColor),
           '0.790000': _rgb(cfg.rayMorningColor),
           '0.800000': noonSunRgb,
+          '1.000000': noonSunRgb,
         },
       };
 
@@ -912,12 +914,13 @@ class ShaderPackCompiler {
           '0.000000': moonIllumScale,
           '0.730000': moonIllumScale,
           '0.740000': 0.0,
-          '1.000000': moonIllumScale * 0.5,
+          '1.000000': moonIllumScale,
         },
         'color': {
           '0.000000': _rgb(cfg.rayNightColor),
           '0.300000': _rgb(cfg.rayNightColor),
           '0.500000': _rgb(cfg.rayNightColor),
+          '1.000000': _rgb(cfg.rayNightColor),
         },
       };
 
@@ -926,6 +929,7 @@ class ShaderPackCompiler {
         '0.215000': tiltLow,
         '0.500000': cfg.sunOrbitTilt,
         '0.827000': tiltLow,
+        '1.000000': cfg.sunOrbitTilt,
       };
 
       dl['flash'] = {
@@ -1008,6 +1012,7 @@ class ShaderPackCompiler {
         '0.740000': _rgb(cfg.morningColor),
         '0.770000': _rgb(cfg.morningColor),
         '0.827000': _rgb(cfg.noonColor),
+        '1.000000': _rgb(cfg.noonColor),
       };
 
       aSettings['sky_horizon_color'] = {
@@ -1021,6 +1026,7 @@ class ShaderPackCompiler {
         '0.740000': _rgb(morningHorizon),
         '0.770000': _rgb(morningHorizon),
         '0.827000': _rgb(noonHorizon),
+        '1.000000': _rgb(noonHorizon),
       };
 
       aSettings['sun_glare_shape'] = {
@@ -1032,6 +1038,7 @@ class ShaderPackCompiler {
         '0.740000': (0.07 * cfg.sunSizeMorning).clamp(0.01, 2.0),
         '0.790000': (0.07 * cfg.sunSizeMorning).clamp(0.01, 2.0),
         '0.800000': (4.15 * cfg.sunSize).clamp(0.4, 18.0),
+        '1.000000': (5.0 * cfg.sunSize).clamp(0.5, 20.0),
       };
 
       aSettings['moon_glare_shape'] = {
@@ -1041,6 +1048,7 @@ class ShaderPackCompiler {
         '0.500000': (2.4 * cfg.moonSize).clamp(0.2, 12.0),
         '0.690000': (1.8 * cfg.moonSize).clamp(0.1, 10.0),
         '0.730000': 0.0,
+        '1.000000': 0.0,
       };
 
       aSettings['rayleigh_strength'] = {
@@ -1051,6 +1059,7 @@ class ShaderPackCompiler {
         '0.740000': (0.8 * cfg.morningFogDensity).clamp(0.1, 3.0),
         '0.770000': (0.8 * cfg.morningFogDensity).clamp(0.1, 3.0),
         '0.800000': (2.86 * cfg.fogDensity).clamp(0.5, 8.0),
+        '1.000000': (2.2 * cfg.fogDensity).clamp(0.4, 6.0),
       };
 
       aSettings['sun_mie_strength'] = {

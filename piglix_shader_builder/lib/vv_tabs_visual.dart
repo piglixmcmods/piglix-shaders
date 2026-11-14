@@ -628,7 +628,8 @@ class _VVLightShadowsTabState extends State<VVLightShadowsTab> {
               ),
               _lightSlider(
                 label: 'Shadow Darkness',
-                tooltip: 'sky.intensity 0.1–1.0 (lower = darker shadows)',
+                tooltip:
+                    'sky.intensity 0.1–1.0 (default 1.0; 0.7 darker option). Dims indirect light and reflections.',
                 value: l.skyIntensity,
                 min: 0.1,
                 max: 1.0,
@@ -651,10 +652,11 @@ class _VVLightShadowsTabState extends State<VVLightShadowsTab> {
               ),
               _lightSlider(
                 label: 'Orbital Tilt Angle',
-                tooltip: 'directional_lights.orbital.orbital_offset_degrees (0–359.98°)',
+                tooltip:
+                    'directional_lights.orbital.orbital_offset_degrees (-90°..90°, default 3.0°). Experimental.',
                 value: l.orbitalOffsetDegrees,
-                min: 0.0,
-                max: 359.98,
+                min: -90.0,
+                max: 90.0,
                 unit: '°',
                 decimals: 1,
                 isPackWide: true,
@@ -701,7 +703,7 @@ class _VVLightShadowsTabState extends State<VVLightShadowsTab> {
                 ),
               ),
               child: Text(
-                '$pointCount / 31 point-light blocks active',
+                '$pointCount / ${LightingConfig.totalPointLightBlocks} point-light blocks active',
                 style: TextStyle(
                   color: pointCount > 20 ? const Color(0xFFFBBF24) : kVVPrimary,
                   fontSize: 10.5,
@@ -723,6 +725,7 @@ class _VVLightShadowsTabState extends State<VVLightShadowsTab> {
                 sceneType: VVSceneBoxType.torch,
                 blockCount: LightingConfig.torchBlocks.length,
                 group: l.torches,
+                isExperimental: true,
                 isSelected: _selectedLightGroup == 0,
                 onSelect: () => setState(() => _selectedLightGroup = 0),
                 onChanged: (g) {
@@ -860,7 +863,9 @@ class _VVLightShadowsTabState extends State<VVLightShadowsTab> {
             ),
             _lightSlider(
               label: 'Blocky Shadow Pixels',
-              tooltip: 'shadows/global.json texel_size (1–1024)',
+              tooltip: l.shadowStyle == 'soft_shadows'
+                  ? 'texel_size (disabled when soft shadows active)'
+                  : 'shadows/global.json texel_size (1–1024)',
               value: l.shadowTexelSize.toDouble(),
               min: 1.0,
               max: 1024.0,
@@ -872,8 +877,8 @@ class _VVLightShadowsTabState extends State<VVLightShadowsTab> {
               ),
             ),
             _lightSlider(
-              label: 'Lightning Flash Brightness',
-              tooltip: 'directional_lights.flash.illuminance (0–20,000 lux)',
+              label: 'End Flash Brightness',
+              tooltip: 'directional_lights.flash.illuminance (The End dimension flash only, 0–20,000 lux)',
               value: l.flashIlluminance,
               min: 0.0,
               max: 20000.0,
@@ -882,8 +887,8 @@ class _VVLightShadowsTabState extends State<VVLightShadowsTab> {
               apply: (v) => l.copyWith(flashIlluminance: v),
             ),
             VVColorRow(
-              label: 'Lightning Flash Color',
-              tooltip: 'directional_lights.flash.color',
+              label: 'End Flash Color',
+              tooltip: 'directional_lights.flash.color (The End dimension flash only)',
               color: l.flashColor,
               onChanged: (c) =>
                   _updateLighting(l.copyWith(flashColor: c), recordUndo: true),
@@ -903,6 +908,7 @@ class _BlockLightGroupRow extends StatelessWidget {
   final Color? displayColorOverride;
   final String? noteBadge;
   final bool isSelected;
+  final bool isExperimental;
   final VoidCallback onSelect;
   final ValueChanged<BlockLightGroup> onChanged;
 
@@ -913,6 +919,7 @@ class _BlockLightGroupRow extends StatelessWidget {
     required this.group,
     this.displayColorOverride,
     this.noteBadge,
+    this.isExperimental = false,
     required this.isSelected,
     required this.onSelect,
     required this.onChanged,
@@ -1007,6 +1014,25 @@ class _BlockLightGroupRow extends StatelessWidget {
                               noteBadge!,
                               style: const TextStyle(
                                 color: kVVPrimary,
+                                fontSize: 9,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
+                        if (isExperimental) ...[
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                            decoration: BoxDecoration(
+                              color: kVVSurface,
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(color: const Color(0xFFF59E0B)),
+                            ),
+                            child: const Text(
+                              'EXP',
+                              style: TextStyle(
+                                color: Color(0xFFF59E0B),
                                 fontSize: 9,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -1308,6 +1334,7 @@ class _VVFogAirTabState extends State<VVFogAirTab> {
               label: 'Air Scatter Tint',
               tooltip: 'volumetric.media_coefficients.air.scattering',
               color: f.hazeScatteringColor,
+              isExperimental: true,
               onChanged: (c) => _updateFog(
                 f.copyWith(hazeScatteringColor: c),
                 recordUndo: true,
@@ -1519,6 +1546,16 @@ class _VVWaterTabState extends State<VVWaterTab> {
         VVSectionCard(
           title: '$presetName Water Tuning',
           children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Text(
+                'Surface tint and opacity are controlled per-biome in the Biomes tab (minecraft:water_appearance).',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.white.withValues(alpha: 0.55),
+                ),
+              ),
+            ),
             _presetSlider(
               label: 'Water Clarity',
               tooltip: '0.0 murky to 1.0 crystal clear',
@@ -1616,8 +1653,9 @@ class _VVWaterTabState extends State<VVWaterTab> {
             ),
             _vvSubgroupLabel('$presetName Water Absorption'),
             _presetSlider(
-              label: 'CDOM (Murkiness)',
-              tooltip: 'particle_concentrations.cdom (0.0–15.0)',
+              label: 'Water Tint (yellow-brown)',
+              tooltip:
+                  'particle_concentrations.cdom (yellow-brown dissolved organic matter, 0.0–15.0)',
               value: preset.cdom,
               min: 0.0,
               max: 15.0,

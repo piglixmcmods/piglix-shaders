@@ -753,6 +753,8 @@ class _VVBiomesTabState extends State<VVBiomesTab> {
           waterOpacity: effectiveWaterOpacity,
           precipitationType: effectivePrecip,
           precipitationDensity: effectivePrecipDensity,
+          flashIlluminance: widget.config.lighting.flashIlluminance,
+          flashColor: widget.config.lighting.flashColor,
         ),
         const SizedBox(height: 12),
 
@@ -820,24 +822,7 @@ class _VVBiomesTabState extends State<VVBiomesTab> {
               onClear: () =>
                   _applyLayerOverride(_clearBiomeField(ov, _BiomeField.waterPreset)),
             ),
-            _BiomeOverrideCard(
-              isOverridden: ov.skyColor != null,
-              accent: _accent,
-              onClear: () =>
-                  _applyLayerOverride(_clearBiomeField(ov, _BiomeField.skyColor)),
-              child: VVColorRow(
-                label: 'Sky Color',
-                tooltip: 'minecraft:sky_color.sky_color',
-                color: effectiveSky,
-                accent: _accent,
-                trailingBadge: _OverrideStatusPill(
-                  isOverridden: ov.skyColor != null,
-                  accent: _accent,
-                ),
-                onChanged: (c) =>
-                    _applyLayerOverride(ov.copyWith(skyColor: c)),
-              ),
-            ),
+
             _BiomeOverrideCard(
               isOverridden: ov.waterSurfaceColor != null,
               accent: _accent,
@@ -1544,22 +1529,50 @@ class VVPerformanceTab extends StatelessWidget {
         VVSectionCard(
           title: 'Live Performance Score',
           accent: scoreColor,
-          badge: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: scoreColor.withValues(alpha: 0.16),
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: scoreColor.withValues(alpha: 0.5)),
-            ),
-            child: Text(
-              score.scoreLabel.toUpperCase(),
-              style: TextStyle(
-                color: scoreColor,
-                fontSize: 10.5,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.4,
+          badge: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Tooltip(
+                message: score.breakdown.tooltipText,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E2024),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.white24),
+                ),
+                textStyle: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 11.5,
+                  height: 1.4,
+                  fontFamily: 'monospace',
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 6),
+                  child: Icon(
+                    Icons.help_outline_rounded,
+                    size: 16,
+                    color: Colors.white60,
+                  ),
+                ),
               ),
-            ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: scoreColor.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: scoreColor.withValues(alpha: 0.5)),
+                ),
+                child: Text(
+                  score.scoreLabel.toUpperCase(),
+                  style: TextStyle(
+                    color: scoreColor,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.4,
+                  ),
+                ),
+              ),
+            ],
           ),
           children: [
             Row(
@@ -1575,7 +1588,7 @@ class VVPerformanceTab extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  'Point Lights: ${score.pointLightsCount} / 31',
+                  'Point Lights: ${score.pointLightsCount} / ${LightingConfig.totalPointLightBlocks}',
                   style: const TextStyle(
                     color: Colors.white70,
                     fontFamily: 'monospace',
@@ -1786,11 +1799,38 @@ class VVPerformanceTab extends StatelessWidget {
             VVSwitchRow(
               label: 'Include Style Intensity: Lite subpack',
               tooltip:
-                  'Adds subpacks/lite blending saturation, contrast, and volumetric fog 40% toward neutral.',
+                  'Adds subpacks/lite blending saturation, contrast, and volumetric fog 40% toward neutral. (Style choice, not hardware tier).',
               value: perf.styleIntensityLite,
               accent: _accent,
               onChanged: (v) =>
                   _updatePerf(perf.copyWith(styleIntensityLite: v)),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: _accent.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: _accent.withValues(alpha: 0.35)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.info_outline_rounded, size: 18, color: _accent),
+                  const SizedBox(width: 9),
+                  const Expanded(
+                    child: Text(
+                      'Minecraft auto-selects the subpack based on available device RAM. You can override it with the gear icon in Global Resources.',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        height: 1.35,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -2030,8 +2070,6 @@ class _VVExportTabState extends State<VVExportTab> {
     final report = widget.validationReport;
     final bytes = widget.generatedPackBytes;
 
-    final int tierCount = cfg.performance.exportAllTiers ? 4 : 1;
-
     return ListView(
       padding: const EdgeInsets.all(14),
       children: [
@@ -2040,7 +2078,6 @@ class _VVExportTabState extends State<VVExportTab> {
           packName: cfg.packName,
           version: cfg.packVersion,
           isValid: report.isValid,
-          tierCount: tierCount,
           fileSizeInBytes: bytes?.length,
         ),
         const SizedBox(height: 12),
@@ -2210,19 +2247,6 @@ class _VVExportTabState extends State<VVExportTab> {
               onChanged: (v) =>
                   widget.onConfigChanged(cfg.copyWith(packDescription: v)),
             ),
-            const SizedBox(height: 12),
-            VVSwitchRow(
-              label: 'All In-Game Quality Modes (Low to Ultra)',
-              tooltip:
-                  'Adds an in-game slider to choose Low, Medium, High, or Ultra graphics inside Minecraft settings.',
-              value: cfg.performance.exportAllTiers,
-              accent: _accent,
-              onChanged: (v) => widget.onConfigChanged(
-                cfg.copyWith(
-                  performance: cfg.performance.copyWith(exportAllTiers: v),
-                ),
-              ),
-            ),
           ],
         ),
         const SizedBox(height: 12),
@@ -2367,7 +2391,111 @@ class _VVExportTabState extends State<VVExportTab> {
               ),
           ],
         ),
+        const SizedBox(height: 12),
+
+        // 3. Activation in Minecraft Card
+        VVSectionCard(
+          title: 'How to Activate in Minecraft',
+          accent: _accent,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: kVVSurface,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: kVVBorder),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _activationStep(
+                    number: '1',
+                    title: 'Enable Vibrant Visuals Mode',
+                    body:
+                        'Go to Settings > Video > Graphics Mode > Vibrant Visuals. Note: It is greyed out if any active pack does not support VV.',
+                  ),
+                  const SizedBox(height: 10),
+                  _activationStep(
+                    number: '2',
+                    title: 'Top of Global Resources',
+                    body:
+                        'Put this pack at the top of your Global Resources list so its Vibrant Visuals configurations take precedence.',
+                  ),
+                  const SizedBox(height: 10),
+                  _activationStep(
+                    number: '3',
+                    title: 'Low-End Devices',
+                    body:
+                        'On lower-end or mobile devices, select "Favor Performance" in Video settings or choose Low/Medium quality mode.',
+                  ),
+                  const SizedBox(height: 10),
+                  _activationStep(
+                    number: '4',
+                    title: 'Subpack RAM Auto-Selection',
+                    body:
+                        'Minecraft auto-selects the subpack based on available device RAM. You can override it with the gear icon in Global Resources.',
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
         const SizedBox(height: 24),
+      ],
+    );
+  }
+
+  Widget _activationStep({
+    required String number,
+    required String title,
+    required String body,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 22,
+          height: 22,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: _accent.withValues(alpha: 0.2),
+            shape: BoxShape.circle,
+            border: Border.all(color: _accent.withValues(alpha: 0.6)),
+          ),
+          child: Text(
+            number,
+            style: TextStyle(
+              color: _accent,
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                body,
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 11,
+                  height: 1.35,
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

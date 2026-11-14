@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' show Color;
 import 'performance_tiers.dart';
 import 'vv_biomes.dart';
 import 'vv_config.dart';
+import 'vv_vanilla_biomes_templates.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Private Color & Formatting Utilities
@@ -16,11 +17,6 @@ int _b(Color c) => c.toARGB32() & 0xFF;
 
 List<int> _rgb(Color c) => <int>[_r(c), _g(c), _b(c)];
 
-List<double> _rgbFloat(Color c) => <double>[
-      _round4(_r(c) / 255.0),
-      _round4(_g(c) / 255.0),
-      _round4(_b(c) / 255.0),
-    ];
 
 String _hex(Color c) =>
     '#${(c.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0').toUpperCase()}';
@@ -65,99 +61,99 @@ void _putJson(Map<String, ArchiveFile> fileMap, String key, Object data) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const List<String> _kAtmosphereKeyframes = [
-  '0.000000',
-  '0.160000',
-  '0.215000',
-  '0.225000',
-  '0.235000',
-  '0.250000',
-  '0.295000',
-  '0.300000',
-  '0.350000',
-  '0.400000',
-  '0.500000',
-  '0.640000',
-  '0.680000',
-  '0.694000',
-  '0.740000',
-  '0.750000',
-  '0.770000',
-  '0.790000',
-  '0.800000',
-  '0.827000',
-  '1.000000',
+  '0.0',
+  '0.16',
+  '0.215',
+  '0.225',
+  '0.235',
+  '0.25',
+  '0.295',
+  '0.3',
+  '0.35',
+  '0.4',
+  '0.5',
+  '0.64',
+  '0.68',
+  '0.694',
+  '0.74',
+  '0.75',
+  '0.77',
+  '0.79',
+  '0.8',
+  '0.827',
+  '1.0',
 ];
 
 const Map<String, double> _kStarterHorizonMin = {
-  '0.000000': 0.484,
-  '0.160000': 0.360,
-  '0.215000': 0.0,
-  '0.225000': 0.0,
-  '0.235000': 0.0,
-  '0.250000': 0.0,
-  '0.295000': 0.0,
-  '0.300000': 0.0,
-  '0.350000': 0.220,
-  '0.400000': 0.434,
-  '0.500000': 0.350,
-  '0.640000': 0.270,
-  '0.680000': 0.050,
-  '0.694000': 0.025,
-  '0.740000': 0.0,
-  '0.750000': 0.0,
-  '0.770000': 0.0,
-  '0.790000': 0.120,
-  '0.800000': 0.250,
-  '0.827000': 0.380,
-  '1.000000': 0.484,
+  '0.0': 0.484,
+  '0.16': 0.360,
+  '0.215': 0.0,
+  '0.225': 0.0,
+  '0.235': 0.0,
+  '0.25': 0.0,
+  '0.295': 0.0,
+  '0.3': 0.0,
+  '0.35': 0.220,
+  '0.4': 0.434,
+  '0.5': 0.350,
+  '0.64': 0.270,
+  '0.68': 0.050,
+  '0.694': 0.025,
+  '0.74': 0.0,
+  '0.75': 0.0,
+  '0.77': 0.0,
+  '0.79': 0.120,
+  '0.8': 0.250,
+  '0.827': 0.380,
+  '1.0': 0.484,
 };
 
 const Map<String, double> _kStarterHorizonMieStart = {
-  '0.000000': 0.210,
-  '0.160000': 0.120,
-  '0.215000': 1.000,
-  '0.225000': 1.000,
-  '0.235000': 1.000,
-  '0.250000': 1.000,
-  '0.295000': 1.000,
-  '0.300000': 1.000,
-  '0.350000': 0.700,
-  '0.400000': 0.400,
-  '0.500000': 0.100,
-  '0.640000': 0.500,
-  '0.680000': 0.750,
-  '0.694000': 0.850,
-  '0.740000': 1.000,
-  '0.750000': 1.000,
-  '0.770000': 1.000,
-  '0.790000': 1.000,
-  '0.800000': 0.016,
-  '0.827000': 0.140,
-  '1.000000': 0.210,
+  '0.0': 0.210,
+  '0.16': 0.120,
+  '0.215': 1.000,
+  '0.225': 1.000,
+  '0.235': 1.000,
+  '0.25': 1.000,
+  '0.295': 1.000,
+  '0.3': 1.000,
+  '0.35': 0.700,
+  '0.4': 0.400,
+  '0.5': 0.100,
+  '0.64': 0.500,
+  '0.68': 0.750,
+  '0.694': 0.850,
+  '0.74': 1.000,
+  '0.75': 1.000,
+  '0.77': 1.000,
+  '0.79': 1.000,
+  '0.8': 0.016,
+  '0.827': 0.140,
+  '1.0': 0.210,
 };
 
 const Map<String, double> _kStarterHorizonMax = {
-  '0.000000': 0.484,
-  '0.160000': 0.320,
-  '0.215000': 0.050,
-  '0.225000': 0.050,
-  '0.235000': 0.050,
-  '0.250000': 0.050,
-  '0.295000': 0.042,
-  '0.300000': 0.040,
-  '0.350000': 0.350,
-  '0.400000': 0.669,
-  '0.500000': 0.693,
-  '0.640000': 0.450,
-  '0.680000': 0.200,
-  '0.694000': 0.150,
-  '0.740000': 0.050,
-  '0.750000': 0.050,
-  '0.770000': 0.050,
-  '0.790000': 0.050,
-  '0.800000': 0.410,
-  '0.827000': 0.460,
-  '1.000000': 0.484,
+  '0.0': 0.484,
+  '0.16': 0.320,
+  '0.215': 0.050,
+  '0.225': 0.050,
+  '0.235': 0.050,
+  '0.25': 0.050,
+  '0.295': 0.042,
+  '0.3': 0.040,
+  '0.35': 0.350,
+  '0.4': 0.669,
+  '0.5': 0.693,
+  '0.64': 0.450,
+  '0.68': 0.200,
+  '0.694': 0.150,
+  '0.74': 0.050,
+  '0.75': 0.050,
+  '0.77': 0.050,
+  '0.79': 0.050,
+  '0.8': 0.410,
+  '0.827': 0.460,
+  '1.0': 0.484,
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -287,42 +283,41 @@ Map<String, dynamic> generateAtmospherics(
     }
     rayleigh[kf] = _round4(_clamp(rVal, 0.0, 11.0));
 
-    // sun_mie_strength clamped 0.0..60.0
+    // sun_mie_strength clamped 0.0..60.0 across all four phases
     final double smVal;
     if (t <= 0.16) {
       smVal = a.sunGlowNoon;
-    } else if (t < 0.215) {
+    } else if (t < 0.25) {
       smVal = a.sunGlowNoon +
-          (a.sunGlowSunset * 0.75 - a.sunGlowNoon) * ((t - 0.16) / 0.055);
-    } else if (t <= 0.225) {
-      smVal = a.sunGlowSunset * 0.75;
+          (a.sunGlowSunset - a.sunGlowNoon) * ((t - 0.16) / 0.09);
     } else if (t <= 0.25) {
-      smVal = a.sunGlowSunset * 0.35;
-    } else if (t <= 0.295) {
-      smVal = a.sunGlowSunset * 1.15;
-    } else if (t <= 0.35) {
-      smVal = a.sunGlowSunset * 0.25 * (1.0 - (t - 0.295) / 0.055);
-    } else if (t < 0.74) {
+      smVal = a.sunGlowSunset;
+    } else if (t < 0.35) {
+      smVal = a.sunGlowSunset * (1.0 - (t - 0.25) / 0.10);
+    } else if (t < 0.68) {
       smVal = 0.0;
-    } else if (t <= 0.79) {
-      smVal = a.sunGlowSunrise * 0.25;
-    } else if (t <= 0.827) {
-      smVal = a.sunGlowSunrise * 0.55;
+    } else if (t < 0.75) {
+      smVal = a.sunGlowSunrise * ((t - 0.68) / 0.07);
+    } else if (t <= 0.75) {
+      smVal = a.sunGlowSunrise;
+    } else if (t < 0.827) {
+      smVal = a.sunGlowSunrise +
+          (a.sunGlowNoon - a.sunGlowSunrise) * ((t - 0.75) / 0.077);
     } else {
       smVal = a.sunGlowNoon;
     }
     sunMie[kf] = _round4(_clamp(smVal, 0.0, 60.0));
 
-    // moon_mie_strength clamped 0.0..20.0
+    // moon_mie_strength clamped 0.0..20.0 across all four phases
     final double mmVal;
     if (t < 0.25) {
       mmVal = 0.0;
-    } else if (t == 0.25) {
-      mmVal = a.moonGlow * 0.4;
+    } else if (t < 0.35) {
+      mmVal = a.moonGlow * ((t - 0.25) / 0.10);
     } else if (t <= 0.64) {
       mmVal = a.moonGlow;
-    } else if (t < 0.74) {
-      mmVal = a.moonGlow * (1.0 - (t - 0.64) / 0.10);
+    } else if (t < 0.75) {
+      mmVal = a.moonGlow * (1.0 - (t - 0.64) / 0.11);
     } else {
       mmVal = 0.0;
     }
@@ -491,17 +486,17 @@ Map<String, dynamic> generateDimensionAtmosphere(
     'format_version': '1.21.40',
     'minecraft:atmosphere_settings': {
       'description': {'identifier': cfg.namespacedId(presetKey)},
-      'sky_zenith_color': {'0.000000': zenith, '1.000000': zenith},
-      'sky_horizon_color': {'0.000000': horizon, '1.000000': horizon},
-      'rayleigh_strength': {'0.000000': rayleigh, '1.000000': rayleigh},
-      'sun_mie_strength': {'0.000000': sunMie, '1.000000': sunMie},
-      'moon_mie_strength': {'0.000000': 0.0, '1.000000': 0.0},
-      'sun_glare_shape': {'0.000000': sunGlare, '1.000000': sunGlare},
+      'sky_zenith_color': {'0.0': zenith, '1.0': zenith},
+      'sky_horizon_color': {'0.0': horizon, '1.0': horizon},
+      'rayleigh_strength': {'0.0': rayleigh, '1.0': rayleigh},
+      'sun_mie_strength': {'0.0': sunMie, '1.0': sunMie},
+      'moon_mie_strength': {'0.0': 0.0, '1.0': 0.0},
+      'sun_glare_shape': {'0.0': sunGlare, '1.0': sunGlare},
       'horizon_blend_stops': {
-        'min': {'0.000000': minStop},
-        'start': {'0.000000': startStop},
-        'mie_start': {'0.000000': mieStop},
-        'max': {'0.000000': maxStop},
+        'min': {'0.0': minStop, '1.0': minStop},
+        'start': {'0.0': startStop, '1.0': startStop},
+        'mie_start': {'0.0': mieStop, '1.0': mieStop},
+        'max': {'0.0': maxStop, '1.0': maxStop},
       },
     },
   };
@@ -517,17 +512,23 @@ Map<String, dynamic> generateLighting(
 
   final sunIlluminance = <String, double>{};
   for (final entry in LightingConfig.mojangSunLuxCurve.entries) {
-    sunIlluminance[entry.key] =
-        _round4(_clamp(entry.value * mult, 0.01, 200000.0));
+    if (entry.value == 0.0) {
+      sunIlluminance[entry.key] = 0.0;
+    } else {
+      sunIlluminance[entry.key] =
+          _round4(_clamp(entry.value * mult, 0.01, 200000.0));
+    }
   }
 
   final noonRgb = _rgb(l.sunColorNoon);
   final sunsetRgb = _rgb(l.sunColorSunset);
   final sunriseRgb = _rgb(l.sunColorSunrise);
   final nightRgb = _rgb(l.nightMoonColor);
+  final formatVersion =
+      cfg.exportTarget == VVExportTarget.modern ? '1.26.0' : '1.21.80';
 
   return {
-    'format_version': '1.21.80',
+    'format_version': formatVersion,
     'minecraft:lighting_settings': {
       'description': {'identifier': cfg.namespacedId(identifier)},
       'directional_lights': {
@@ -535,17 +536,17 @@ Map<String, dynamic> generateLighting(
           'sun': {
             'illuminance': sunIlluminance,
             'color': {
-              '0.000000': noonRgb,
-              '0.160000': noonRgb,
-              '0.215000': sunsetRgb,
-              '0.250000': sunsetRgb,
-              '0.350000': nightRgb,
-              '0.500000': nightRgb,
-              '0.650000': nightRgb,
-              '0.740000': sunriseRgb,
-              '0.770000': sunriseRgb,
-              '0.827000': noonRgb,
-              '1.000000': noonRgb,
+              '0.0': noonRgb,
+              '0.16': noonRgb,
+              '0.215': sunsetRgb,
+              '0.25': sunsetRgb,
+              '0.35': nightRgb,
+              '0.5': nightRgb,
+              '0.65': nightRgb,
+              '0.74': sunriseRgb,
+              '0.77': sunriseRgb,
+              '0.827': noonRgb,
+              '1.0': noonRgb,
             },
           },
           'moon': {
@@ -553,7 +554,7 @@ Map<String, dynamic> generateLighting(
             'color': _rgb(l.moonColor),
           },
           'orbital_offset_degrees':
-              _round4(_clamp(l.orbitalOffsetDegrees, 0.0, 359.98)),
+              _round4(_clamp(l.orbitalOffsetDegrees, -90.0, 90.0)),
         },
         'flash': {
           'illuminance': _round4(_clamp(l.flashIlluminance, 0.0, 20000.0)),
@@ -654,15 +655,18 @@ Map<String, dynamic> generateDimensionLighting(
       break;
   }
 
+  final formatVersion =
+      cfg.exportTarget == VVExportTarget.modern ? '1.26.0' : '1.21.80';
+
   return {
-    'format_version': '1.21.80',
+    'format_version': formatVersion,
     'minecraft:lighting_settings': {
       'description': {'identifier': cfg.namespacedId(presetKey)},
       'directional_lights': {
         'orbital': {
           'sun': {
-            'illuminance': {'0.000000': sunLux, '1.000000': sunLux},
-            'color': {'0.000000': sunColor, '1.000000': sunColor},
+            'illuminance': {'0.0': sunLux, '1.0': sunLux},
+            'color': {'0.0': sunColor, '1.0': sunColor},
           },
           'moon': {
             'illuminance': moonLux,
@@ -691,8 +695,11 @@ Map<String, dynamic> generateLocalLighting(VVShaderConfig cfg) {
 
   void addGroup(List<String> blocks, Color color, String lightType) {
     final hex = _hex(color);
-    final lt = (lightType == 'static_light') ? 'static_light' : 'point_light';
     for (final block in blocks) {
+      final isArea = LightingConfig.areaEmitterBlockIds.contains(block);
+      final lt = isArea
+          ? 'static_light'
+          : ((lightType == 'static_light') ? 'static_light' : 'point_light');
       settings[block] = {
         'light_color': hex,
         'light_type': lt,
@@ -754,10 +761,15 @@ Map<String, dynamic> generateFog(
   final uwVolDensity = _round4(
     _clamp(f.underwaterVolumeDensity * waterScale, 0.001, 0.08),
   );
+  final waterScattering = [
+    _round4(_clamp(0.018 * (uwVolDensity / 0.05).clamp(0.1, 4.0), 0.001, 0.1)),
+    _round4(_clamp(0.021 * (uwVolDensity / 0.05).clamp(0.1, 4.0), 0.001, 0.1)),
+    _round4(_clamp(0.028 * (uwVolDensity / 0.05).clamp(0.1, 4.0), 0.001, 0.1)),
+  ];
   final waterAbsorption = [
-    _round4(_clamp(0.18 * waterScale, 0.0, 1.0)),
-    _round4(_clamp(0.06 * waterScale, 0.0, 1.0)),
-    _round4(_clamp(0.03 * waterScale, 0.0, 1.0)),
+    _round4(_clamp(0.20 * waterScale, 0.001, 1.0)),
+    _round4(_clamp(0.079 * waterScale, 0.001, 1.0)),
+    _round4(_clamp(0.083 * waterScale, 0.001, 1.0)),
   ];
 
   // Preset-specific tint & volumetric customizations
@@ -844,6 +856,9 @@ Map<String, dynamic> generateFog(
       break;
     case 'fog_end':
       airColor = const Color(0xFF551A85);
+      airDistType = 'fixed';
+      distAirStart = 32.0;
+      distAirEnd = 160.0;
       volMaxDensity = 0.1241;
       uniformAir = true;
       break;
@@ -859,6 +874,13 @@ Map<String, dynamic> generateFog(
     airDensityBlock['max_density_height'] = _round4(volMaxH);
     airDensityBlock['zero_density_height'] = _round4(volZeroH);
   }
+
+  final airDensityMag = (volMaxDensity / 0.05).clamp(0.04, 5.0);
+  final airScattering = [
+    _round4(_clamp(f.hazeScatteringColor.r * 0.02 * airDensityMag, 0.0001, 0.1)),
+    _round4(_clamp(f.hazeScatteringColor.g * 0.02 * airDensityMag, 0.0001, 0.1)),
+    _round4(_clamp(f.hazeScatteringColor.b * 0.02 * airDensityMag, 0.0001, 0.1)),
+  ];
 
   return {
     'format_version': '1.21.90',
@@ -906,9 +928,10 @@ Map<String, dynamic> generateFog(
         },
         'media_coefficients': {
           'air': {
-            'scattering': _rgbFloat(f.hazeScatteringColor),
+            'scattering': airScattering,
           },
           'water': {
+            'scattering': waterScattering,
             'absorption': waterAbsorption,
           },
         },
@@ -920,10 +943,12 @@ Map<String, dynamic> generateFog(
 /// Generates a `water/*.json` (`format_version: "1.21.80"`, `minecraft:water_settings`).
 /// Pack-wide locked fields ([WaterGlobalSettings]) are applied from [global] when
 /// provided so all 5 water files within a tier stay strictly synchronized.
+/// Modern target (1.26.0) includes `biome_water_color_contribution`; Wide (1.21.80) disables it.
 Map<String, dynamic> generateWater(
   WaterPresetConfig preset, {
   required String packSlug,
   WaterGlobalSettings? global,
+  VVExportTarget target = VVExportTarget.wide,
 }) {
   final bareId = preset.identifier.contains(':')
       ? preset.identifier.split(':').last
@@ -936,42 +961,49 @@ Map<String, dynamic> generateWater(
   final causticsPower = global?.causticsPower ?? preset.causticsPower;
   final causticsScale = global?.causticsScale ?? preset.causticsScale;
 
+  final waterSettings = <String, dynamic>{
+    'description': {'identifier': '$packSlug:$bareId'},
+  };
+
+  // Wide target disables biome_water_color_contribution (Modern 1.26.0+ only).
+  if (target == VVExportTarget.modern) {
+    waterSettings['biome_water_color_contribution'] = _round4(
+      _clamp(preset.biomeWaterColorContribution, 0.0, 1.0),
+    );
+  }
+
+  waterSettings['particle_concentrations'] = {
+    'cdom': _round4(_clamp(preset.cdom, 0.0, 15.0)),
+    'chlorophyll': _round4(_clamp(preset.chlorophyll, 0.0, 10.0)),
+    'suspended_sediment':
+        _round4(_clamp(preset.suspendedSediment, 0.0, 300.0)),
+  };
+  waterSettings['caustics'] = {
+    'enabled': causticsEnabled,
+    'frame_length': _round4(_clamp(causticsFrameLength, 0.01, 5.0)),
+    'texture': 'textures/causticsLow/caustics.png',
+    'scale': _round4(_clamp(causticsScale, 0.1, 5.0)),
+    'power': causticsPower.clamp(1, 6),
+  };
+  waterSettings['waves'] = {
+    'enabled': wavesEnabled,
+    'frequency': _round4(_clamp(preset.wavesFrequency, 0.01, 3.0)),
+    'octaves': preset.wavesOctaves.clamp(1, 30),
+    'depth': _round4(_clamp(preset.wavesDepth, 0.0, 3.0)),
+    'sampleWidth': _round4(_clamp(preset.wavesSampleWidth, 0.01, 1.0)),
+    'speed': _round4(_clamp(preset.wavesSpeed, 0.01, 10.0)),
+    'pull': _round4(_clamp(preset.wavesPull, -1.0, 1.0)),
+    'mix': _round4(_clamp(preset.wavesMix, 0.0, 1.0)),
+    'frequency_scaling':
+        _round4(_clamp(preset.wavesFrequencyScaling, 0.0, 2.0)),
+    'speed_scaling': _round4(_clamp(preset.wavesSpeedScaling, 0.0, 2.0)),
+    'direction_increment': preset.wavesDirectionIncrement.clamp(0, 360),
+    'shape': _round4(_clamp(preset.wavesShape, 1.0, 10.0)),
+  };
+
   return {
-    'format_version': '1.21.80',
-    'minecraft:water_settings': {
-      'description': {'identifier': '$packSlug:$bareId'},
-      'biome_water_color_contribution': _round4(
-        _clamp(preset.biomeWaterColorContribution, 0.0, 1.0),
-      ),
-      'particle_concentrations': {
-        'cdom': _round4(_clamp(preset.cdom, 0.0, 15.0)),
-        'chlorophyll': _round4(_clamp(preset.chlorophyll, 0.0, 10.0)),
-        'suspended_sediment':
-            _round4(_clamp(preset.suspendedSediment, 0.0, 300.0)),
-      },
-      'caustics': {
-        'enabled': causticsEnabled,
-        'frame_length': _round4(_clamp(causticsFrameLength, 0.01, 5.0)),
-        'texture': 'textures/causticsLow/caustics.png',
-        'scale': _round4(_clamp(causticsScale, 0.1, 5.0)),
-        'power': causticsPower.clamp(1, 6),
-      },
-      'waves': {
-        'enabled': wavesEnabled,
-        'frequency': _round4(_clamp(preset.wavesFrequency, 0.01, 3.0)),
-        'octaves': preset.wavesOctaves.clamp(1, 30),
-        'depth': _round4(_clamp(preset.wavesDepth, 0.0, 3.0)),
-        'sampleWidth': _round4(_clamp(preset.wavesSampleWidth, 0.01, 1.0)),
-        'speed': _round4(_clamp(preset.wavesSpeed, 0.01, 10.0)),
-        'pull': _round4(_clamp(preset.wavesPull, -1.0, 1.0)),
-        'mix': _round4(_clamp(preset.wavesMix, 0.0, 1.0)),
-        'frequency_scaling':
-            _round4(_clamp(preset.wavesFrequencyScaling, 0.0, 2.0)),
-        'speed_scaling': _round4(_clamp(preset.wavesSpeedScaling, 0.0, 2.0)),
-        'direction_increment': preset.wavesDirectionIncrement.clamp(0, 360),
-        'shape': _round4(_clamp(preset.wavesShape, 1.0, 10.0)),
-      },
-    },
+    'format_version': target == VVExportTarget.modern ? '1.26.0' : '1.21.80',
+    'minecraft:water_settings': waterSettings,
   };
 }
 
@@ -1046,13 +1078,13 @@ Map<String, dynamic> generatePbr(VVShaderConfig cfg) {
         'global_metalness_emissive_roughness_subsurface': [m, e, r, sub],
       },
       'actors': {
-        'global_metalness_emissive_roughness_subsurface': [m, e, r, 32],
+        'global_metalness_emissive_roughness_subsurface': [m, e, r, sub],
       },
       'particles': {
-        'global_metalness_emissive_roughness_subsurface': [m, e, r, 0],
+        'global_metalness_emissive_roughness_subsurface': [m, e, r, sub],
       },
       'items': {
-        'global_metalness_emissive_roughness_subsurface': [m, e, r, 0],
+        'global_metalness_emissive_roughness_subsurface': [m, e, r, sub],
       },
     },
   };
@@ -1060,10 +1092,24 @@ Map<String, dynamic> generatePbr(VVShaderConfig cfg) {
 
 /// Generates `biomes/<id>.client_biome.json` (`format_version: "1.21.120"`).
 /// Applies the 3-layer [BiomeOverridesConfig] (Global -> Group -> Single Biome).
+///
+/// Rule 20: Do NOT write minimal client_biome files.
+/// Copies each vanilla client_biome from Mojang's bedrock-samples resource pack
+/// and changes ONLY:
+/// - `minecraft:atmosphere_identifier`
+/// - `minecraft:color_grading_identifier`
+/// - `minecraft:lighting_identifier`
+/// - `minecraft:water_identifier`
+/// - `minecraft:fog_appearance`
+/// - plus user overrides (`sky_color`, `water_appearance`, `grass_appearance`, `foliage_appearance`, `precipitation`).
+///
+/// All other vanilla components (ambient sounds, music, dry foliage color, colormaps)
+/// are preserved intact.
 Map<String, dynamic> generateClientBiome(
   VanillaBiomeEntry biome,
-  VVShaderConfig cfg,
-) {
+  VVShaderConfig cfg, {
+  Map<String, dynamic>? baseTemplate,
+}) {
   final ov = cfg.biomeOverrides.resolveFor(biome);
 
   final defaultOverworldCg = cfg.activeMood == 'dynamic'
@@ -1086,40 +1132,99 @@ Map<String, dynamic> generateClientBiome(
   );
   final fogId = cfg.namespacedId(ov.fogPreset ?? biome.defaultFogPreset);
 
-  final skyColor = ov.skyColor ?? biome.defaultSkyColor;
+  // Template resolution: passed baseTemplate -> embedded Mojang bedrock-samples template
+  final rawTemplate = baseTemplate ??
+      (kMojangVanillaBiomeTemplates[biome.id] as Map<String, dynamic>?);
+
+  Map<String, dynamic> components;
+  String formatVersion = '1.21.120';
+  String identifier = biome.id;
+
+  if (rawTemplate != null) {
+    formatVersion = rawTemplate['format_version'] as String? ?? '1.21.120';
+    final cb =
+        rawTemplate['minecraft:client_biome'] as Map<String, dynamic>? ?? {};
+    final rawDesc = cb['description'] as Map<String, dynamic>? ?? {};
+    identifier = rawDesc['identifier'] as String? ?? biome.id;
+    final rawComps = cb['components'] as Map<String, dynamic>? ?? {};
+    components = json.decode(json.encode(rawComps)) as Map<String, dynamic>;
+  } else {
+    components = <String, dynamic>{};
+  }
+
+  // 1. Overwrite ONLY the Vibrant Visuals identifiers (Rule 20)
+  components['minecraft:atmosphere_identifier'] = {
+    'atmosphere_identifier': atmoId,
+  };
+  components['minecraft:color_grading_identifier'] = {
+    'color_grading_identifier': cgId,
+  };
+  components['minecraft:lighting_identifier'] = {
+    'lighting_identifier': lightId,
+  };
+  components['minecraft:water_identifier'] = {
+    'water_identifier': waterId,
+  };
+  components['minecraft:fog_appearance'] = {
+    'fog_identifier': fogId,
+  };
+
+  // 2. User overrides (sky_color, water_appearance, grass/foliage, precipitation)
+  if (ov.skyColor != null) {
+    components['minecraft:sky_color'] = {'sky_color': _hex(ov.skyColor!)};
+  } else {
+    // #78: Do not inject synthetic sky_color for Overworld (atmospherics controls Overworld sky).
+    // Keep vanilla sky_color intact if present in template (e.g., the_end #000000).
+    if (biome.dimension != BiomeDimension.overworld &&
+        !components.containsKey('minecraft:sky_color') &&
+        biome.defaultSkyColor != const Color(0xFF000000)) {
+      components['minecraft:sky_color'] = {'sky_color': _hex(biome.defaultSkyColor)};
+    }
+  }
+
   final waterColor = ov.waterSurfaceColor ?? biome.defaultWaterSurfaceColor;
-  final waterOpacity = ov.waterSurfaceOpacity ?? biome.defaultWaterSurfaceOpacity;
-  final grassColor = ov.grassColor ?? biome.defaultGrassColor;
-  final foliageColor = ov.foliageColor ?? biome.defaultFoliageColor;
+  final waterOpacity =
+      ov.waterSurfaceOpacity ?? biome.defaultWaterSurfaceOpacity;
+  final existingWater = Map<String, dynamic>.from(
+    components['minecraft:water_appearance'] as Map? ?? {},
+  );
+  if (ov.waterSurfaceColor != null) {
+    existingWater['surface_color'] = _hex(ov.waterSurfaceColor!);
+  } else if (!existingWater.containsKey('surface_color')) {
+    existingWater['surface_color'] = _hex(waterColor);
+  }
+  if (waterOpacity != null) {
+    existingWater['surface_opacity'] =
+        _round4(_clamp(waterOpacity, 0.0, 1.0));
+  }
+  components['minecraft:water_appearance'] = existingWater;
+
+  if (ov.grassColor != null) {
+    components['minecraft:grass_appearance'] = {'color': _hex(ov.grassColor!)};
+  } else if (biome.defaultGrassColor != null &&
+      !components.containsKey('minecraft:grass_appearance')) {
+    components['minecraft:grass_appearance'] = {
+      'color': _hex(biome.defaultGrassColor!),
+    };
+  }
+
+  if (ov.foliageColor != null) {
+    components['minecraft:foliage_appearance'] = {
+      'color': _hex(ov.foliageColor!),
+    };
+  } else if (biome.defaultFoliageColor != null &&
+      !components.containsKey('minecraft:foliage_appearance')) {
+    components['minecraft:foliage_appearance'] = {
+      'color': _hex(biome.defaultFoliageColor!),
+    };
+  }
+
   final precipType = ov.precipitationType ?? biome.defaultPrecipitationType;
   final precipDensity =
       ov.precipitationDensity ?? biome.defaultPrecipitationDensity ?? 0.35;
-
-  final waterAppearance = <String, dynamic>{
-    'surface_color': _hex(waterColor),
-  };
-  if (waterOpacity != null) {
-    waterAppearance['surface_opacity'] =
-        _round4(_clamp(waterOpacity, 0.0, 1.0));
-  }
-
-  final components = <String, dynamic>{
-    'minecraft:atmosphere_identifier': {'atmosphere_identifier': atmoId},
-    'minecraft:color_grading_identifier': {'color_grading_identifier': cgId},
-    'minecraft:lighting_identifier': {'lighting_identifier': lightId},
-    'minecraft:water_identifier': {'water_identifier': waterId},
-    'minecraft:fog_appearance': {'fog_identifier': fogId},
-    'minecraft:sky_color': {'sky_color': _hex(skyColor)},
-    'minecraft:water_appearance': waterAppearance,
-  };
-
-  if (grassColor != null) {
-    components['minecraft:grass_appearance'] = {'color': _hex(grassColor)};
-  }
-  if (foliageColor != null) {
-    components['minecraft:foliage_appearance'] = {'color': _hex(foliageColor)};
-  }
-  if (precipType != null && precipType != 'none') {
+  if (ov.precipitationType == 'none') {
+    components.remove('minecraft:precipitation');
+  } else if (precipType != null && precipType != 'none') {
     const validPrecip = {'ash', 'blue_spores', 'red_spores', 'white_ash'};
     if (validPrecip.contains(precipType)) {
       components['minecraft:precipitation'] = {
@@ -1129,9 +1234,9 @@ Map<String, dynamic> generateClientBiome(
   }
 
   return {
-    'format_version': '1.21.120',
+    'format_version': formatVersion,
     'minecraft:client_biome': {
-      'description': {'identifier': biome.id},
+      'description': {'identifier': identifier},
       'components': components,
     },
   };
@@ -1150,6 +1255,9 @@ Map<String, dynamic> generateManifest(
       ? 'Piglix Vibrant Visuals · Bedrock Deferred PBR Shader'
       : cfg.packDescription.trim();
   final version = cfg.packVersion.length == 3 ? cfg.packVersion : [1, 0, 0];
+  final minEngineVersion = cfg.exportTarget == VVExportTarget.modern
+      ? const [1, 26, 0]
+      : const [1, 21, 120];
 
   final manifest = <String, dynamic>{
     'format_version': 2,
@@ -1158,7 +1266,7 @@ Map<String, dynamic> generateManifest(
       'description': cleanDesc,
       'uuid': packUuid,
       'version': version,
-      'min_engine_version': [1, 21, 120],
+      'min_engine_version': minEngineVersion,
     },
     'modules': [
       {
@@ -1214,7 +1322,10 @@ const List<String> _kDimensionPresetKeys = [
 ];
 
 /// Generates all JSON config files for a single tier [VVShaderConfig].
-Map<String, List<int>> _generateTierJsonFiles(VVShaderConfig cfg) {
+Map<String, List<int>> _generateTierJsonFiles(
+  VVShaderConfig cfg, {
+  Map<String, Map<String, dynamic>>? baseBiomeTemplates,
+}) {
   final out = <String, List<int>>{};
 
   void put(String path, Object jsonObj) {
@@ -1259,6 +1370,7 @@ Map<String, List<int>> _generateTierJsonFiles(VVShaderConfig cfg) {
         preset,
         packSlug: cfg.packSlug,
         global: cfg.waterGlobal,
+        target: cfg.exportTarget,
       ),
     );
   }
@@ -1283,11 +1395,16 @@ Map<String, List<int>> _generateTierJsonFiles(VVShaderConfig cfg) {
   // 6. PBR Fallback
   put('pbr/global.json', generatePbr(cfg));
 
-  // 7. All 87 Vanilla Client Biomes
+  // 7. All 87 Vanilla Client Biomes (Rule 20: copied from Mojang templates, preserving sound/music)
   for (final biome in kVanillaBiomes) {
+    final rel = 'biomes/${biome.id}.client_biome.json';
     put(
-      'biomes/${biome.id}.client_biome.json',
-      generateClientBiome(biome, cfg),
+      rel,
+      generateClientBiome(
+        biome,
+        cfg,
+        baseTemplate: baseBiomeTemplates?[rel],
+      ),
     );
   }
 
@@ -1351,6 +1468,35 @@ Archive buildArchive(
   // Separate base assets, stripping legacy generated JSON dirs and old subpacks
   final fileMap = <String, ArchiveFile>{};
   final pbrTextures = <String, ArchiveFile>{};
+
+  // Extract base client_biome templates & preserve extra/newer biomes from baseArchive (Rule 20 & 23)
+  final baseBiomeTemplates = <String, Map<String, dynamic>>{};
+  final extraBiomes = <String, ArchiveFile>{};
+  final knownBiomeNames = {
+    for (final b in kVanillaBiomes) 'biomes/${b.id}.client_biome.json',
+  };
+
+  for (final file in baseArchive) {
+    if (!file.isFile) continue;
+    var name = file.name.replaceAll('\\', '/');
+    if (prefix.isNotEmpty && name.startsWith(prefix)) {
+      name = name.substring(prefix.length);
+    }
+    if (name.startsWith('biomes/') && name.endsWith('.client_biome.json')) {
+      try {
+        final decoded = json.decode(utf8.decode(file.content as List<int>))
+            as Map<String, dynamic>;
+        baseBiomeTemplates[name] = decoded;
+      } catch (_) {}
+      if (!knownBiomeNames.contains(name)) {
+        extraBiomes[name] = ArchiveFile(
+          name,
+          file.size,
+          file.content as List<int>,
+        );
+      }
+    }
+  }
 
   const generatedPrefixes = [
     'atmospherics/',
@@ -1420,14 +1566,24 @@ Archive buildArchive(
 
   onProgress?.call(0.35, 'Generating Vibrant Visuals JSON configs...');
 
-  // Root tier
-  final rootProfile =
-      TierProfile.forTier(cfg.performance.activeTier, cfg.performance);
+  // Root tier: when exporting all tiers as subpacks, the base pack is the LOWEST tier (Rule 24).
+  final rootTier = cfg.performance.exportAllTiers
+      ? PerformanceTier.low
+      : cfg.performance.activeTier;
+  final rootProfile = TierProfile.forTier(rootTier, cfg.performance);
   final rootCfg = applyTierToConfig(cfg, rootProfile);
-  final rootJsonFiles = _generateTierJsonFiles(rootCfg);
+  final rootJsonFiles = _generateTierJsonFiles(
+    rootCfg,
+    baseBiomeTemplates: baseBiomeTemplates,
+  );
 
   for (final entry in rootJsonFiles.entries) {
     fileMap[entry.key] = ArchiveFile(entry.key, entry.value.length, entry.value);
+  }
+
+  // Preserve extra/newer biomes from base pack so they keep vanilla looks (Rule 23)
+  for (final entry in extraBiomes.entries) {
+    fileMap[entry.key] = entry.value;
   }
 
   // Include PBR texture sets at root when active root tier uses them
@@ -1445,12 +1601,17 @@ Archive buildArchive(
     for (final tier in PerformanceTier.values) {
       final profile = TierProfile.forTier(tier, cfg.performance);
       final tierCfg = applyTierToConfig(cfg, profile);
-      final tierFiles = _generateTierJsonFiles(tierCfg);
+      final tierFiles = _generateTierJsonFiles(
+        tierCfg,
+        baseBiomeTemplates: baseBiomeTemplates,
+      );
 
-      // Write ONLY files that differ from root
+      // Write diff-only files, except for low which mirrors base so it is listed (Rule 24 & 25)
+      final isLow = tier == PerformanceTier.low;
       for (final entry in tierFiles.entries) {
         final rootBytes = rootJsonFiles[entry.key];
-        if (rootBytes == null || !_bytesEqual(rootBytes, entry.value)) {
+        final differs = rootBytes == null || !_bytesEqual(rootBytes, entry.value);
+        if (differs || (isLow && entry.key == 'lighting/global.json')) {
           final subPath = 'subpacks/${profile.folderName}/${entry.key}';
           fileMap[subPath] =
               ArchiveFile(subPath, entry.value.length, entry.value);
@@ -1480,7 +1641,10 @@ Archive buildArchive(
 
   if (cfg.performance.styleIntensityLite) {
     final liteCfg = applyLiteStyle(rootCfg);
-    final liteFiles = _generateTierJsonFiles(liteCfg);
+    final liteFiles = _generateTierJsonFiles(
+      liteCfg,
+      baseBiomeTemplates: baseBiomeTemplates,
+    );
     for (final entry in liteFiles.entries) {
       final rootBytes = rootJsonFiles[entry.key];
       if (rootBytes == null || !_bytesEqual(rootBytes, entry.value)) {
@@ -1492,7 +1656,7 @@ Archive buildArchive(
     manifestSubpacks.add({
       'folder_name': 'lite',
       'name': 'Lite Style (Subtle Contrast & Fog)',
-      'memory_tier': rootProfile.memoryTier,
+      'memory_tier': 1,
     });
   }
 
@@ -1567,6 +1731,14 @@ ValidationReport validateConfig(VVShaderConfig cfg) {
   }
   if (cfg.packVersion.length != 3 || cfg.packVersion.any((v) => v < 0)) {
     errors.add('Pack version must be 3 non-negative numbers [major, minor, patch].');
+  }
+
+  // Biome catalog versioning (Rule 23)
+  if (cfg.biomeListVersion < VVShaderConfig.currentBiomeListVersion) {
+    warnings.add(
+      'Preset biome list version (${cfg.biomeListVersion}) is older than current '
+      'game catalog (${VVShaderConfig.currentBiomeListVersion}). Newly added biomes will retain vanilla looks.',
+    );
   }
 
   // Atmosphere
@@ -1647,6 +1819,49 @@ ValidationReport validateConfig(VVShaderConfig cfg) {
   }
   if (l.shadowTexelSize < 1 || l.shadowTexelSize > 1024) {
     errors.add('Shadow texel size (${l.shadowTexelSize}) must be in 1–1024.');
+  }
+
+  // Local Lighting block IDs and group disjointness
+  final allConfiguredBlocks = [
+    ...LightingConfig.torchBlocks,
+    ...LightingConfig.lanternBlocks,
+    ...LightingConfig.soulBlocks,
+    ...LightingConfig.candleBlocks,
+    ...LightingConfig.redstoneBlocks,
+    ...LightingConfig.endRodBlocks,
+    ...LightingConfig.copperBlocks,
+    if (l.syncMysticToSoul) ...LightingConfig.mysticBlocks,
+  ];
+
+  for (final block in allConfiguredBlocks) {
+    if (!LightingConfig.validBedrockBlockIds.contains(block)) {
+      errors.add('Unknown Bedrock block ID "$block" in local lighting.');
+    }
+    if (block == 'minecraft:wall_torch') {
+      errors.add(
+        'Java block ID "minecraft:wall_torch" is invalid. Bedrock uses "minecraft:torch".',
+      );
+    }
+  }
+
+  final seenBlocks = <String>{};
+  final disjointGroups = [
+    LightingConfig.torchBlocks,
+    LightingConfig.lanternBlocks,
+    LightingConfig.soulBlocks,
+    LightingConfig.candleBlocks,
+    LightingConfig.redstoneBlocks,
+    LightingConfig.endRodBlocks,
+    LightingConfig.copperBlocks,
+  ];
+  for (final group in disjointGroups) {
+    for (final b in group) {
+      if (!seenBlocks.add(b)) {
+        errors.add(
+          'Duplicate block ID "$b" found in multiple local light groups.',
+        );
+      }
+    }
   }
 
   // Fog
@@ -1926,6 +2141,15 @@ ValidationReport validateArchive(Archive archive, VVShaderConfig cfg) {
           'manifest.json min_engine_version ($minVer) must be >= [1, 21, 120].',
         );
       }
+      if (cfg.exportTarget == VVExportTarget.modern) {
+        final modernOk = minVer.length >= 3 &&
+            (minVer[0] > 1 || (minVer[0] == 1 && minVer[1] >= 26));
+        if (!modernOk) {
+          errors.add(
+            'Modern export target requires min_engine_version >= [1, 26, 0].',
+          );
+        }
+      }
 
       final pUuid = header['uuid'] as String? ?? '';
       if (!_uuidV4Regex.hasMatch(pUuid)) {
@@ -1942,6 +2166,28 @@ ValidationReport validateArchive(Archive archive, VVShaderConfig cfg) {
         }
         if (pUuid.isNotEmpty && pUuid == mUuid) {
           errors.add('manifest.json header.uuid and module uuid must differ.');
+        }
+      }
+
+      // Rule 24: Manifest V2 memory_tier validation
+      final subpacksList = (manifest['subpacks'] as List?) ?? [];
+      for (final sp in subpacksList) {
+        if (sp is Map) {
+          final fName = sp['folder_name'] as String? ?? 'unknown';
+          if (sp.containsKey('memory_performance_tier')) {
+            errors.add(
+              'manifest.json subpack "$fName" uses experimental manifest V3 "memory_performance_tier". Use manifest V2 "memory_tier" instead (Rule 24).',
+            );
+          }
+          if (!sp.containsKey('memory_tier')) {
+            errors.add(
+              'manifest.json subpack "$fName" missing required "memory_tier" (Rule 24).',
+            );
+          } else if (sp['memory_tier'] is! int) {
+            errors.add(
+              'manifest.json subpack "$fName" memory_tier must be an integer.',
+            );
+          }
         }
       }
     } catch (e) {
@@ -2009,8 +2255,8 @@ ValidationReport validateArchive(Archive archive, VVShaderConfig cfg) {
         final id = s?['description']?['identifier'] as String?;
         recordId('lighting', id);
         if (id != null) lightIds.add(id);
-        final offset =
-            s?['directional_lights']?['orbital']?['orbital_offset_degrees']
+        final offset = (s?['directional_lights']?['orbital_offset_degrees'] ??
+            s?['directional_lights']?['orbital']?['orbital_offset_degrees'])
                 as num?;
         if (offset != null) {
           lockedOrbitalOffset ??= offset;
@@ -2126,6 +2372,25 @@ ValidationReport validateArchive(Archive archive, VVShaderConfig cfg) {
       );
       checkRef('minecraft:water_identifier', 'water_identifier', waterIds);
       checkRef('minecraft:fog_appearance', 'fog_identifier', fogIds);
+    }
+
+    // Check for extra/newer biomes in scope (Rule 23)
+    final knownBiomeFileNames = {
+      for (final b in kVanillaBiomes) 'biomes/${b.id}.client_biome.json',
+    };
+    final extraBiomeFiles = <String>[];
+    for (final rel in effectivePaths) {
+      if (rel.startsWith('biomes/') && rel.endsWith('.client_biome.json')) {
+        if (!knownBiomeFileNames.contains(rel)) {
+          extraBiomeFiles.add(rel);
+        }
+      }
+    }
+    if (extraBiomeFiles.isNotEmpty) {
+      warnings.add(
+        '[$scopeLabel] Pack contains ${extraBiomeFiles.length} extra/newer biome file(s) '
+        'not in shader catalog (${extraBiomeFiles.take(3).join(', ')}...). These biomes will retain vanilla looks.',
+      );
     }
   }
 

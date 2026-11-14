@@ -180,29 +180,41 @@ void main() {
       await tester.tap(blockLightsCard);
       await tester.pumpAndSettle();
 
-      // Default config has 32 active point-light blocks (>20).
-      expect(find.text('32 / 31 point-light blocks active'), findsOneWidget);
+      // Default config has 39 active point-light blocks (>20).
+      expect(find.text('39 / 39 point-light blocks active'), findsOneWidget);
       expect(
         find.text('High point-light count (>20) may lag mobile GPUs'),
         findsOneWidget,
       );
 
-      // Disable Torches (9 blocks -> 23) and Copper (6 blocks -> 17 <= 20).
+      // Disable Torches (syncWarmToTorch is active: 39 -> 33).
       final torchesSwitch = switchForLabel('Torches');
       await tester.ensureVisible(torchesSwitch);
       await tester.tap(torchesSwitch);
       await tester.pump();
-      expect(find.text('23 / 31 point-light blocks active'), findsOneWidget);
+      expect(find.text('33 / 39 point-light blocks active'), findsOneWidget);
       expect(
         find.text('High point-light count (>20) may lag mobile GPUs'),
         findsOneWidget,
       );
 
+      // Disable Candles (17 blocks: 33 -> 16 <= 20).
+      final candlesSwitch = switchForLabel('Candles');
+      await tester.ensureVisible(candlesSwitch);
+      await tester.tap(candlesSwitch);
+      await tester.pump();
+      expect(find.text('16 / 39 point-light blocks active'), findsOneWidget);
+      expect(
+        find.text('High point-light count (>20) may lag mobile GPUs'),
+        findsNothing,
+      );
+
+      // Disable Copper (9 blocks -> 7).
       final copperSwitch = switchForLabel('Copper');
       await tester.ensureVisible(copperSwitch);
       await tester.tap(copperSwitch);
       await tester.pump();
-      expect(find.text('17 / 31 point-light blocks active'), findsOneWidget);
+      expect(find.text('7 / 39 point-light blocks active'), findsOneWidget);
       expect(
         find.text('High point-light count (>20) may lag mobile GPUs'),
         findsNothing,
@@ -253,6 +265,10 @@ void main() {
             color: Color(0xFFB8EF8D),
             lightType: 'static_light',
           ),
+          candles: BlockLightGroup(
+            color: Color(0xFFEFE39D),
+            lightType: 'static_light',
+          ),
         ),
       );
       await pumpEditor(tester, initialVVConfig: cleanCfg);
@@ -264,9 +280,9 @@ void main() {
         findsOneWidget,
       );
 
-      final qualityCard = find.text('All In-Game Quality Modes (Low to Ultra)');
-      await tester.ensureVisible(qualityCard);
-      expect(qualityCard, findsOneWidget);
+      final identityCard = find.text('Pack Identity');
+      await tester.ensureVisible(identityCard);
+      expect(identityCard, findsOneWidget);
     });
 
     testWidgets('Sky tab switches large single-scene preview cleanly without text badges',

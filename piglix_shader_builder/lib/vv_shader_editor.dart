@@ -438,9 +438,8 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
         previewColor: _config.atmosphere.noonHorizon,
       );
 
-      await Future.delayed(const Duration(milliseconds: 280));
+      await Future.delayed(const Duration(milliseconds: 140));
       if (mounted) Navigator.pop(context);
-      _snack('$pName.mcpack built cleanly!');
     } catch (e) {
       if (mounted) Navigator.pop(context);
       _snack('Export failed: $e', isError: true);
@@ -1082,10 +1081,10 @@ class _VVCompileProgressDialogState extends State<VVCompileProgressDialog>
     super.initState();
     _animCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2200),
+      duration: const Duration(milliseconds: 1000),
     )..repeat();
 
-    _tipTimer = Timer.periodic(const Duration(milliseconds: 3200), (_) {
+    _tipTimer = Timer.periodic(const Duration(milliseconds: 2800), (_) {
       if (!mounted) return;
       setState(() {
         _tipIndex = (_tipIndex + 1) % _kMinecraftTips.length;
@@ -1297,8 +1296,9 @@ class _MinecraftBobbingBlockPainter extends CustomPainter {
     final cx = size.width / 2;
     final cy = size.height / 2;
 
-    // Bobbing offset (-5px to +5px)
+    // Bobbing offset (-5px to +5px) & authentic floating tilt
     final bob = math.sin(animationValue * 2 * math.pi) * 5.0;
+    final tilt = math.sin(animationValue * 2 * math.pi) * 0.045;
     final blockCy = cy + bob - 4;
 
     // 1. Dynamic Ground Shadow (shrinks & fades as block floats higher)
@@ -1338,7 +1338,12 @@ class _MinecraftBobbingBlockPainter extends CustomPainter {
       );
     }
 
-    // 3. 3D Isometric Grass Block
+    // 3. 3D Isometric Grass Block with authentic floating item tilt
+    canvas.save();
+    canvas.translate(cx, blockCy);
+    canvas.rotate(tilt);
+    canvas.translate(-cx, -blockCy);
+
     const double s = 42.0;
     const double w2 = s * 0.46; // half-width
     const double h2 = s * 0.25; // isometric pitch
@@ -1425,6 +1430,8 @@ class _MinecraftBobbingBlockPainter extends CustomPainter {
       ..close();
     canvas.drawPath(overRight, Paint()..color = const Color(0xFF337016));
     canvas.drawPath(overRight, edgeOutline);
+
+    canvas.restore();
   }
 
   @override
@@ -1523,6 +1530,13 @@ class _MinecraftProgressBarPainter extends CustomPainter {
     if (fillW > 0) {
       canvas.save();
       canvas.clipRect(Rect.fromLTWH(3.0, 3.0, fillW, size.height - 6.0));
+
+      // Emerald soft glow beneath
+      final glowAlpha = (0.22 + 0.12 * math.sin(animationValue * 2 * math.pi)).clamp(0.08, 0.38);
+      final glowPaint = Paint()
+        ..color = const Color(0xFF22C55E).withValues(alpha: glowAlpha)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.5);
+      canvas.drawRect(Rect.fromLTWH(3.0, 3.0, fillW, size.height - 6.0), glowPaint);
 
       // 3. Authentic Minecraft 3-band Emerald Green Bar:
       // Top 3px highlight

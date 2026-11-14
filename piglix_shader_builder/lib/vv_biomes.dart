@@ -805,6 +805,36 @@ const List<VanillaBiomeEntry> kVanillaBiomes = [
     defaultSkyColor: Color(0xFF7218BB),
     defaultWaterSurfaceColor: Color(0xFF62529E),
   ),
+
+  // ── 1.26+ Biomes (2) ────────────────────────────────────────────────────────
+  VanillaBiomeEntry(
+    id: 'sulfur_caves',
+    displayName: 'Sulfur Caves',
+    group: BiomeGroup.cavesDeepDark,
+    dimension: BiomeDimension.overworld,
+    defaultWaterPreset: 'water_tropical',
+    defaultFogPreset: 'fog_overworld',
+    defaultAtmospherePreset: 'global_atmosphere',
+    defaultLightingPreset: 'global',
+    defaultColorGradingPreset: 'color_grading',
+    defaultWaterSurfaceColor: Color(0xFF34BF89),
+    defaultGrassColor: Color(0xFFABA64F),
+  ),
+  VanillaBiomeEntry(
+    id: 'dappled_forest',
+    displayName: 'Dappled Forest',
+    group: BiomeGroup.forest,
+    dimension: BiomeDimension.overworld,
+    defaultWaterPreset: 'water_tropical',
+    defaultFogPreset: 'fog_overworld',
+    defaultAtmospherePreset: 'global_atmosphere',
+    defaultLightingPreset: 'global',
+    defaultColorGradingPreset: 'color_grading',
+    defaultSkyColor: Color(0xFF7CA3FF),
+    defaultWaterSurfaceColor: Color(0xFF375154),
+    defaultGrassColor: Color(0xFFDF6827),
+    defaultFoliageColor: Color(0xFFE68E30),
+  ),
 ];
 
 /// Fast lookup map by biome id.

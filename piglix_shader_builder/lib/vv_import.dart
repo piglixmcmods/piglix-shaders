@@ -584,9 +584,7 @@ ColorGradingConfig _parseColorGrading(
   final toneMapping = _asMap(root['tone_mapping']);
 
   final rawOp = (toneMapping?['operator'] as String?)?.trim().toLowerCase();
-  final op = rawOp != null && ColorGradingConfig.validOperators.contains(rawOp)
-      ? rawOp
-      : base.toneMappingOperator;
+  final op = ColorGradingConfig.normalizeOperator(rawOp ?? base.toneMappingOperator);
 
   // Support temperature inside `color_grading` (1.21.90+) or legacy sibling
   final temp = _asMap(cg['temperature']) ?? _asMap(root['temperature']);
@@ -816,6 +814,16 @@ VVPackImportResult parseVVPackFromArchive(
       }
     }
 
+    final minEngRaw = header?['min_engine_version'];
+    VVExportTarget target = VVExportTarget.wide;
+    if (minEngRaw is List && minEngRaw.isNotEmpty) {
+      final major = _asInt(minEngRaw[0]) ?? 0;
+      final minor = minEngRaw.length > 1 ? (_asInt(minEngRaw[1]) ?? 0) : 0;
+      if (major > 1 || (major == 1 && minor >= 26)) {
+        target = VVExportTarget.modern;
+      }
+    }
+
     final subpacksRaw = manifest['subpacks'];
     if (subpacksRaw is List && subpacksRaw.isNotEmpty) {
       hasSubpacksDir = true;
@@ -838,6 +846,7 @@ VVPackImportResult parseVVPackFromArchive(
       packName: importedPackName ?? fallbackName ?? cfg.packName,
       packDescription: resolvedDesc ?? cfg.packDescription,
       packVersion: parsedVer ?? cfg.packVersion,
+      exportTarget: target,
     );
   } else if (fallbackName != null && fallbackName.trim().isNotEmpty) {
     importedPackName = fallbackName.trim();

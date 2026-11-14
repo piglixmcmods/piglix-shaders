@@ -7,13 +7,34 @@ import 'vv_biomes.dart';
 /// Performance tier options for root export and subpacks.
 enum PerformanceTier { low, medium, high, ultra }
 
+/// Target Minecraft engine / Vibrant Visuals schema level.
+enum VVExportTarget {
+  /// Broadest compatibility (Bedrock 1.21.120+):
+  /// - min_engine_version: [1, 21, 120]
+  /// - lighting format_version: 1.21.80
+  /// - water format_version: 1.21.80 (disables biome_water_color_contribution)
+  wide,
+
+  /// Latest Vibrant Visuals features (Bedrock 1.26.0+):
+  /// - min_engine_version: [1, 26, 0]
+  /// - lighting format_version: 1.26.0
+  /// - water format_version: 1.26.0 (enables biome_water_color_contribution)
+  modern,
+}
+
 /// Immutable config for one Minecraft Bedrock Vibrant Visuals pack export.
 /// [configVersion] lets future migrations detect old saved presets.
 class VVShaderConfig {
   static const int currentVersion = 1;
 
+  /// Version of the vanilla Bedrock client biome catalog (Rule 23).
+  static const int currentBiomeListVersion = 1;
+
   /// Schema version — bump when field layout changes.
   final int configVersion;
+
+  /// Version of the biome catalog when saving this preset/config.
+  final int biomeListVersion;
 
   /// manifest.json → header.name
   final String packName;
@@ -23,6 +44,9 @@ class VVShaderConfig {
 
   /// manifest.json → header.version [major, minor, patch]
   final List<int> packVersion;
+
+  /// Target engine / schema level (Wide: 1.21.120+ vs Modern: 1.26.0+).
+  final VVExportTarget exportTarget;
 
   /// Sanitized lowercase `[a-z0-9_]+` namespace slug derived from [packName].
   /// Every custom JSON identifier in the generated pack uses `<packSlug>:<name>`.
@@ -105,9 +129,11 @@ class VVShaderConfig {
 
   const VVShaderConfig({
     this.configVersion = currentVersion,
+    this.biomeListVersion = currentBiomeListVersion,
     this.packName = 'Piglix Shader',
     this.packDescription = 'Piglix Vibrant Visuals · Bedrock Deferred PBR Shader',
     this.packVersion = const [1, 0, 0],
+    this.exportTarget = VVExportTarget.wide,
     this.atmosphere = const AtmosphereConfig(),
     this.lighting = const LightingConfig(),
     this.fog = const FogConfig(),
@@ -126,9 +152,11 @@ class VVShaderConfig {
 
   VVShaderConfig copyWith({
     int? configVersion,
+    int? biomeListVersion,
     String? packName,
     String? packDescription,
     List<int>? packVersion,
+    VVExportTarget? exportTarget,
     AtmosphereConfig? atmosphere,
     LightingConfig? lighting,
     FogConfig? fog,
@@ -146,9 +174,11 @@ class VVShaderConfig {
   }) {
     return VVShaderConfig(
       configVersion: configVersion ?? this.configVersion,
+      biomeListVersion: biomeListVersion ?? this.biomeListVersion,
       packName: packName ?? this.packName,
       packDescription: packDescription ?? this.packDescription,
       packVersion: packVersion ?? this.packVersion,
+      exportTarget: exportTarget ?? this.exportTarget,
       atmosphere: atmosphere ?? this.atmosphere,
       lighting: lighting ?? this.lighting,
       fog: fog ?? this.fog,
@@ -245,19 +275,19 @@ class AtmosphereConfig {
     this.sunsetHorizon = const Color(0xFFFFDBCF),
     this.nightHorizon = const Color(0xFF344B87),
     this.sunriseHorizon = const Color(0xFFFFDBCF),
-    this.rayleighNoon = 2.2,
+    this.rayleighNoon = 1.0,
     this.rayleighSunset = 1.1,
     this.rayleighNight = 0.45,
     this.rayleighSunrise = 0.8,
-    this.sunGlowNoon = 4.0,
-    this.sunGlowSunset = 4.0,
-    this.sunGlowSunrise = 4.0,
+    this.sunGlowNoon = 1.0,
+    this.sunGlowSunset = 3.0,
+    this.sunGlowSunrise = 3.0,
     this.sunGlareNoon = 5.0,
     this.sunGlareSunset = 0.07,
     this.sunGlareSunrise = 0.07,
     this.moonGlow = 0.7,
     this.horizonHazeScale = 1.0,
-    this.horizonHazeNoon = 0.452,
+    this.horizonHazeNoon = 0.25,
     this.horizonHazeSunset = 0.95,
     this.horizonHazeNight = 0.375,
     this.horizonHazeSunrise = 0.95,
@@ -293,7 +323,7 @@ class AtmosphereConfig {
   AtmosphereConfig withSimpleSunGlowNoon(double scale) {
     final s = scale.clamp(0.0, 2.0);
     return copyWith(
-      sunGlowNoon: (4.0 * s).clamp(0.0, 60.0),
+      sunGlowNoon: (1.0 * s).clamp(0.0, 60.0),
       sunGlareNoon: (5.0 * s).clamp(0.01, 50.0),
     );
   }
@@ -414,14 +444,23 @@ class BlockLightGroup {
 /// - `shadows/global.json` → `minecraft:shadow_settings` (`1.21.80`)
 class LightingConfig {
   /// Mojang baseline sun illuminance curve (lux) keyed by VV time-of-day.
+  /// Normalized keys ("0.0", "0.25", "0.5", "0.75", "1.0") including twilight keys (0.35, 0.65).
   static const Map<String, double> mojangSunLuxCurve = {
-    '0.000000': 109880.0,
-    '0.250000': 20000.0,
-    '0.350000': 400.0,
-    '0.500000': 1.0,
-    '0.650000': 400.0,
-    '0.750000': 20000.0,
-    '1.000000': 109880.0,
+    '0.0': 109880.0,
+    '0.16': 85000.0,
+    '0.215': 50000.0,
+    '0.24': 30000.0,
+    '0.25': 20000.0,
+    '0.3': 5000.0,
+    '0.35': 0.0,
+    '0.5': 0.0,
+    '0.65': 0.0,
+    '0.68': 0.0,
+    '0.74': 6000.0,
+    '0.75': 20000.0,
+    '0.77': 60000.0,
+    '0.827': 95000.0,
+    '1.0': 109880.0,
   };
 
   /// Multiplies Mojang's lux curve (`0.1..2.0`, default `1.0`), clamped `0.01..200000.0`.
@@ -513,7 +552,7 @@ class LightingConfig {
   /// `'soft_shadows'` | `'blocky_shadows'`
   final String shadowStyle;
 
-  /// `1..1024`, default `1024`
+  /// `1..1024`, default `16`
   final int shadowTexelSize;
 
   // Canonical block lists per group
@@ -547,7 +586,26 @@ class LightingConfig {
     'minecraft:verdant_froglight',
   ];
 
-  static const List<String> candleBlocks = ['minecraft:candle'];
+  /// All 17 explicit candle block IDs in Bedrock (undyed + 16 dyed).
+  static const List<String> candleBlocks = [
+    'minecraft:candle',
+    'minecraft:white_candle',
+    'minecraft:orange_candle',
+    'minecraft:magenta_candle',
+    'minecraft:light_blue_candle',
+    'minecraft:yellow_candle',
+    'minecraft:lime_candle',
+    'minecraft:pink_candle',
+    'minecraft:gray_candle',
+    'minecraft:light_gray_candle',
+    'minecraft:cyan_candle',
+    'minecraft:purple_candle',
+    'minecraft:blue_candle',
+    'minecraft:brown_candle',
+    'minecraft:green_candle',
+    'minecraft:red_candle',
+    'minecraft:black_candle',
+  ];
 
   static const List<String> redstoneBlocks = [
     'minecraft:redstone_torch',
@@ -563,11 +621,125 @@ class LightingConfig {
   static const List<String> copperBlocks = [
     'minecraft:copper_torch',
     'minecraft:copper_lantern',
+    'minecraft:exposed_copper_lantern',
+    'minecraft:weathered_copper_lantern',
+    'minecraft:oxidized_copper_lantern',
+    'minecraft:waxed_copper_lantern',
+    'minecraft:waxed_exposed_copper_lantern',
+    'minecraft:waxed_weathered_copper_lantern',
+    'minecraft:waxed_oxidized_copper_lantern',
     'minecraft:copper_bulb',
     'minecraft:exposed_copper_bulb',
     'minecraft:weathered_copper_bulb',
     'minecraft:oxidized_copper_bulb',
+    'minecraft:waxed_copper_bulb',
+    'minecraft:waxed_exposed_copper_bulb',
+    'minecraft:waxed_weathered_copper_bulb',
+    'minecraft:waxed_oxidized_copper_bulb',
   ];
+
+  /// Blocks in Soul group that are static_light only (area/ambient emitters).
+  /// soul_torch and soul_lantern may be point_light; soul_fire, soul_campfire,
+  /// crying_obsidian, respawn_anchor, and sculk_catalyst are static_light only.
+  static const Set<String> soulStaticOnlyBlocks = {
+    'minecraft:soul_fire',
+    'minecraft:soul_campfire',
+    'minecraft:crying_obsidian',
+    'minecraft:respawn_anchor',
+    'minecraft:sculk_catalyst',
+  };
+
+  /// Area emitter block IDs that must ALWAYS use static_light and are excluded
+  /// from the point-light budget.
+  static const Set<String> areaEmitterBlockIds = {
+    'minecraft:soul_fire',
+    'minecraft:soul_campfire',
+    'minecraft:crying_obsidian',
+    'minecraft:respawn_anchor',
+    'minecraft:sculk_catalyst',
+    'minecraft:lit_redstone_lamp',
+    'minecraft:redstone_lamp',
+    'minecraft:copper_bulb',
+    'minecraft:exposed_copper_bulb',
+    'minecraft:weathered_copper_bulb',
+    'minecraft:oxidized_copper_bulb',
+    'minecraft:waxed_copper_bulb',
+    'minecraft:waxed_exposed_copper_bulb',
+    'minecraft:waxed_weathered_copper_bulb',
+    'minecraft:waxed_oxidized_copper_bulb',
+    'minecraft:glowstone',
+    'minecraft:sea_lantern',
+    'minecraft:ochre_froglight',
+    'minecraft:pearlescent_froglight',
+    'minecraft:verdant_froglight',
+    'minecraft:shroomlight',
+    'minecraft:magma',
+  };
+
+  /// Valid Bedrock block IDs for local lighting validation.
+  static const Set<String> validBedrockBlockIds = {
+    'minecraft:torch',
+    'minecraft:soul_torch',
+    'minecraft:redstone_torch',
+    'minecraft:campfire',
+    'minecraft:soul_campfire',
+    'minecraft:soul_fire',
+    'minecraft:lantern',
+    'minecraft:soul_lantern',
+    'minecraft:copper_torch',
+    'minecraft:copper_lantern',
+    'minecraft:exposed_copper_lantern',
+    'minecraft:weathered_copper_lantern',
+    'minecraft:oxidized_copper_lantern',
+    'minecraft:waxed_copper_lantern',
+    'minecraft:waxed_exposed_copper_lantern',
+    'minecraft:waxed_weathered_copper_lantern',
+    'minecraft:waxed_oxidized_copper_lantern',
+    'minecraft:candle',
+    'minecraft:white_candle',
+    'minecraft:orange_candle',
+    'minecraft:magenta_candle',
+    'minecraft:light_blue_candle',
+    'minecraft:yellow_candle',
+    'minecraft:lime_candle',
+    'minecraft:pink_candle',
+    'minecraft:gray_candle',
+    'minecraft:light_gray_candle',
+    'minecraft:cyan_candle',
+    'minecraft:purple_candle',
+    'minecraft:blue_candle',
+    'minecraft:brown_candle',
+    'minecraft:green_candle',
+    'minecraft:red_candle',
+    'minecraft:black_candle',
+    'minecraft:lit_redstone_lamp',
+    'minecraft:redstone_lamp',
+    'minecraft:lit_redstone_ore',
+    'minecraft:end_rod',
+    'minecraft:beacon',
+    'minecraft:copper_bulb',
+    'minecraft:exposed_copper_bulb',
+    'minecraft:weathered_copper_bulb',
+    'minecraft:oxidized_copper_bulb',
+    'minecraft:waxed_copper_bulb',
+    'minecraft:waxed_exposed_copper_bulb',
+    'minecraft:waxed_weathered_copper_bulb',
+    'minecraft:waxed_oxidized_copper_bulb',
+    'minecraft:glowstone',
+    'minecraft:shroomlight',
+    'minecraft:sea_lantern',
+    'minecraft:ochre_froglight',
+    'minecraft:pearlescent_froglight',
+    'minecraft:verdant_froglight',
+    'minecraft:magma',
+    'minecraft:lit_furnace',
+    'minecraft:jack_o_lantern',
+    'minecraft:lava_cauldron',
+    'minecraft:light_block',
+    'minecraft:crying_obsidian',
+    'minecraft:respawn_anchor',
+    'minecraft:sculk_catalyst',
+  };
 
   const LightingConfig({
     this.sunBrightnessMultiplier = 1.0,
@@ -594,7 +766,7 @@ class LightingConfig {
     this.syncWarmToTorch = false,
     this.syncMysticToSoul = true,
     this.shadowStyle = 'soft_shadows',
-    this.shadowTexelSize = 1024,
+    this.shadowTexelSize = 16,
   });
 
   // Convenience color getters
@@ -610,19 +782,37 @@ class LightingConfig {
   double get sunIlluminanceNoon =>
       (109880.0 * sunBrightnessMultiplier).clamp(0.01, 200000.0);
 
+  /// Total number of available point-light capable blocks across all groups.
+  static int get totalPointLightBlocks {
+    int countNonArea(List<String> list) =>
+        list.where((b) => !areaEmitterBlockIds.contains(b)).length;
+    return countNonArea(torchBlocks) +
+        countNonArea(lanternBlocks) +
+        countNonArea(soulBlocks) +
+        countNonArea(candleBlocks) +
+        countNonArea(redstoneBlocks) +
+        countNonArea(endRodBlocks) +
+        countNonArea(copperBlocks);
+  }
+
   /// Counts total block entries whose `light_type` is `'point_light'`.
+  /// Note: Area emitters (bulbs, lamps, froglights, glowstone, etc.) are always static
+  /// and excluded from the real-time shadow casting point-light GPU budget.
   int countPointLightBlocks() {
+    int countNonArea(List<String> list) =>
+        list.where((b) => !areaEmitterBlockIds.contains(b)).length;
+
     var count = 0;
-    if (torches.isPointLight) count += torchBlocks.length;
-    if (lanterns.isPointLight) count += lanternBlocks.length;
+    if (torches.isPointLight) count += countNonArea(torchBlocks);
+    if (lanterns.isPointLight) count += countNonArea(lanternBlocks);
     if (soulFire.isPointLight) {
-      count += soulBlocks.length;
-      if (syncMysticToSoul) count += mysticBlocks.length;
+      count += countNonArea(soulBlocks);
+      if (syncMysticToSoul) count += countNonArea(mysticBlocks);
     }
-    if (candles.isPointLight) count += candleBlocks.length;
-    if (redstone.isPointLight) count += redstoneBlocks.length;
-    if (endRod.isPointLight) count += endRodBlocks.length;
-    if (copper.isPointLight) count += copperBlocks.length;
+    if (candles.isPointLight) count += countNonArea(candleBlocks);
+    if (redstone.isPointLight) count += countNonArea(redstoneBlocks);
+    if (endRod.isPointLight) count += countNonArea(endRodBlocks);
+    if (copper.isPointLight) count += countNonArea(copperBlocks);
     return count;
   }
 
@@ -696,10 +886,10 @@ class FogConfig {
 
   final Color airFogColor;
 
-  /// range `0.05..0.99`, default `0.52`
+  /// range `0.05..0.99`, default `0.92`
   final double airFogStart;
 
-  /// range `0.1..1.0`, default `0.80`
+  /// range `0.1..1.0`, default `1.0`
   final double airFogEnd;
 
   // ── Weather fog ───────────────────────────────────────────
@@ -750,8 +940,8 @@ class FogConfig {
 
   const FogConfig({
     this.airFogColor = const Color(0xFFB8D8F0),
-    this.airFogStart = 0.52,
-    this.airFogEnd = 0.80,
+    this.airFogStart = 0.92,
+    this.airFogEnd = 1.0,
     this.weatherFogColor = const Color(0xFF5A636A),
     this.weatherFogStart = 0.56,
     this.weatherFogEnd = 0.86,
@@ -934,7 +1124,7 @@ class WaterPresetConfig {
     this.wavesEnabled = true,
     this.wavesFrequency = 1.338,
     this.wavesOctaves = 16,
-    this.wavesDepth = 0.074,
+    this.wavesDepth = 1.0,
     this.wavesSampleWidth = 0.115,
     this.wavesSpeed = 2.383,
     this.wavesPull = 0.35,
@@ -1167,6 +1357,17 @@ class ColorGradingConfig {
     'generic',
   };
 
+  /// Normalizes and migrates old/deprecated operator values:
+  /// filmic -> hable, neutral -> generic.
+  static String normalizeOperator(String? op) {
+    if (op == null) return 'aces';
+    final cleaned = op.trim().toLowerCase();
+    if (cleaned == 'filmic') return 'hable';
+    if (cleaned == 'neutral') return 'generic';
+    if (validOperators.contains(cleaned)) return cleaned;
+    return 'aces';
+  }
+
   static const List<String> moodNames = [
     'dynamic',
     'vibrant',
@@ -1238,7 +1439,7 @@ class ColorGradingConfig {
   final List<double> shadowsSaturation;
 
   const ColorGradingConfig({
-    this.toneMappingOperator = 'hable',
+    String toneMappingOperator = 'hable',
     this.temperatureEnabled = true,
     this.temperatureType = 'white_balance',
     this.temperature = 6500.0,
@@ -1261,7 +1462,11 @@ class ColorGradingConfig {
     this.shadowsGamma = const [2.2, 2.2, 2.2],
     this.shadowsOffset = const [0.0, 0.0, 0.0],
     this.shadowsSaturation = const [1.1, 1.1, 1.1],
-  });
+  }) : toneMappingOperator = (toneMappingOperator == 'filmic')
+            ? 'hable'
+            : (toneMappingOperator == 'neutral')
+                ? 'generic'
+                : toneMappingOperator;
 
   /// Scalar constructor for convenience when uniform RGB channels are desired.
   factory ColorGradingConfig.scalar({
@@ -1323,11 +1528,12 @@ class ColorGradingConfig {
     String toneMappingOperator = 'hable',
     ColorGradingConfig? base,
   }) {
+    final effectiveOp = normalizeOperator(toneMappingOperator);
     final b = base ?? const ColorGradingConfig();
     switch (mood) {
       case 'vibrant':
         return b.withScalars(
-          toneMappingOperator: toneMappingOperator,
+          toneMappingOperator: effectiveOp,
           temperature: 6200.0,
           midtonesSaturation: 1.28,
           midtonesContrast: 1.38,
@@ -1336,7 +1542,7 @@ class ColorGradingConfig {
         );
       case 'savanna':
         return b.withScalars(
-          toneMappingOperator: toneMappingOperator,
+          toneMappingOperator: effectiveOp,
           temperature: 5400.0,
           midtonesSaturation: 1.12,
           midtonesContrast: 1.30,
@@ -1344,7 +1550,7 @@ class ColorGradingConfig {
         );
       case 'frost':
         return b.withScalars(
-          toneMappingOperator: toneMappingOperator,
+          toneMappingOperator: effectiveOp,
           temperature: 8200.0,
           midtonesSaturation: 0.94,
           midtonesContrast: 1.22,
@@ -1352,7 +1558,7 @@ class ColorGradingConfig {
         );
       case 'moody':
         return b.withScalars(
-          toneMappingOperator: toneMappingOperator,
+          toneMappingOperator: effectiveOp,
           temperature: 7000.0,
           midtonesSaturation: 0.78,
           midtonesContrast: 1.42,
@@ -1362,7 +1568,7 @@ class ColorGradingConfig {
         );
       case 'dynamic':
       default:
-        return b.copyWith(toneMappingOperator: toneMappingOperator);
+        return b.copyWith(toneMappingOperator: effectiveOp);
     }
   }
 
@@ -1507,16 +1713,16 @@ class SurfaceConfig {
   /// Emissive fallback `0..255`, default `0`.
   final int emissive;
 
-  /// Roughness fallback `0..255`, default `235` (subtle `0.08` shininess; `255` = matte).
+  /// Roughness fallback `0..255`, default `255` (`255` = matte; default PBR is [0, 0, 255, 0]).
   final int roughness;
 
-  /// Subsurface scattering fallback `0..255`, default `0` (actors use `32` if desired, or `0`).
+  /// Subsurface scattering fallback `0..255`, default `0`.
   final int subsurface;
 
   const SurfaceConfig({
     this.metalness = 0,
     this.emissive = 0,
-    this.roughness = 235,
+    this.roughness = 255,
     this.subsurface = 0,
   });
 
@@ -1589,10 +1795,10 @@ class PerformanceTierConfig {
     this.octavesMedium = 8,
     this.octavesHigh = 16,
     this.octavesUltra = 28,
-    this.texelLow = 512,
-    this.texelMedium = 1024,
-    this.texelHigh = 1024,
-    this.texelUltra = 1024,
+    this.texelLow = 16,
+    this.texelMedium = 32,
+    this.texelHigh = 64,
+    this.texelUltra = 128,
     this.exportAllTiers = true,
     this.styleIntensityLite = false,
   });

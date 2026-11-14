@@ -4000,21 +4000,7 @@ class _VVLightingPreviewPainter extends CustomPainter {
       canvas.drawRect(Rect.fromLTWH(cx + 8, cy - 3.5, c.cw * 0.56, 4.0), Paint()..color = cloudTopCol);
     }
 
-    // Optional Lightning Flash when flashIlluminance > 0
-    if (lighting.flashIlluminance > 1.0) {
-      final flashStrength = (lighting.flashIlluminance / 20000.0).clamp(0.08, 1.0);
-      final pulse = (0.35 + 0.65 * math.max(0.0, math.sin(motion * math.pi * 8))).clamp(0.25, 1.0);
-      canvas.drawRect(
-        Rect.fromLTWH(0, 0, w, horizonY + 10),
-        Paint()..color = lighting.flashColor.withValues(alpha: flashStrength * pulse * 0.26),
-      );
-      final boltX = w * 0.87;
-      final boltPaint = Paint()..color = Color.lerp(lighting.flashColor, Colors.white, 0.55)!.withValues(alpha: flashStrength * 0.9);
-      canvas.drawRect(Rect.fromLTWH(boltX, 4, 3, 18), boltPaint);
-      canvas.drawRect(Rect.fromLTWH(boltX - 5, 20, 7, 3), boltPaint);
-      canvas.drawRect(Rect.fromLTWH(boltX - 5, 22, 3, 20), boltPaint);
-      canvas.drawRect(Rect.fromLTWH(boltX - 10, 40, 7, 3), boltPaint);
-    }
+
 
     // 4. Broad Perspective Minecraft Grass Meadow + Pond + Foreground Grass/Dirt Blocks
     final ambientTintStrength = (0.10 + (lighting.ambientIlluminance / 5.0) * 0.35).clamp(0.08, 0.45);
@@ -5583,6 +5569,8 @@ class VVBiomesPreviewBanner extends StatelessWidget {
   final double waterOpacity;
   final String precipitationType;
   final double precipitationDensity;
+  final double flashIlluminance;
+  final Color flashColor;
 
   const VVBiomesPreviewBanner({
     super.key,
@@ -5594,6 +5582,8 @@ class VVBiomesPreviewBanner extends StatelessWidget {
     required this.waterOpacity,
     required this.precipitationType,
     required this.precipitationDensity,
+    this.flashIlluminance = 0.0,
+    this.flashColor = const Color(0xFFB600FF),
   });
 
   @override
@@ -5602,6 +5592,7 @@ class VVBiomesPreviewBanner extends StatelessWidget {
       badgeText: 'BIOME · ${biomeLabel.toUpperCase()}',
       child: CustomPaint(
         painter: _VVBiomePreviewPainter(
+          biomeLabel: biomeLabel,
           skyColor: skyColor,
           grassColor: grassColor,
           foliageColor: foliageColor,
@@ -5609,6 +5600,8 @@ class VVBiomesPreviewBanner extends StatelessWidget {
           waterOpacity: waterOpacity,
           precipitationType: precipitationType,
           precipitationDensity: precipitationDensity,
+          flashIlluminance: flashIlluminance,
+          flashColor: flashColor,
         ),
       ),
     );
@@ -5616,6 +5609,7 @@ class VVBiomesPreviewBanner extends StatelessWidget {
 }
 
 class _VVBiomePreviewPainter extends CustomPainter {
+  final String biomeLabel;
   final Color skyColor;
   final Color grassColor;
   final Color foliageColor;
@@ -5623,8 +5617,11 @@ class _VVBiomePreviewPainter extends CustomPainter {
   final double waterOpacity;
   final String precipitationType;
   final double precipitationDensity;
+  final double flashIlluminance;
+  final Color flashColor;
 
   const _VVBiomePreviewPainter({
+    required this.biomeLabel,
     required this.skyColor,
     required this.grassColor,
     required this.foliageColor,
@@ -5632,6 +5629,8 @@ class _VVBiomePreviewPainter extends CustomPainter {
     required this.waterOpacity,
     required this.precipitationType,
     required this.precipitationDensity,
+    this.flashIlluminance = 0.0,
+    this.flashColor = const Color(0xFFB600FF),
   });
 
   @override
@@ -5649,6 +5648,16 @@ class _VVBiomePreviewPainter extends CustomPainter {
           colors: [skyColor, Color.lerp(skyColor, Colors.white, 0.35)!],
         ).createShader(Rect.fromLTWH(0, 0, w, horY)),
     );
+
+    // End Flash rendering strictly for The End dimension preview
+    final isEnd = biomeLabel.toLowerCase().contains('end');
+    if (isEnd && flashIlluminance > 1.0) {
+      final flashStrength = (flashIlluminance / 20000.0).clamp(0.08, 1.0);
+      canvas.drawRect(
+        Rect.fromLTWH(0, 0, w, horY),
+        Paint()..color = flashColor.withValues(alpha: flashStrength * 0.45),
+      );
+    }
 
     // Grass terrain & dirt base
     canvas.drawRect(Rect.fromLTWH(0, horY, w * 0.62, 12), Paint()..color = grassColor);
@@ -5684,13 +5693,16 @@ class _VVBiomePreviewPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _VVBiomePreviewPainter old) =>
+      old.biomeLabel != biomeLabel ||
       old.skyColor != skyColor ||
       old.grassColor != grassColor ||
       old.foliageColor != foliageColor ||
       old.waterColor != waterColor ||
       old.waterOpacity != waterOpacity ||
       old.precipitationType != precipitationType ||
-      old.precipitationDensity != precipitationDensity;
+      old.precipitationDensity != precipitationDensity ||
+      old.flashIlluminance != flashIlluminance ||
+      old.flashColor != flashColor;
 }
 
 /// Tab 6: Surface & PBR Live Preview (Shininess / Metalness / Emissive / Subsurface cubes)
@@ -5892,7 +5904,7 @@ class VVExportPreviewBanner extends StatelessWidget {
   final String packName;
   final List<int>? version;
   final bool isValid;
-  final int tierCount;
+  final int? tierCount;
   final int? fileSizeInBytes;
 
   const VVExportPreviewBanner({
@@ -5901,7 +5913,7 @@ class VVExportPreviewBanner extends StatelessWidget {
     required this.packName,
     this.version,
     required this.isValid,
-    required this.tierCount,
+    this.tierCount,
     this.fileSizeInBytes,
   });
 
@@ -5973,7 +5985,9 @@ class VVExportPreviewBanner extends StatelessWidget {
                     ],
                     Flexible(
                       child: Text(
-                        tierCount == 1 ? '1 Quality Mode' : 'All Quality Modes (4 Tiers)',
+                        hasFinalSize
+                            ? 'Ready to Install · Vibrant Visuals'
+                            : 'Vibrant Visuals .mcpack',
                         style: const TextStyle(
                           color: Colors.white54,
                           fontSize: 11.5,

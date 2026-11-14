@@ -56,9 +56,9 @@ class TierProfile {
     blockLightsMode: BlockLightsMode.allStatic,
     fogDensityScale: 0.5,
     shadowStyle: 'blocky_shadows',
-    shadowTexelSize: 512,
+    shadowTexelSize: 16,
     pbrTextureSets: false,
-    memoryTier: 2,
+    memoryTier: 6,
   );
 
   static const TierProfile medium = TierProfile(
@@ -71,9 +71,9 @@ class TierProfile {
     blockLightsMode: BlockLightsMode.torchesLanternsSoulOnly,
     fogDensityScale: 0.75,
     shadowStyle: 'blocky_shadows',
-    shadowTexelSize: 1024,
+    shadowTexelSize: 32,
     pbrTextureSets: false,
-    memoryTier: 4,
+    memoryTier: 12,
   );
 
   static const TierProfile high = TierProfile(
@@ -86,9 +86,9 @@ class TierProfile {
     blockLightsMode: BlockLightsMode.allExceptCopper,
     fogDensityScale: 1.0,
     shadowStyle: 'soft_shadows',
-    shadowTexelSize: 1024,
+    shadowTexelSize: 64,
     pbrTextureSets: true,
-    memoryTier: 6,
+    memoryTier: 18,
   );
 
   static const TierProfile ultra = TierProfile(
@@ -101,9 +101,9 @@ class TierProfile {
     blockLightsMode: BlockLightsMode.allPointLights,
     fogDensityScale: 1.0,
     shadowStyle: 'soft_shadows',
-    shadowTexelSize: 1024,
+    shadowTexelSize: 128,
     pbrTextureSets: true,
-    memoryTier: 8,
+    memoryTier: 32,
   );
 
   static const List<TierProfile> all = [low, medium, high, ultra];
@@ -186,15 +186,9 @@ VVShaderConfig applyTierToConfig(VVShaderConfig cfg, TierProfile profile) {
       break;
   }
 
-  // Hardware tiers that require blocky_shadows enforce it for performance;
-  // higher tiers preserve explicit blocky_shadows selection from Light & Shadows tab.
-  final effectiveShadowStyle = profile.shadowStyle == 'blocky_shadows'
-      ? 'blocky_shadows'
-      : l.shadowStyle;
-  final effectiveTexelSize = (effectiveShadowStyle == 'blocky_shadows' &&
-          l.shadowStyle == 'blocky_shadows')
-      ? l.shadowTexelSize.clamp(1, 1024)
-      : profile.shadowTexelSize.clamp(1, 1024);
+  // Shadow style is a user choice, NOT tied to performance tiers.
+  final effectiveShadowStyle = l.shadowStyle;
+  final effectiveTexelSize = profile.shadowTexelSize.clamp(1, 1024);
 
   tierLighting = tierLighting.copyWith(
     shadowStyle: effectiveShadowStyle,
@@ -267,6 +261,46 @@ VVShaderConfig applyLiteStyle(VVShaderConfig cfg) {
   );
 }
 
+/// Detailed cost component breakdown for the 100-point performance score (Rule 27).
+class PerformanceScoreBreakdown {
+  /// Shadows: resolution + texel size (up to 25 pts).
+  final double shadows;
+
+  /// Volumetric fog: samples / steps / media density (up to 20 pts).
+  final double volumetricFog;
+
+  /// Point lights: count + radius (up to 20 pts).
+  final double pointLights;
+
+  /// Water: caustics + wave octaves (up to 15 pts).
+  final double waterWavesCaustics;
+
+  /// PBR fallback: subsurface / metalness (up to 10 pts).
+  final double pbrFallback;
+
+  /// Color grading enabled: tonemapping / curves (up to 10 pts).
+  final double colorGrading;
+
+  const PerformanceScoreBreakdown({
+    required this.shadows,
+    required this.volumetricFog,
+    required this.pointLights,
+    required this.waterWavesCaustics,
+    required this.pbrFallback,
+    required this.colorGrading,
+  });
+
+  /// Formatted explanation for UI tooltips (Rule 27).
+  String get tooltipText =>
+      'Performance Cost Breakdown (Total: 100 pts):\n'
+      '• Shadows (Resolution + Texel Size): ${shadows.round()} / 25 pts (25%)\n'
+      '• Volumetric Fog (Samples & Steps): ${volumetricFog.round()} / 20 pts (20%)\n'
+      '• Point Lights (Count & Radius): ${pointLights.round()} / 20 pts (20%)\n'
+      '• Water (Caustics + Wave Octaves): ${waterWavesCaustics.round()} / 15 pts (15%)\n'
+      '• PBR Fallback & Materials: ${pbrFallback.round()} / 10 pts (10%)\n'
+      '• Color Grading & Tonemapping: ${colorGrading.round()} / 10 pts (10%)';
+}
+
 /// Live performance estimation for UI feedback before export.
 class PerformanceScoreResult {
   /// `'Low' | 'Medium' | 'High' | 'Heavy'`
@@ -278,34 +312,50 @@ class PerformanceScoreResult {
   /// Number of blocks configured with `light_type == 'point_light'`.
   final int pointLightsCount;
 
-  /// Plain-language warnings for heavy configurations.
+  /// Plain-language warnings for heavy configurations, specifically explaining
+  /// mobile GPU memory bandwidth throttling (Rule 28).
   final List<String> warnings;
+
+  /// Detailed 100-pt breakdown of each weighted criterion (Rule 27).
+  final PerformanceScoreBreakdown breakdown;
 
   const PerformanceScoreResult({
     required this.scoreLabel,
     required this.numericScore,
     required this.pointLightsCount,
     required this.warnings,
+    required this.breakdown,
   });
 }
 
-/// Computes an estimated GPU/mobile performance score from [cfg].
+/// Computes an estimated GPU/mobile performance score from [cfg] based on the
+/// official 100-point formula (Rule 27) and evaluates mobile GPU throttling
+/// warnings (Rule 28).
 PerformanceScoreResult computePerformanceScore(VVShaderConfig cfg) {
   final warnings = <String>[];
   final pointLights = cfg.lighting.countPointLightBlocks();
 
-  // Base cost factors
-  var score = 0.0;
-
-  // 1. Point lights (up to ~31 blocks -> up to 35 pts)
-  score += (pointLights / 31.0) * 35.0;
-  if (pointLights > 20) {
-    warnings.add(
-      'High point-light count ($pointLights blocks) may lag mobile GPUs',
-    );
+  // 1. Shadows (Resolution + Texel Size): 25% (up to 25 pts)
+  double shadowCost;
+  if (cfg.lighting.shadowStyle == 'soft_shadows') {
+    shadowCost = 25.0;
+  } else {
+    // blocky shadows: texel size 1..1024
+    shadowCost = 5.0 + ((cfg.lighting.shadowTexelSize.clamp(1, 1024) / 1024.0) * 15.0);
   }
 
-  // 2. Water wave octaves & caustics (up to 30 pts)
+  // 2. Volumetric fog (Samples / Steps / Media): 20% (up to 20 pts)
+  final airFogCost = (cfg.fog.volumetricMaxDensity / 0.25).clamp(0.0, 1.0) * 12.0;
+  final waterFogCost =
+      (cfg.fog.underwaterVolumeDensity / 0.08).clamp(0.0, 1.0) * 8.0;
+  final volumetricCost = (airFogCost + waterFogCost).clamp(0.0, 20.0);
+
+  // 3. Point lights count + radius: 20% (up to 20 pts)
+  final totalBlocks = LightingConfig.totalPointLightBlocks;
+  final pointLightCost =
+      (pointLights / (totalBlocks > 0 ? totalBlocks : 44)).clamp(0.0, 1.0) * 20.0;
+
+  // 4. Caustics + Wave octaves: 15% (up to 15 pts)
   final maxOctaves = [
     cfg.waterTropical.wavesOctaves,
     cfg.waterOcean.wavesOctaves,
@@ -314,40 +364,77 @@ PerformanceScoreResult computePerformanceScore(VVShaderConfig cfg) {
     cfg.waterSwamp.wavesOctaves,
   ].reduce((a, b) => a > b ? a : b);
 
+  var waterCost = 0.0;
   if (cfg.waterGlobal.wavesEnabled) {
-    score += (maxOctaves / 30.0) * 22.0;
-    if (maxOctaves > 20) {
-      warnings.add(
-        'High water wave octaves ($maxOctaves) increase fragment shader cost',
-      );
-    }
+    waterCost += (maxOctaves.clamp(1, 30) / 30.0) * 10.0;
   }
   if (cfg.waterGlobal.causticsEnabled) {
-    score += 8.0;
+    waterCost += 5.0;
   }
+  waterCost = waterCost.clamp(0.0, 15.0);
 
-  // 3. Shadows (up to 20 pts)
-  if (cfg.lighting.shadowStyle == 'soft_shadows') {
-    score += 18.0;
-  } else {
-    score += (cfg.lighting.shadowTexelSize / 1024.0) * 10.0;
-  }
+  // 5. PBR Fallback: 10% (up to 10 pts)
+  // Subsurface scattering on deferred renderers adds G-buffer bandwidth cost
+  final pbrCost = 5.0 + ((cfg.surface.subsurface.clamp(0, 255) / 255.0) * 5.0);
 
-  // 4. Volumetric fog density (up to 15 pts)
-  score += (cfg.fog.volumetricMaxDensity / 0.25).clamp(0.0, 1.0) * 15.0;
-  if (cfg.fog.volumetricMaxDensity > 0.14) {
+  // 6. Color Grading & Tonemapping enabled: 10% (up to 10 pts)
+  const colorGradingCost = 10.0;
+
+  final breakdown = PerformanceScoreBreakdown(
+    shadows: shadowCost,
+    volumetricFog: volumetricCost,
+    pointLights: pointLightCost,
+    waterWavesCaustics: waterCost,
+    pbrFallback: pbrCost,
+    colorGrading: colorGradingCost,
+  );
+
+  final totalScore = (shadowCost +
+          volumetricCost +
+          pointLightCost +
+          waterCost +
+          pbrCost +
+          colorGradingCost)
+      .round()
+      .clamp(0, 100);
+
+  // Rule 28: Mobile GPU memory bandwidth throttling warnings
+  if (pointLights > 16) {
     warnings.add(
-      'Dense volumetric air fog may reduce framerate on low-end devices',
+      'Point lights count ($pointLights blocks > 16): mobile GPUs throttle quickly on deferred memory bandwidth.',
     );
   }
 
-  final intScore = score.round().clamp(0, 100);
+  if (cfg.lighting.shadowTexelSize < 16) {
+    warnings.add(
+      'Shadow texel size (${cfg.lighting.shadowTexelSize} < 16): mobile GPUs throttle quickly on deferred memory bandwidth.',
+    );
+  } else if (cfg.lighting.shadowStyle == 'soft_shadows' &&
+      cfg.performance.activeTier == PerformanceTier.low) {
+    warnings.add(
+      'Soft shadows on Low tier: mobile GPUs throttle quickly on deferred memory bandwidth (prefer blocky shadows for Low tier).',
+    );
+  }
+
+  if (cfg.waterGlobal.wavesEnabled && maxOctaves > 8) {
+    warnings.add(
+      'Water wave octaves ($maxOctaves > 8): high fragment noise ALU cost; mobile GPUs throttle quickly on deferred memory bandwidth.',
+    );
+  }
+
+  if (cfg.fog.volumetricMaxDensity > 0.05 &&
+      cfg.fog.underwaterVolumeDensity > 0.02) {
+    warnings.add(
+      'Volumetric media active on multiple layers (air + water): mobile GPUs throttle quickly on deferred memory bandwidth.',
+    );
+  }
+
   final String label;
-  if (intScore < 30) {
+  if (totalScore < 30) {
     label = 'Low';
-  } else if (intScore < 55) {
+  } else if (totalScore < 55) {
     label = 'Medium';
-  } else if (intScore < 80) {
+  } else if (totalScore < 80) {
     label = 'High';
   } else {
     label = 'Heavy';
@@ -355,8 +442,9 @@ PerformanceScoreResult computePerformanceScore(VVShaderConfig cfg) {
 
   return PerformanceScoreResult(
     scoreLabel: label,
-    numericScore: intScore,
+    numericScore: totalScore,
     pointLightsCount: pointLights,
     warnings: warnings,
+    breakdown: breakdown,
   );
 }

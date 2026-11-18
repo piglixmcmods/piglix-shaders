@@ -929,11 +929,16 @@ Map<String, dynamic> generateFog(
         'media_coefficients': {
           'air': {
             'scattering': airScattering,
+            'absorption': const [0.013, 0.021, 0.037],
           },
           'water': {
             'scattering': waterScattering,
             'absorption': waterAbsorption,
           },
+        },
+        'henyey_greenstein_g': {
+          'air': {'henyey_greenstein_g': 0.4},
+          'water': {'henyey_greenstein_g': 0.3},
         },
       },
     },

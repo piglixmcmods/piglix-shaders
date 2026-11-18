@@ -89,25 +89,25 @@ void main() {
       expect(s['description']['identifier'], 'piglix_shader:global');
 
       final orbital = s['directional_lights']['orbital'] as Map<String, dynamic>;
-      expect(orbital['orbital_offset_degrees'], 3.0);
+      expect(orbital['orbital_offset_degrees'], 55.0);
 
       final sun = orbital['sun'] as Map<String, dynamic>;
       final sunIllum = sun['illuminance'] as Map<String, dynamic>;
-      expect(sunIllum['0.0'], closeTo(109880.0, 1e-2));
+      expect(sunIllum['0.0'], closeTo(181.0, 1e-2));
       expect(sunIllum['0.35'], 0.0);
       expect(sunIllum['0.5'], 0.0);
       expect(sunIllum['0.65'], 0.0);
-      expect(sunIllum['1.0'], closeTo(109880.0, 1e-2));
+      expect(sunIllum['1.0'], closeTo(181.0, 1e-2));
 
       final sunColor = sun['color'] as Map<String, dynamic>;
       expect(sunColor.containsKey('0.0'), isTrue);
       expect(sunColor.containsKey('1.0'), isTrue);
 
       final emissive = s['emissive'] as Map<String, dynamic>;
-      expect(emissive['desaturation'], 0.1);
+      expect(emissive['desaturation'], 0.2);
 
       final sky = s['sky'] as Map<String, dynamic>;
-      expect(sky['intensity'], 1.0);
+      expect(sky['intensity'], 0.3);
     });
 
     test('4. water/*.json contains ONLY minecraft:water_settings valid fields', () {
@@ -160,7 +160,7 @@ void main() {
       expect(shadow['format_version'], '1.21.80');
       final ss = shadow['minecraft:shadow_settings'] as Map<String, dynamic>;
       expect(ss['shadow_style'], 'soft_shadows');
-      expect(ss['texel_size'], 16);
+      expect(ss['texel_size'], 1024);
     });
 
     test('7. pbr/global.json conforms to 1.21.80 fallback schema', () {

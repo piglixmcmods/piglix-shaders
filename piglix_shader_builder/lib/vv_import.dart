@@ -403,8 +403,9 @@ LightingConfig _parseLighting(
   final sky = _asMap(settings['sky']);
 
   final noonLux = _sampleDoubleKeyframe(sun?['illuminance'], 0.0);
+  final baseLux = LightingConfig.mojangSunLuxCurve['0.0'] ?? 181.0;
   final sunMult = noonLux != null
-      ? (noonLux / 109880.0).clamp(0.1, 2.0)
+      ? (noonLux / baseLux).clamp(0.1, 2.0)
       : base.sunBrightnessMultiplier;
 
   final sunColorRaw = sun?['color'];

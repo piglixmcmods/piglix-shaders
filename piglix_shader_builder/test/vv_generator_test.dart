@@ -159,7 +159,7 @@ void main() {
         expect(orbital['orbital_offset_degrees'], closeTo(42.5, 1e-4));
 
       final sun = orbital['sun'] as Map<String, dynamic>;
-      expect(sun['illuminance']['0.0'], closeTo(109880.0 * 1.5, 1e-2));
+      expect(sun['illuminance']['0.0'], closeTo(181.0 * 1.5, 1e-2));
       expect(sun['color'], isA<Map<String, dynamic>>());
 
         final moon = orbital['moon'] as Map<String, dynamic>;

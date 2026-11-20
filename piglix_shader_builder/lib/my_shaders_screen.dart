@@ -115,6 +115,22 @@ class UserShaderStore {
           await _repairManifestFromDisk(dirPath);
         }
       } else {
+        if (kIsWeb) {
+          // On Web, seed immediately in memory without blocking or downloading 6.1MB base_shader.zip
+          shaders.clear();
+          shaders.add(
+            UserShaderItem(
+              id: 'shader_vibrant_default',
+              name: 'Piglix Vibrant Horizon',
+              date: DateTime.now().subtract(const Duration(hours: 2)),
+              byteSize: 6051246,
+              localFilePath: null,
+              previewColor: const Color(0xFF22C55E),
+              engine: 'Vibrant Engine (JSON Deferred)',
+            ),
+          );
+          return;
+        }
         // Seed default shaders with real base shader template bytes
         await _seedDefaultShaders(dirPath);
       }

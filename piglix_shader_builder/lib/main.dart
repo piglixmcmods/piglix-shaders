@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:ui';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'new_ui.dart';
@@ -60,12 +62,24 @@ void main() async {
     );
   };
 
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+  if (!kIsWeb) {
+    try {
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    } catch (_) {}
+  }
+
   await AppThemeController.init();
-  await UserShaderStore.init();
+
+  if (kIsWeb) {
+    // On web, initialize UserShaderStore asynchronously without blocking the first frame render
+    unawaited(UserShaderStore.init());
+  } else {
+    await UserShaderStore.init();
+  }
+
   runApp(const PiglixProApp());
 }
 

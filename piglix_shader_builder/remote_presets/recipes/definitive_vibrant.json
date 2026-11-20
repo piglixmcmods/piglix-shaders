@@ -1,0 +1,103 @@
+{
+  "id": "definitive_vibrant",
+  "name": "Definitive Vibrant Visuals",
+  "clean_inspired_name": "Autumn Amber (Golden Sunset)",
+  "creator": "Piglix Labs",
+  "description": "Ultra-popular Bedrock deferred shader featuring rich autumn golden-amber sunlight, honey-orange sky horizons, and warm 60 FPS performance.",
+  "rating": 4.93,
+  "accent_color": "#F59E0B",
+  "tags": [
+    "Definitive",
+    "Autumn Amber",
+    "Golden Sunlight",
+    "Top Rated"
+  ],
+  "atmosphere": {
+    "sun_size": 1.0,
+    "night_vision": 1.0,
+    "fog_density": 1.0,
+    "cloud_type": "Realistic 3D",
+    "volumetric_fog_profile": "Balanced",
+    "rayleigh_noon": 1.1,
+    "rayleigh_sunset": 0.5,
+    "rayleigh_sunrise": 0.7,
+    "rayleigh_night": 0.9,
+    "sun_glow_noon": 0.3,
+    "sun_glow_sunset": 0.4,
+    "sun_glow_sunrise": 0.3,
+    "moon_glow": 2.2,
+    "noon_zenith": "#D97706",
+    "noon_horizon": "#FEF3C7",
+    "sunset_zenith": "#B45309",
+    "sunset_horizon": "#EA580C",
+    "night_zenith": "#1C1917",
+    "night_horizon": "#292524",
+    "sunrise_zenith": "#F59E0B",
+    "sunrise_horizon": "#FFBE53",
+    "morning_color": "#FFBE53",
+    "noon_color": "#F59E0B",
+    "evening_color": "#EA580C",
+    "night_color": "#1C1917"
+  },
+  "lighting": {
+    "sun_brightness_multiplier": 1.0,
+    "sun_color_noon": "#FDE68A",
+    "sun_color_sunrise": "#FF9A3C",
+    "sun_color_sunset": "#EA580C",
+    "night_moon_color": "#FDE68A",
+    "moon_illuminance": 2.0,
+    "ambient_illuminance": 0.3,
+    "ambient_color": "#1E1714",
+    "sky_intensity": 0.4,
+    "shadow_style": "soft_shadows",
+    "shadow_texel_size": 1024,
+    "torch_color": "#FF9933",
+    "light_intensity": 1.0,
+    "block_light_intensity": 1.0,
+    "shadow_quality": "High",
+    "enable_point_light_shadows": true,
+    "ray_morning_color": "#FF9A3C",
+    "ray_noon_color": "#FDE68A",
+    "ray_evening_color": "#EA580C",
+    "ray_night_color": "#F59E0B"
+  },
+  "water": {
+    "water_color": "#0284C7",
+    "wind_speed": 1.0,
+    "water_quality": "High",
+    "underwater_caustics": true,
+    "water_fog_color": "#0284C7",
+    "water_fog_end": 60.0,
+    "rain_fog_color": "#382E2B",
+    "rain_water_color": "#1E3A4B"
+  },
+  "color_grading": {
+    "tone_mapping_operator": "aces",
+    "biome_tone": "Dynamic",
+    "saturation": 1.02,
+    "contrast": 1.25,
+    "auto_exposure": 1.0,
+    "midtones_contrast": [
+      1.25,
+      1.25,
+      1.25
+    ],
+    "midtones_saturation": [
+      1.02,
+      1.02,
+      1.02
+    ],
+    "midtones_gain": [
+      1.18,
+      1.18,
+      1.18
+    ]
+  },
+  "pbr": {
+    "world_reflections": true,
+    "enable_pbr": true,
+    "metalness": 0.0,
+    "waving_foliage": true,
+    "foliage_wave_speed": 1.0
+  }
+}

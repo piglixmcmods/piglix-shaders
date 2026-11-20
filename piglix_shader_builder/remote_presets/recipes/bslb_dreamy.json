@@ -1,0 +1,97 @@
+{
+  "id": "bslb_dreamy",
+  "name": "BSLB Dreamy Visuals",
+  "clean_inspired_name": "Dreamy Violet (Soft Bloom)",
+  "creator": "Piglix Labs",
+  "description": "Dreamy cinematic look with soft pastel skies, deep rich blues, and balanced bloom.",
+  "rating": 4.87,
+  "accent_color": "#818CF8",
+  "tags": [
+    "BSLB",
+    "Dreamy Bloom",
+    "Cinematic",
+    "Pastel Skies"
+  ],
+  "atmosphere": {
+    "sun_size": 1.05,
+    "night_vision": 1.05,
+    "fog_density": 1.0,
+    "cloud_type": "Realistic 3D",
+    "volumetric_fog_profile": "Cinematic",
+    "rayleigh_noon": 0.95,
+    "sun_glow_noon": 2.2,
+    "noon_zenith": "#6A5ACD",
+    "noon_horizon": "#B0C4DE",
+    "sunset_zenith": "#483D8B",
+    "sunset_horizon": "#D8BFD8",
+    "night_zenith": "#191970",
+    "night_horizon": "#483D8B",
+    "sunrise_zenith": "#9370DB",
+    "sunrise_horizon": "#E6E6FA",
+    "morning_color": "#E6E6FA",
+    "noon_color": "#9370DB",
+    "evening_color": "#D8BFD8",
+    "night_color": "#191970"
+  },
+  "lighting": {
+    "sun_brightness_multiplier": 0.95,
+    "sun_color_noon": "#F8F8FF",
+    "sun_color_sunrise": "#E6E6FA",
+    "sun_color_sunset": "#DDA0DD",
+    "night_moon_color": "#9370DB",
+    "moon_illuminance": 1.9,
+    "ambient_illuminance": 0.18,
+    "ambient_color": "#1E1A2E",
+    "sky_intensity": 0.42,
+    "shadow_style": "soft_shadows",
+    "shadow_texel_size": 1024,
+    "torch_color": "#FFA07A",
+    "light_intensity": 0.95,
+    "block_light_intensity": 1.05,
+    "shadow_quality": "High",
+    "enable_point_light_shadows": true,
+    "ray_morning_color": "#E6E6FA",
+    "ray_noon_color": "#F8F8FF",
+    "ray_evening_color": "#DDA0DD",
+    "ray_night_color": "#9370DB"
+  },
+  "water": {
+    "water_color": "#4682B4",
+    "wind_speed": 0.95,
+    "water_quality": "High",
+    "underwater_caustics": true,
+    "water_fog_color": "#4682B4",
+    "water_fog_end": 55.0,
+    "rain_fog_color": "#3A354A",
+    "rain_water_color": "#2A3045"
+  },
+  "color_grading": {
+    "tone_mapping_operator": "aces",
+    "biome_tone": "Dreamy",
+    "saturation": 1.06,
+    "contrast": 1.08,
+    "auto_exposure": 1.0,
+    "midtones_contrast": [
+      1.08,
+      1.08,
+      1.08
+    ],
+    "midtones_saturation": [
+      1.06,
+      1.06,
+      1.06
+    ],
+    "midtones_gain": [
+      1.12,
+      1.12,
+      1.12
+    ]
+  },
+  "pbr": {
+    "world_reflections": true,
+    "enable_pbr": true,
+    "metalness": 0.04,
+    "waving_foliage": true,
+    "foliage_wave_speed": 0.9
+  }
+}

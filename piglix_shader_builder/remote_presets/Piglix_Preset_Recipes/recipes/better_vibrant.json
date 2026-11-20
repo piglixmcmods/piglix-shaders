@@ -1,0 +1,97 @@
+{
+  "id": "better_vibrant",
+  "name": "Better Vibrant Visuals",
+  "clean_inspired_name": "Vanilla Plus (Vivid Warmth)",
+  "creator": "Piglix Labs",
+  "description": "Enhanced vanilla deferred experience with vivid natural colors, warm lighting, and crisp shadows.",
+  "rating": 4.86,
+  "accent_color": "#FBBF24",
+  "tags": [
+    "Better Vibrant",
+    "Vanilla Plus",
+    "Clean Sun",
+    "Fast 60FPS"
+  ],
+  "atmosphere": {
+    "sun_size": 1.0,
+    "night_vision": 1.0,
+    "fog_density": 0.95,
+    "cloud_type": "Realistic 3D",
+    "volumetric_fog_profile": "Balanced",
+    "rayleigh_noon": 1.05,
+    "sun_glow_noon": 0.25,
+    "noon_zenith": "#1E90FF",
+    "noon_horizon": "#B0E0E6",
+    "sunset_zenith": "#FF6347",
+    "sunset_horizon": "#FF8C00",
+    "night_zenith": "#0A192F",
+    "night_horizon": "#1E2A3A",
+    "sunrise_zenith": "#FF7F50",
+    "sunrise_horizon": "#FFA500",
+    "morning_color": "#FFA500",
+    "noon_color": "#1E90FF",
+    "evening_color": "#FF6347",
+    "night_color": "#0A192F"
+  },
+  "lighting": {
+    "sun_brightness_multiplier": 1.05,
+    "sun_color_noon": "#FFFFFA",
+    "sun_color_sunrise": "#FFA500",
+    "sun_color_sunset": "#FF4500",
+    "night_moon_color": "#B0C4DE",
+    "moon_illuminance": 2.0,
+    "ambient_illuminance": 0.22,
+    "ambient_color": "#121A24",
+    "sky_intensity": 0.45,
+    "shadow_style": "soft_shadows",
+    "shadow_texel_size": 1024,
+    "torch_color": "#FF9933",
+    "light_intensity": 1.0,
+    "block_light_intensity": 1.05,
+    "shadow_quality": "High",
+    "enable_point_light_shadows": true,
+    "ray_morning_color": "#FFA500",
+    "ray_noon_color": "#FFFFFA",
+    "ray_evening_color": "#FF4500",
+    "ray_night_color": "#B0C4DE"
+  },
+  "water": {
+    "water_color": "#20B2AA",
+    "wind_speed": 1.0,
+    "water_quality": "High",
+    "underwater_caustics": true,
+    "water_fog_color": "#20B2AA",
+    "water_fog_end": 65.0,
+    "rain_fog_color": "#2C3E50",
+    "rain_water_color": "#1A252F"
+  },
+  "color_grading": {
+    "tone_mapping_operator": "aces",
+    "biome_tone": "Natural",
+    "saturation": 1.08,
+    "contrast": 1.15,
+    "auto_exposure": 1.0,
+    "midtones_contrast": [
+      1.15,
+      1.15,
+      1.15
+    ],
+    "midtones_saturation": [
+      1.08,
+      1.08,
+      1.08
+    ],
+    "midtones_gain": [
+      1.05,
+      1.05,
+      1.05
+    ]
+  },
+  "pbr": {
+    "world_reflections": true,
+    "enable_pbr": true,
+    "metalness": 0.02,
+    "waving_foliage": true,
+    "foliage_wave_speed": 1.0
+  }
+}

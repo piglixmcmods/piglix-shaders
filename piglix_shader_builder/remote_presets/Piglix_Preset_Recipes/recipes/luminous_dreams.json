@@ -1,0 +1,97 @@
+{
+  "id": "luminous_dreams",
+  "name": "Luminous Dreams",
+  "clean_inspired_name": "Luminous Tropics (Emerald Glow)",
+  "creator": "Piglix Labs",
+  "description": "Lush tropical atmosphere with vivid saturated foliage, vibrant sun shafts, and crystal clear ocean waters.",
+  "rating": 4.89,
+  "accent_color": "#22C55E",
+  "tags": [
+    "Luminous",
+    "Tropical",
+    "Volumetric",
+    "Vibrant"
+  ],
+  "atmosphere": {
+    "sun_size": 1.2,
+    "night_vision": 1.0,
+    "fog_density": 0.9,
+    "cloud_type": "Realistic 3D",
+    "volumetric_fog_profile": "Cinematic",
+    "rayleigh_noon": 1.0,
+    "sun_glow_noon": 3.0,
+    "noon_zenith": "#1E90FF",
+    "noon_horizon": "#87CEFA",
+    "sunset_zenith": "#FF7F50",
+    "sunset_horizon": "#FFA500",
+    "night_zenith": "#0A0E1A",
+    "night_horizon": "#191970",
+    "sunrise_zenith": "#FFA07A",
+    "sunrise_horizon": "#FFD700",
+    "morning_color": "#FFD700",
+    "noon_color": "#00BFFF",
+    "evening_color": "#FF6347",
+    "night_color": "#0A0E1A"
+  },
+  "lighting": {
+    "sun_brightness_multiplier": 1.2,
+    "sun_color_noon": "#FFFFE0",
+    "sun_color_sunrise": "#FFD700",
+    "sun_color_sunset": "#FF4500",
+    "night_moon_color": "#87CEFA",
+    "moon_illuminance": 1.8,
+    "ambient_illuminance": 0.25,
+    "ambient_color": "#141E28",
+    "sky_intensity": 0.5,
+    "shadow_style": "soft_shadows",
+    "shadow_texel_size": 1024,
+    "torch_color": "#FFA500",
+    "light_intensity": 1.1,
+    "block_light_intensity": 1.1,
+    "shadow_quality": "High",
+    "enable_point_light_shadows": true,
+    "ray_morning_color": "#FFD700",
+    "ray_noon_color": "#FFFFE0",
+    "ray_evening_color": "#FF4500",
+    "ray_night_color": "#87CEFA"
+  },
+  "water": {
+    "water_color": "#00CED1",
+    "wind_speed": 1.2,
+    "water_quality": "Ultra",
+    "underwater_caustics": true,
+    "water_fog_color": "#00CED1",
+    "water_fog_end": 75.0,
+    "rain_fog_color": "#2F4F4F",
+    "rain_water_color": "#008B8B"
+  },
+  "color_grading": {
+    "tone_mapping_operator": "aces",
+    "biome_tone": "Lush",
+    "saturation": 1.15,
+    "contrast": 1.12,
+    "auto_exposure": 1.05,
+    "midtones_contrast": [
+      1.12,
+      1.12,
+      1.12
+    ],
+    "midtones_saturation": [
+      1.15,
+      1.15,
+      1.15
+    ],
+    "midtones_gain": [
+      1.05,
+      1.05,
+      1.05
+    ]
+  },
+  "pbr": {
+    "world_reflections": true,
+    "enable_pbr": true,
+    "metalness": 0.08,
+    "waving_foliage": true,
+    "foliage_wave_speed": 1.1
+  }
+}

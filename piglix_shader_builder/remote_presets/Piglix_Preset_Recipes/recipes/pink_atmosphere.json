@@ -1,0 +1,97 @@
+{
+  "id": "pink_atmosphere",
+  "name": "Pink Atmosphere (Sakura Bliss)",
+  "clean_inspired_name": "Sakura Bliss (Pink Atmosphere)",
+  "creator": "Piglix Labs",
+  "description": "Signature Piglix shader with dreamlike sakura pink horizons, warm rosy daylight, and cherry bloom glow.",
+  "rating": 4.92,
+  "accent_color": "#EC4899",
+  "tags": [
+    "Sakura",
+    "Pink Paradise",
+    "Anime Skies",
+    "Bloom Glow"
+  ],
+  "atmosphere": {
+    "sun_size": 1.15,
+    "night_vision": 1.1,
+    "fog_density": 0.9,
+    "cloud_type": "Realistic 3D",
+    "volumetric_fog_profile": "Cinematic",
+    "rayleigh_noon": 0.85,
+    "sun_glow_noon": 2.8,
+    "noon_zenith": "#F472B6",
+    "noon_horizon": "#FDF2F8",
+    "sunset_zenith": "#DB2777",
+    "sunset_horizon": "#F472B6",
+    "night_zenith": "#2E1065",
+    "night_horizon": "#4C1D95",
+    "sunrise_zenith": "#F472B6",
+    "sunrise_horizon": "#FDF2F8",
+    "morning_color": "#FDF2F8",
+    "noon_color": "#F472B6",
+    "evening_color": "#DB2777",
+    "night_color": "#2E1065"
+  },
+  "lighting": {
+    "sun_brightness_multiplier": 1.0,
+    "sun_color_noon": "#FFF5F7",
+    "sun_color_sunrise": "#F472B6",
+    "sun_color_sunset": "#DB2777",
+    "night_moon_color": "#C084FC",
+    "moon_illuminance": 2.1,
+    "ambient_illuminance": 0.16,
+    "ambient_color": "#26132A",
+    "sky_intensity": 0.45,
+    "shadow_style": "soft_shadows",
+    "shadow_texel_size": 1024,
+    "torch_color": "#F472B6",
+    "light_intensity": 1.05,
+    "block_light_intensity": 1.15,
+    "shadow_quality": "High",
+    "enable_point_light_shadows": true,
+    "ray_morning_color": "#FDF2F8",
+    "ray_noon_color": "#FFF5F7",
+    "ray_evening_color": "#DB2777",
+    "ray_night_color": "#C084FC"
+  },
+  "water": {
+    "water_color": "#38BDF8",
+    "wind_speed": 1.1,
+    "water_quality": "Ultra",
+    "underwater_caustics": true,
+    "water_fog_color": "#38BDF8",
+    "water_fog_end": 65.0,
+    "rain_fog_color": "#4A334B",
+    "rain_water_color": "#253D4A"
+  },
+  "color_grading": {
+    "tone_mapping_operator": "aces",
+    "biome_tone": "Sakura",
+    "saturation": 1.08,
+    "contrast": 1.12,
+    "auto_exposure": 1.0,
+    "midtones_contrast": [
+      1.12,
+      1.12,
+      1.12
+    ],
+    "midtones_saturation": [
+      1.08,
+      1.08,
+      1.08
+    ],
+    "midtones_gain": [
+      1.15,
+      1.15,
+      1.15
+    ]
+  },
+  "pbr": {
+    "world_reflections": true,
+    "enable_pbr": true,
+    "metalness": 0.05,
+    "waving_foliage": true,
+    "foliage_wave_speed": 1.05
+  }
+}

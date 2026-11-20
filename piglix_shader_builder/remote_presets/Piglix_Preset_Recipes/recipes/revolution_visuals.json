@@ -1,0 +1,95 @@
+{
+  "id": "revolution_visuals",
+  "name": "Revolution Vibrant Visuals",
+  "clean_inspired_name": "Azure Pure (Crystal Clean)",
+  "creator": "Piglix Labs",
+  "description": "Ultra-bright and clean daylight shader with crystal-clear azure skies, pure white sunlight, vivid lime foliage, and sparkling lagoon waters.",
+  "rating": 4.9,
+  "accent_color": "#38BDF8",
+  "tags": [
+    "Revolution",
+    "Bright Clean",
+    "Crystal Skies",
+    "Marketplace Grade"
+  ],
+  "atmosphere": {
+    "sun_size": 1.1,
+    "night_vision": 1.0,
+    "fog_density": 1.0,
+    "cloud_type": "Realistic 3D",
+    "volumetric_fog_profile": "Cinematic",
+    "rayleigh_noon": 1.15,
+    "sun_glow_noon": 0.3,
+    "noon_zenith": "#0284C7",
+    "noon_horizon": "#E0F2FE",
+    "sunset_zenith": "#38BDF8",
+    "sunset_horizon": "#7DD3FC",
+    "night_zenith": "#0F172A",
+    "night_horizon": "#1E293B",
+    "sunrise_zenith": "#38BDF8",
+    "sunrise_horizon": "#BAE6FD",
+    "morning_color": "#7DD3FC",
+    "noon_color": "#0284C7",
+    "evening_color": "#38BDF8",
+    "night_color": "#0F172A"
+  },
+  "lighting": {
+    "sun_brightness_multiplier": 1.0,
+    "sun_color_noon": "#FFFFFF",
+    "sun_color_sunrise": "#BAE6FD",
+    "sun_color_sunset": "#7DD3FC",
+    "ambient_illuminance": 0.3,
+    "ambient_color": "#1E293B",
+    "sky_intensity": 0.4,
+    "shadow_style": "soft_shadows",
+    "shadow_texel_size": 1024,
+    "torch_color": "#FF9933",
+    "light_intensity": 1.0,
+    "block_light_intensity": 1.1,
+    "shadow_quality": "High",
+    "enable_point_light_shadows": true,
+    "ray_morning_color": "#BAE6FD",
+    "ray_noon_color": "#FFFFFF",
+    "ray_evening_color": "#7DD3FC",
+    "ray_night_color": "#38BDF8"
+  },
+  "water": {
+    "water_color": "#06B6D4",
+    "wind_speed": 1.05,
+    "water_quality": "Ultra",
+    "underwater_caustics": true,
+    "water_fog_color": "#06B6D4",
+    "water_fog_end": 60.0,
+    "rain_fog_color": "#334155",
+    "rain_water_color": "#0284C7"
+  },
+  "color_grading": {
+    "tone_mapping_operator": "aces",
+    "biome_tone": "Vibrant",
+    "saturation": 1.1,
+    "contrast": 1.05,
+    "auto_exposure": 1.0,
+    "midtones_contrast": [
+      1.05,
+      1.05,
+      1.05
+    ],
+    "midtones_saturation": [
+      1.104,
+      1.104,
+      1.104
+    ],
+    "midtones_gain": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "pbr": {
+    "world_reflections": true,
+    "enable_pbr": true,
+    "metalness": 0.05,
+    "waving_foliage": true,
+    "foliage_wave_speed": 1.0
+  }
+}

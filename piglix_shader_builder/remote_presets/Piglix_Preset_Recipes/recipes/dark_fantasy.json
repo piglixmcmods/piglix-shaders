@@ -1,0 +1,96 @@
+{
+  "id": "dark_fantasy",
+  "name": "Dark Fantasy (Dark Souls)",
+  "clean_inspired_name": "Dark Souls (Ember Dusk)",
+  "creator": "Piglix Labs",
+  "description": "Grim, moody atmosphere inspired by Dark Souls with desaturated earthy tones, somber copper dusk horizons, Reinhard tonemapping, and blood-red sunset.",
+  "rating": 4.88,
+  "accent_color": "#94A3B8",
+  "tags": [
+    "Dark Souls",
+    "Grim Fantasy",
+    "Reinhard",
+    "Moody"
+  ],
+  "atmosphere": {
+    "sun_size": 0.9,
+    "night_vision": 1.3,
+    "fog_density": 1.3,
+    "cloud_type": "Realistic 3D",
+    "volumetric_fog_profile": "Cinematic",
+    "rayleigh_noon": 4.0,
+    "noon_zenith": "#677B78",
+    "noon_horizon": "#8C9B90",
+    "sunset_zenith": "#3C3232",
+    "sunset_horizon": "#E8823C",
+    "night_zenith": "#0F1420",
+    "night_horizon": "#1E2430",
+    "sunrise_zenith": "#4B4137",
+    "sunrise_horizon": "#B48250",
+    "morning_color": "#B48250",
+    "noon_color": "#677B78",
+    "evening_color": "#E8823C",
+    "night_color": "#0F1420"
+  },
+  "lighting": {
+    "sun_brightness_multiplier": 0.85,
+    "sun_color_noon": "#B4A664",
+    "sun_color_sunset": "#FF5014",
+    "sun_color_sunrise": "#B48250",
+    "night_moon_color": "#55648C",
+    "moon_illuminance": 1.2,
+    "ambient_illuminance": 0.08,
+    "ambient_color": "#0A0C10",
+    "sky_intensity": 0.3,
+    "shadow_style": "soft_shadows",
+    "shadow_texel_size": 1024,
+    "torch_color": "#FF7820",
+    "light_intensity": 0.85,
+    "block_light_intensity": 1.3,
+    "shadow_quality": "Ultra",
+    "enable_point_light_shadows": true,
+    "ray_morning_color": "#B48250",
+    "ray_noon_color": "#B4A664",
+    "ray_evening_color": "#FF5014",
+    "ray_night_color": "#55648C"
+  },
+  "water": {
+    "water_color": "#28323C",
+    "wind_speed": 0.8,
+    "water_quality": "High",
+    "underwater_caustics": false,
+    "water_fog_color": "#28323C",
+    "water_fog_end": 40.0,
+    "rain_fog_color": "#202528",
+    "rain_water_color": "#151820"
+  },
+  "color_grading": {
+    "tone_mapping_operator": "reinhard",
+    "biome_tone": "Moody",
+    "saturation": 0.82,
+    "contrast": 1.3,
+    "auto_exposure": 0.9,
+    "midtones_contrast": [
+      1.3,
+      1.3,
+      1.3
+    ],
+    "midtones_saturation": [
+      0.82,
+      0.82,
+      0.82
+    ],
+    "midtones_gain": [
+      0.92,
+      0.92,
+      0.92
+    ]
+  },
+  "pbr": {
+    "world_reflections": true,
+    "enable_pbr": true,
+    "metalness": 0.35,
+    "waving_foliage": true,
+    "foliage_wave_speed": 0.7
+  }
+}

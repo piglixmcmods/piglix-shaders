@@ -572,58 +572,12 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
                   : ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-                      itemCount: items.length + 1,
+                      itemCount: items.length,
                       itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: Container(
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color: _card,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: _border),
-                        ),
-                        child: Row(
-                          children: [
-                            const AnimatedMinecraftIcon(
-                              type: VoxelIconType.sparkles,
-                              size: 24,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${items.length} SAVED SHADER${items.length == 1 ? '' : 'S'}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 13,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  const Text(
-                                    'Tap to open directly in Minecraft or export your .mcpack files.',
-                                    style: TextStyle(
-                                      color: Colors.white54,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  final item = items[index - 1];
-                  return RepaintBoundary(child: _buildShaderCard(item));
-                },
-              ),
+                        final item = items[index];
+                        return RepaintBoundary(child: _buildShaderCard(item));
+                      },
+                    ),
             ),
             // ── Bottom Navigation Bar (Shared Component: VvGlobalBottomNav) ──
             VvGlobalBottomNav(
@@ -665,29 +619,18 @@ class _MyShadersScreenState extends State<MyShadersScreen> {
             padding: const EdgeInsets.all(14),
             child: Row(
               children: [
-                // Color Swatch / Icon
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: item.previewColor.withValues(alpha: 0.20),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: item.previewColor, width: 1.5),
-                    boxShadow: [
-                      BoxShadow(
-                        color: item.previewColor.withValues(alpha: 0.35),
-                        blurRadius: 8,
-                      ),
-                    ],
-                  ),
-                  child: const Center(
+                // Chest Icon (Clean balanced view size without green padding box)
+                const SizedBox(
+                  width: 38,
+                  height: 38,
+                  child: Center(
                     child: AnimatedMinecraftIcon(
                       type: VoxelIconType.chest,
-                      size: 24,
+                      size: 36,
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 14),
 
                 // Name & Meta
                 Expanded(

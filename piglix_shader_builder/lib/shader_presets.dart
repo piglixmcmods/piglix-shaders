@@ -1417,8 +1417,8 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.35),
-            blurRadius: 14,
-            offset: const Offset(0, 5),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -1431,103 +1431,30 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // 1. YouTube-Style 16:9 Widescreen Thumbnail Image Banner
+              // 1. Catchy 16:9 Thumbnail Image with ONLY the Rating Badge
               _PresetThumbnail(preset: p, accent: accent),
 
-              // 2. YouTube-Style Video Details Section
+              // 2. Compact Details Section (Large Shader Name + Little Description)
               Padding(
-                padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Creator Avatar + Preset Title + Channel Row
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Channel / Preset Avatar Icon
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [accent, const Color(0xFF22C55E)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: accent.withValues(alpha: 0.35),
-                                blurRadius: 8,
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              p.name.isNotEmpty ? p.name[0] : 'P',
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-
-                        // Title, Creator, Verification & Downloads
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                p.name,
-                                style: TextStyle(
-                                  color: palette.textPrimary,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 0.2,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 3),
-                              Row(
-                                children: [
-                                  Text(
-                                    p.creator,
-                                    style: TextStyle(
-                                      color: palette.textSecondary,
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  const Icon(
-                                    Icons.check_circle_rounded,
-                                    size: 13,
-                                    color: Color(0xFF22C55E),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    '•  ${p.downloads} downloads',
-                                    style: TextStyle(
-                                      color: palette.textSecondary,
-                                      fontSize: 11.5,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                    // Large Shader Name
+                    Text(
+                      p.name,
+                      style: TextStyle(
+                        color: palette.textPrimary,
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.3,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
+                    const SizedBox(height: 4),
 
-                    const SizedBox(height: 10),
-
-                    // Preset Description
+                    // Little Description
                     Text(
                       p.description,
                       style: TextStyle(
@@ -1540,27 +1467,33 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
                       overflow: TextOverflow.ellipsis,
                     ),
 
-                    const SizedBox(height: 10),
-
-                    // Feature Tags (YouTube Video Tags / Chips)
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 4,
-                      children: p.tags
-                          .map((tag) => _featureBadge(tag, accent, palette))
-                          .toList(),
-                    ),
-
                     const SizedBox(height: 12),
 
-                    // YouTube-Action Full Width "APPLY PRESET" Button
-                    SizedBox(
+                    // Better "APPLY PRESET" Button with Creeper Face Icon
+                    Container(
                       width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF22C55E), Color(0xFF16A34A)],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color:
+                                const Color(0xFF22C55E).withValues(alpha: 0.28),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
                       child: ElevatedButton(
                         onPressed: () => widget.onSelectPreset(p),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF22C55E),
+                          backgroundColor: Colors.transparent,
                           foregroundColor: Colors.black,
+                          shadowColor: Colors.transparent,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
@@ -1571,15 +1504,12 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [
-                            Icon(
-                              Icons.auto_awesome_rounded,
-                              size: 16,
-                              color: Colors.black,
-                            ),
-                            SizedBox(width: 6),
+                            CreeperFaceIcon(size: 18, color: Colors.black),
+                            SizedBox(width: 8),
                             Text(
                               'APPLY PRESET',
                               style: TextStyle(
+                                color: Colors.black,
                                 fontSize: 12.5,
                                 fontWeight: FontWeight.w900,
                                 letterSpacing: 0.8,
@@ -1598,33 +1528,74 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
       ),
     );
   }
+}
 
-  Widget _featureBadge(String text, Color accent, AppPalette palette) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-      decoration: BoxDecoration(
-        color: palette.border.withValues(alpha: 0.35),
-        borderRadius: BorderRadius.circular(5),
-        border: Border.all(
-          color: palette.border.withValues(alpha: 0.6),
-          width: 0.8,
-        ),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: palette.textSecondary,
-          fontSize: 9.5,
-          fontWeight: FontWeight.w700,
-        ),
+/// Minecraft Creeper Face Icon rendered pixel-perfect on an 8x8 voxel grid.
+class CreeperFaceIcon extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const CreeperFaceIcon({
+    super.key,
+    this.size = 18.0,
+    this.color = Colors.black,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: CustomPaint(
+        painter: _CreeperFacePainter(color: color),
       ),
     );
   }
 }
 
-/// YouTube-style 16:9 widescreen preset video thumbnail widget.
-/// Displays an image asset / network screenshot if provided, or renders a dynamic,
-/// atmospheric procedural Minecraft shader scene fallback.
+class _CreeperFacePainter extends CustomPainter {
+  final Color color;
+  const _CreeperFacePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final u = size.width / 8.0;
+
+    // Standard Minecraft Creeper Face 8x8 Grid
+    const grid = [
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 1, 1, 0, 0, 1, 1, 0], // Eyes
+      [0, 1, 1, 1, 1, 1, 1, 0], // Eye bottom + nose top
+      [0, 0, 0, 1, 1, 0, 0, 0], // Nose middle
+      [0, 1, 1, 1, 1, 1, 1, 0], // Mouth top
+      [0, 1, 1, 0, 0, 1, 1, 0], // Mouth drops
+      [0, 0, 0, 0, 0, 0, 0, 0],
+    ];
+
+    for (int y = 0; y < 8; y++) {
+      for (int x = 0; x < 8; x++) {
+        if (grid[y][x] == 1) {
+          canvas.drawRect(
+            Rect.fromLTWH(x * u, y * u, u + 0.25, u + 0.25),
+            paint,
+          );
+        }
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _CreeperFacePainter oldDelegate) =>
+      oldDelegate.color != color;
+}
+
+/// 16:9 widescreen preset video thumbnail widget.
+/// Displays an image asset / public screenshot, with ONLY the rating badge on top-right.
 class _PresetThumbnail extends StatelessWidget {
   final ShaderPresetConfig preset;
   final Color accent;
@@ -1637,26 +1608,20 @@ class _PresetThumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget content;
-    final thumb = preset.thumbnailPath;
-    if (thumb != null && thumb.trim().isNotEmpty) {
-      final isNetwork =
-          thumb.startsWith('http://') || thumb.startsWith('https://');
-      content = isNetwork
-          ? Image.network(
-              thumb,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  _buildFallbackPainter(),
-            )
-          : Image.asset(
-              thumb,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  _buildFallbackPainter(),
-            );
-    } else {
-      content = _buildFallbackPainter();
-    }
+    final thumb = preset.thumbnailPath ?? 'assets/screenshots/${preset.id}.png';
+    content = Image.asset(
+      thumb,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) => Image.network(
+        'public/presets/${preset.id}.png',
+        fit: BoxFit.cover,
+        errorBuilder: (c, e, s) => Image.network(
+          'presets/${preset.id}.png',
+          fit: BoxFit.cover,
+          errorBuilder: (c2, e2, s2) => _buildFallbackPainter(),
+        ),
+      ),
+    );
 
     return AspectRatio(
       aspectRatio: 16 / 9,
@@ -1665,7 +1630,7 @@ class _PresetThumbnail extends StatelessWidget {
         children: [
           content,
 
-          // Subtle gradient scrim overlay for readability of badges & text
+          // Subtle gradient scrim overlay for readability of the rating badge
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -1674,29 +1639,29 @@ class _PresetThumbnail extends StatelessWidget {
                 colors: [
                   Colors.black.withValues(alpha: 0.35),
                   Colors.transparent,
-                  Colors.black.withValues(alpha: 0.65),
+                  Colors.black.withValues(alpha: 0.45),
                 ],
                 stops: const [0.0, 0.45, 1.0],
               ),
             ),
           ),
 
-          // Top-Left Category / Style Badge
+          // Rating Badge is ONLY! (Top-Right)
           Positioned(
             top: 10,
-            left: 10,
+            right: 10,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.70),
+                color: Colors.black.withValues(alpha: 0.80),
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(
-                  color: accent.withValues(alpha: 0.7),
-                  width: 1.0,
+                  color: const Color(0xFFFBBF24).withValues(alpha: 0.4),
+                  width: 0.8,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: accent.withValues(alpha: 0.3),
+                    color: Colors.black.withValues(alpha: 0.4),
                     blurRadius: 6,
                   ),
                 ],
@@ -1704,59 +1669,17 @@ class _PresetThumbnail extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    width: 6,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: accent,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    preset.tags.isNotEmpty
-                        ? preset.tags.first.toUpperCase()
-                        : 'VIBRANT',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Top-Right Rating Badge
-          Positioned(
-            top: 10,
-            right: 10,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.75),
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.15),
-                  width: 0.8,
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
                   const Icon(
                     Icons.star_rounded,
                     color: Color(0xFFFBBF24),
-                    size: 13,
+                    size: 14,
                   ),
-                  const SizedBox(width: 3),
+                  const SizedBox(width: 4),
                   Text(
                     preset.rating.toStringAsFixed(2),
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 10.5,
+                      fontSize: 11,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -1765,71 +1688,13 @@ class _PresetThumbnail extends StatelessWidget {
             ),
           ),
 
-          // Center interactive preview icon
-          Center(
-            child: Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.45),
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.4),
-                  width: 1.5,
-                ),
-              ),
-              child: const Icon(
-                Icons.play_arrow_rounded,
-                color: Colors.white,
-                size: 26,
-              ),
-            ),
-          ),
-
-          // Bottom-Right Duration / Spec Chip (YouTube-style time badge)
-          Positioned(
-            bottom: 10,
-            right: 10,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.85),
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  width: 0.6,
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(
-                    Icons.hd_rounded,
-                    color: Color(0xFF22C55E),
-                    size: 13,
-                  ),
-                  SizedBox(width: 4),
-                  Text(
-                    '1.21+ DEFERRED',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 9.5,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Bottom-Left Atmospheric Color Gradient Strip Preview
+          // Bottom-Edge Atmosphere Color Gradient Strip
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
             child: Container(
-              height: 3.5,
+              height: 3.0,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [

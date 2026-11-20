@@ -507,7 +507,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final avail = constraints.maxHeight;
-                      const baseContentHeight = 630.0;
+                      const baseContentHeight = 550.0;
 
                       Widget buildStaticColumn({bool withSpacer = true}) {
                         return Padding(
@@ -525,8 +525,6 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                               _buildStartBuildingButton(),
                               const SizedBox(height: 10),
                               _buildQuickActionCards(palette),
-                              const SizedBox(height: 10),
-                              _buildEngineSection(palette),
                               const SizedBox(height: 10),
                               _buildShaderNameSection(palette),
                               const SizedBox(height: 16),
@@ -930,115 +928,6 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
           ),
         ),
       ),
-    );
-  }
-
-  // 5. RENDER ENGINE Section: RENDER ENGINE Header + Vibrant Engine Card
-  Widget _buildEngineSection(AppPalette palette) {
-    const s = 3.5;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(
-              'RENDER ENGINE',
-              style: TextStyle(
-                color: palette.textPrimary,
-                fontSize: 12.5,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.8,
-              ),
-            ),
-            const SizedBox(width: 6),
-            Container(
-              width: 15,
-              height: 15,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: palette.border, width: 1.2),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                '?',
-                style: TextStyle(
-                  color: palette.textSecondary,
-                  fontSize: 9.5,
-                  fontWeight: FontWeight.bold,
-                  height: 1.0,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 6),
-        CustomPaint(
-          painter: _PixelatedCardPainter(
-            fillColor: palette.card,
-            borderColor: const Color(0xFF22C55E),
-            borderWidth: 1.8,
-            step: s,
-            hasShadow: true,
-          ),
-          foregroundPainter: _PixelatedBorderPainter(
-            borderColor: const Color(0xFF22C55E),
-            borderWidth: 1.8,
-            step: s,
-          ),
-          child: ClipPath(
-            clipper: _PixelatedClipper(s),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-              child: Row(
-                children: [
-                  const AnimatedMinecraftIcon(
-                    type: VoxelIconType.grassBlock,
-                    size: 28,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'VIBRANT ENGINE',
-                          style: TextStyle(
-                            color: palette.textPrimary,
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.8,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        const Text(
-                          'Minecraft Bedrock JSON Deferred Rendering API',
-                          style: TextStyle(
-                            color: Color(0xFF22C55E),
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF22C55E),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.check_rounded,
-                      color: Colors.black,
-                      size: 16,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 

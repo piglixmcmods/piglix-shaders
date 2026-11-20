@@ -337,7 +337,8 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
             uploadedShaderName: _uploadedShaderName,
             uploadedLogoBytes: iconBytes,
             shaderName: preset.name,
-            presetConfig: preset,
+            initialVVConfig: preset.vvConfig?.copyWith(packName: preset.name),
+            presetConfig: preset.vvConfig == null ? preset : null,
           ),
         );
       },

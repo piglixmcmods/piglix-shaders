@@ -5,6 +5,7 @@ import 'minecraft_icons.dart';
 import 'piglix_logo_data.dart';
 import 'theme_controller.dart';
 import 'vv_global_nav_bar.dart';
+import 'vv_config.dart';
 
 /// Complete configuration for a production-grade Vibrant Visuals shader preset.
 class ShaderPresetConfig {
@@ -64,6 +65,9 @@ class ShaderPresetConfig {
   final double contrast;
   final double autoExposure;
 
+  /// Native Vibrant Visuals engine configuration for authentic rendering.
+  final VVShaderConfig? vvConfig;
+
   const ShaderPresetConfig({
     required this.id,
     required this.name,
@@ -106,6 +110,7 @@ class ShaderPresetConfig {
     this.saturation = 1.0,
     this.contrast = 1.0,
     this.autoExposure = 1.0,
+    this.vvConfig,
   });
 }
 
@@ -118,7 +123,7 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     description:
         'High-saturation cinematic visuals with dazzling sun shafts, crystalline cyan ocean, and vivid bloom.',
     rating: 4.9,
-    downloads: '24.8k',
+    downloads: '42.8k',
     tags: ['Vibrant Visuals', 'Raymarched', 'Ultra Caustics'],
     morningColor: Color(0xFFFFA0B2),
     noonColor: Color(0xFF5B7AFF),
@@ -129,7 +134,7 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     fogDensity: 1.05,
     cloudType: 'Realistic 3D',
     torchColor: Color(0xFFFFA033),
-    lightIntensity: 1.3,
+    lightIntensity: 1.0,
     blockLightIntensity: 1.25,
     shadowQuality: 'Ultra',
     enablePointLightShadows: true,
@@ -151,9 +156,231 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     foliageWaveSpeed: 1.2,
     toneMapFilter: 'ACES (Cinematic)',
     biomeTone: 'Vibrant',
-    saturation: 1.2,
-    contrast: 1.15,
+    saturation: 1.22,
+    contrast: 1.20,
     autoExposure: 1.1,
+    vvConfig: VVShaderConfig(
+      packName: 'Ultra Vibrant VV',
+      packDescription:
+          'High-saturation cinematic visuals with dazzling sun shafts, crystalline cyan ocean, and vivid bloom.',
+      lighting: LightingConfig(
+        sunBrightnessMultiplier: 1.05,
+        sunColorNoon: Color(0xFFFFE6CC),
+        sunColorSunset: Color(0xFFFF5511),
+        nightMoonColor: Color(0xFF0033FF),
+        moonIlluminance: 2.2,
+        ambientIlluminance: 0.08,
+        ambientColor: Color(0xFF1E232D),
+        skyIntensity: 0.32,
+        shadowStyle: 'soft_shadows',
+        shadowTexelSize: 1024,
+      ),
+      atmosphere: AtmosphereConfig(
+        rayleighNoon: 2.4,
+        rayleighSunset: 2.9,
+        sunGlowNoon: 5.0,
+        noonZenith: Color(0xFF3B6EFF),
+        noonHorizon: Color(0xFFD4EFFF),
+        sunsetZenith: Color(0xFF9A55FF),
+        sunsetHorizon: Color(0xFFFF9944),
+        nightZenith: Color(0xFF071440),
+        nightHorizon: Color(0xFF1C2C66),
+        sunriseZenith: Color(0xFF88A0FF),
+        sunriseHorizon: Color(0xFFFFD5AF),
+      ),
+      fog: FogConfig(
+        airFogStart: 0.9,
+        airFogEnd: 1.0,
+        waterFogColor: Color(0xFF00E5FF),
+        volumetricMaxDensity: 0.045,
+      ),
+      colorGrading: ColorGradingConfig(
+        toneMappingOperator: 'hable',
+        midtonesContrast: [1.2, 1.2, 1.2],
+        midtonesSaturation: [1.22, 1.22, 1.22],
+        midtonesGain: [1.0, 1.0, 1.0],
+      ),
+    ),
+  ),
+  const ShaderPresetConfig(
+    id: 'definitive_balanced',
+    name: 'Piglix Definitive Balanced',
+    creator: 'Piglix Labs',
+    description:
+        'Ultra-optimized Bedrock deferred lighting with rich azure zenith, warm 140-lux golden sunlight, ACES filmic contrast, and smooth 60 FPS performance.',
+    rating: 4.9,
+    downloads: '38.2k',
+    tags: ['Vibrant Visuals', '60 FPS', 'Balanced', 'ACES'],
+    morningColor: Color(0xFF3CA0FF),
+    noonColor: Color(0xFF0A6EC8),
+    eveningColor: Color(0xFFFF8264),
+    nightColor: Color(0xFF002864),
+    sunSize: 1.0,
+    nightVision: 1.0,
+    fogDensity: 1.0,
+    cloudType: 'Realistic 3D',
+    torchColor: Color(0xFFFF9933),
+    lightIntensity: 1.0,
+    blockLightIntensity: 1.0,
+    shadowQuality: 'High',
+    enablePointLightShadows: true,
+    volumetricFogProfile: 'Balanced',
+    rayMorningColor: Color(0xFFFF460A),
+    rayNoonColor: Color(0xFFFFDC82),
+    rayEveningColor: Color(0xFFFF3200),
+    rayNightColor: Color(0xFF002864),
+    waterColor: Color(0xFF1B9ED8),
+    windSpeed: 1.0,
+    waterQuality: 'High',
+    underwaterCaustics: true,
+    rainFogColor: Color(0xFF303030),
+    rainWaterColor: Color(0xFF1B9ED8),
+    worldReflections: true,
+    enablePBR: true,
+    metalness: 0.0,
+    wavingFoliage: true,
+    foliageWaveSpeed: 1.0,
+    toneMapFilter: 'ACES (Cinematic)',
+    biomeTone: 'Dynamic',
+    saturation: 1.02,
+    contrast: 1.25,
+    autoExposure: 1.0,
+    vvConfig: VVShaderConfig(
+      packName: 'Piglix Definitive Balanced',
+      packDescription:
+          'Ultra-optimized Bedrock deferred lighting with rich azure zenith, warm 140-lux golden sunlight, ACES filmic contrast, and smooth 60 FPS performance.',
+      lighting: LightingConfig(
+        sunBrightnessMultiplier: 1.0,
+        sunColorNoon: Color(0xFFFFDC82),
+        sunColorSunrise: Color(0xFFFF460A),
+        sunColorSunset: Color(0xFFFF3200),
+        nightMoonColor: Color(0xFF002864),
+        moonIlluminance: 2.0,
+        ambientIlluminance: 0.3,
+        ambientColor: Color(0xFF141419),
+        skyIntensity: 0.4,
+        shadowStyle: 'soft_shadows',
+        shadowTexelSize: 1024,
+      ),
+      atmosphere: AtmosphereConfig(
+        rayleighNoon: 1.1,
+        rayleighSunset: 0.5,
+        rayleighSunrise: 0.7,
+        rayleighNight: 0.9,
+        sunGlowNoon: 0.2,
+        sunGlowSunset: 0.2,
+        sunGlowSunrise: 0.2,
+        moonGlow: 2.2,
+        noonZenith: Color(0xFF0A6EC8),
+        noonHorizon: Color(0xFFA0DCFF),
+        sunsetZenith: Color(0xFF5A96FA),
+        sunsetHorizon: Color(0xFFFF8264),
+        nightZenith: Color(0xFF002864),
+        nightHorizon: Color(0xFF2B2B2B),
+        sunriseZenith: Color(0xFF3CA0FF),
+        sunriseHorizon: Color(0xFFFF8E7D),
+      ),
+      fog: FogConfig(
+        airFogStart: 0.9,
+        airFogEnd: 1.0,
+        waterFogEnd: 60.0,
+        waterFogColor: Color(0xFF1B9ED8),
+        volumetricMaxDensity: 0.045,
+      ),
+      colorGrading: ColorGradingConfig(
+        toneMappingOperator: 'aces',
+        midtonesContrast: [1.25, 1.25, 1.25],
+        midtonesSaturation: [1.02, 1.02, 1.02],
+        midtonesGain: [1.18, 1.18, 1.18],
+      ),
+    ),
+  ),
+  const ShaderPresetConfig(
+    id: 'better_vibrant',
+    name: 'Piglix Better Vibrant',
+    creator: 'Piglix Labs',
+    description:
+        'Balanced natural illumination with warm 155-lux cream sun shafts, rich deep sky gradients, crisp 1.3x contrast, and crystalline water.',
+    rating: 4.9,
+    downloads: '29.6k',
+    tags: ['Natural Light', 'Warm Sun', 'Cinematic', '60 FPS'],
+    morningColor: Color(0xFFFFA040),
+    noonColor: Color(0xFF6782AA),
+    eveningColor: Color(0xFFFFBBA3),
+    nightColor: Color(0xFF282828),
+    sunSize: 1.0,
+    nightVision: 1.0,
+    fogDensity: 1.0,
+    cloudType: 'Realistic 3D',
+    torchColor: Color(0xFFFF9933),
+    lightIntensity: 1.0,
+    blockLightIntensity: 1.0,
+    shadowQuality: 'High',
+    enablePointLightShadows: true,
+    volumetricFogProfile: 'Balanced',
+    rayMorningColor: Color(0xFFFFB050),
+    rayNoonColor: Color(0xFFFFE1B9),
+    rayEveningColor: Color(0xFFFF7828),
+    rayNightColor: Color(0xFF303030),
+    waterColor: Color(0xFF0A2573),
+    windSpeed: 1.0,
+    waterQuality: 'High',
+    underwaterCaustics: true,
+    rainFogColor: Color(0xFF404040),
+    rainWaterColor: Color(0xFF0A2573),
+    worldReflections: true,
+    enablePBR: true,
+    metalness: 0.0,
+    wavingFoliage: true,
+    foliageWaveSpeed: 1.0,
+    toneMapFilter: 'Hable (Filmic)',
+    biomeTone: 'Dynamic',
+    saturation: 1.05,
+    contrast: 1.30,
+    autoExposure: 1.0,
+    vvConfig: VVShaderConfig(
+      packName: 'Piglix Better Vibrant',
+      packDescription:
+          'Balanced natural illumination with warm 155-lux cream sun shafts, rich deep sky gradients, crisp 1.3x contrast, and crystalline water.',
+      lighting: LightingConfig(
+        sunBrightnessMultiplier: 1.0,
+        sunColorNoon: Color(0xFFFFE1B9),
+        sunColorSunrise: Color(0xFFFFB050),
+        sunColorSunset: Color(0xFFFF7828),
+        nightMoonColor: Color(0xFF051EFF),
+        moonIlluminance: 1.5,
+        ambientIlluminance: 0.2,
+        ambientColor: Color(0xFF000000),
+        skyIntensity: 0.45,
+        shadowStyle: 'soft_shadows',
+        shadowTexelSize: 1024,
+      ),
+      atmosphere: AtmosphereConfig(
+        rayleighNoon: 1.8,
+        sunGlowNoon: 3.5,
+        noonZenith: Color(0xFF6782AA),
+        noonHorizon: Color(0xFFB7BDC6),
+        sunsetZenith: Color(0xFF101488),
+        sunsetHorizon: Color(0xFFFFBBA3),
+        nightZenith: Color(0xFF282828),
+        nightHorizon: Color(0xFF2B2B2B),
+        sunriseZenith: Color(0xFF88A0D0),
+        sunriseHorizon: Color(0xFFFFD5AF),
+      ),
+      fog: FogConfig(
+        airFogStart: 0.9,
+        airFogEnd: 1.0,
+        waterFogEnd: 60.0,
+        waterFogColor: Color(0xFF1B9ED8),
+        volumetricMaxDensity: 0.045,
+      ),
+      colorGrading: ColorGradingConfig(
+        toneMappingOperator: 'hable',
+        midtonesContrast: [1.3, 1.3, 1.3],
+        midtonesSaturation: [1.05, 1.05, 1.05],
+        midtonesGain: [1.0, 1.0, 1.0],
+      ),
+    ),
   ),
   const ShaderPresetConfig(
     id: 'pink_atmosphere',
@@ -162,7 +389,7 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     description:
         'Dreamy pastel atmosphere featuring soft pink/rose sky horizons, warm dusk fog, and glowing lanterns.',
     rating: 4.8,
-    downloads: '19.4k',
+    downloads: '34.1k',
     tags: ['Pastel Dusk', 'Sakura Glow', 'Warm Bloom'],
     morningColor: Color(0xFFFF8DA6),
     noonColor: Color(0xFFF472B6),
@@ -195,18 +422,63 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     foliageWaveSpeed: 1.0,
     toneMapFilter: 'ACES (Cinematic)',
     biomeTone: 'Moody',
-    saturation: 1.1,
-    contrast: 1.05,
+    saturation: 1.15,
+    contrast: 1.12,
     autoExposure: 1.0,
+    vvConfig: VVShaderConfig(
+      packName: 'Pink Atmosphere (Sakura)',
+      packDescription:
+          'Dreamy pastel atmosphere featuring soft pink/rose sky horizons, warm dusk fog, and glowing lanterns.',
+      lighting: LightingConfig(
+        sunBrightnessMultiplier: 1.0,
+        sunColorNoon: Color(0xFFFFF0F5),
+        sunColorSunrise: Color(0xFFFF9EB5),
+        sunColorSunset: Color(0xFFFF6B95),
+        nightMoonColor: Color(0xFF8A9AFF),
+        moonIlluminance: 2.1,
+        ambientIlluminance: 0.09,
+        ambientColor: Color(0xFF2D1E2D),
+        skyIntensity: 0.35,
+        shadowStyle: 'soft_shadows',
+        shadowTexelSize: 1024,
+      ),
+      atmosphere: AtmosphereConfig(
+        rayleighNoon: 2.1,
+        rayleighSunset: 3.2,
+        sunGlowNoon: 4.5,
+        noonZenith: Color(0xFF6B8AFF),
+        noonHorizon: Color(0xFFFFE8EF),
+        sunsetZenith: Color(0xFFB878D6),
+        sunsetHorizon: Color(0xFFFF8EAA),
+        nightZenith: Color(0xFF141233),
+        nightHorizon: Color(0xFF382D4A),
+        sunriseZenith: Color(0xFF9E88E8),
+        sunriseHorizon: Color(0xFFFFB5C8),
+      ),
+      fog: FogConfig(
+        airFogStart: 0.85,
+        airFogEnd: 1.0,
+        airFogColor: Color(0xFFF3D5E8),
+        waterFogColor: Color(0xFF1EA8D6),
+        volumetricMaxDensity: 0.05,
+      ),
+      colorGrading: ColorGradingConfig(
+        toneMappingOperator: 'hable',
+        midtonesContrast: [1.12, 1.12, 1.12],
+        midtonesSaturation: [1.15, 1.15, 1.15],
+        midtonesGain: [1.0, 1.0, 1.0],
+        temperature: 6100.0,
+      ),
+    ),
   ),
   const ShaderPresetConfig(
     id: 'cinematic_realism',
     name: 'Cinematic Realism',
-    creator: 'VoxelCraft',
+    creator: 'Piglix Labs',
     description:
         'Balanced photorealistic daylight with dense volumetric shafts, soft 1024px shadows, and natural 6500K balance.',
     rating: 4.9,
-    downloads: '21.1k',
+    downloads: '31.1k',
     tags: ['Photoreal', 'Soft Shadows', 'Dynamic'],
     morningColor: Color(0xFFFBBF24),
     noonColor: Color(0xFF60A5FA),
@@ -240,17 +512,44 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     toneMapFilter: 'ACES (Cinematic)',
     biomeTone: 'Dynamic',
     saturation: 1.0,
-    contrast: 1.0,
+    contrast: 1.15,
     autoExposure: 1.0,
+    vvConfig: VVShaderConfig(
+      packName: 'Cinematic Realism',
+      packDescription:
+          'Balanced photorealistic daylight with dense volumetric shafts, soft 1024px shadows, and natural 6500K balance.',
+      lighting: LightingConfig(
+        sunBrightnessMultiplier: 1.0,
+        sunColorNoon: Color(0xFFFFF6EE),
+        ambientIlluminance: 0.15,
+        skyIntensity: 0.40,
+        shadowStyle: 'soft_shadows',
+        shadowTexelSize: 2048,
+      ),
+      atmosphere: AtmosphereConfig(
+        rayleighNoon: 1.3,
+        sunGlowNoon: 1.5,
+        noonZenith: Color(0xFF266ED0),
+        noonHorizon: Color(0xFFD6E8FA),
+        sunsetZenith: Color(0xFF9098E0),
+        sunsetHorizon: Color(0xFFFFB088),
+      ),
+      colorGrading: ColorGradingConfig(
+        toneMappingOperator: 'aces',
+        midtonesContrast: [1.15, 1.15, 1.15],
+        midtonesSaturation: [1.0, 1.0, 1.0],
+        midtonesGain: [1.05, 1.05, 1.05],
+      ),
+    ),
   ),
   const ShaderPresetConfig(
     id: 'midnight_cyber',
     name: 'Midnight Cyber Glow',
-    creator: 'NeonPixel',
+    creator: 'Piglix Labs',
     description:
         'Deep obsidian night with intense cyan soul lantern radiance, sharp point-light shadows, and moonlight rays.',
     rating: 4.8,
-    downloads: '16.5k',
+    downloads: '22.5k',
     tags: ['Soul Neon', 'Night RTX', 'Cyberpunk'],
     morningColor: Color(0xFF38BDF8),
     noonColor: Color(0xFF0284C7),
@@ -283,9 +582,46 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     foliageWaveSpeed: 1.1,
     toneMapFilter: 'Reinhard',
     biomeTone: 'Frost',
-    saturation: 1.15,
-    contrast: 1.25,
+    saturation: 1.20,
+    contrast: 1.30,
     autoExposure: 1.1,
+    vvConfig: VVShaderConfig(
+      packName: 'Midnight Cyber Glow',
+      packDescription:
+          'Deep obsidian night with intense cyan soul lantern radiance, sharp point-light shadows, and moonlight rays.',
+      lighting: LightingConfig(
+        nightMoonColor: Color(0xFF00F0FF),
+        moonIlluminance: 3.2,
+        ambientIlluminance: 0.05,
+        ambientColor: Color(0xFF0B1122),
+        torches: BlockLightGroup(
+          color: Color(0xFF00E5FF),
+          lightType: 'point_light',
+        ),
+        soulFire: BlockLightGroup(
+          color: Color(0xFFB026FF),
+          lightType: 'point_light',
+        ),
+        skyIntensity: 0.25,
+        shadowStyle: 'soft_shadows',
+        shadowTexelSize: 1024,
+      ),
+      atmosphere: AtmosphereConfig(
+        nightZenith: Color(0xFF050B1E),
+        nightHorizon: Color(0xFF0F1F3D),
+        moonGlow: 3.5,
+      ),
+      fog: FogConfig(
+        airFogColor: Color(0xFF0B1933),
+        volumetricMaxDensity: 0.065,
+      ),
+      colorGrading: ColorGradingConfig(
+        toneMappingOperator: 'generic',
+        midtonesContrast: [1.3, 1.3, 1.3],
+        midtonesSaturation: [1.2, 1.2, 1.2],
+        midtonesGain: [1.0, 1.0, 1.0],
+      ),
+    ),
   ),
   const ShaderPresetConfig(
     id: 'golden_hour',
@@ -294,7 +630,7 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     description:
         'Warm amber twilight with glowing orange haze, shimmering water caustics, and elongated soft sunset shadows.',
     rating: 4.9,
-    downloads: '18.7k',
+    downloads: '26.7k',
     tags: ['Golden Dusk', 'Warm 5500K', 'Caustics'],
     morningColor: Color(0xFFF59E0B),
     noonColor: Color(0xFFFDE047),
@@ -327,18 +663,63 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     foliageWaveSpeed: 1.3,
     toneMapFilter: 'Warm',
     biomeTone: 'Savanna',
-    saturation: 1.2,
-    contrast: 1.1,
+    saturation: 1.16,
+    contrast: 1.22,
     autoExposure: 1.15,
+    vvConfig: VVShaderConfig(
+      packName: 'Golden Hour Sunset',
+      packDescription:
+          'Warm amber twilight with glowing orange haze, shimmering water caustics, and elongated soft sunset shadows.',
+      lighting: LightingConfig(
+        sunBrightnessMultiplier: 1.0,
+        sunColorNoon: Color(0xFFFFD199),
+        sunColorSunrise: Color(0xFFFF6622),
+        sunColorSunset: Color(0xFFFF4400),
+        nightMoonColor: Color(0xFF051EFF),
+        moonIlluminance: 2.0,
+        ambientIlluminance: 0.09,
+        ambientColor: Color(0xFF281E14),
+        skyIntensity: 0.35,
+        shadowStyle: 'soft_shadows',
+        shadowTexelSize: 1024,
+      ),
+      atmosphere: AtmosphereConfig(
+        rayleighNoon: 2.5,
+        rayleighSunset: 4.2,
+        sunGlowNoon: 4.5,
+        sunGlowSunset: 7.0,
+        noonZenith: Color(0xFF5580FF),
+        noonHorizon: Color(0xFFFFDAB3),
+        sunsetZenith: Color(0xFF7A3388),
+        sunsetHorizon: Color(0xFFFF6611),
+        nightZenith: Color(0xFF0E225C),
+        nightHorizon: Color(0xFF344B87),
+        sunriseZenith: Color(0xFF9090EA),
+        sunriseHorizon: Color(0xFFFFB060),
+      ),
+      fog: FogConfig(
+        airFogStart: 0.88,
+        airFogEnd: 1.0,
+        weatherFogColor: Color(0xFF402E24),
+        volumetricMaxDensity: 0.05,
+      ),
+      colorGrading: ColorGradingConfig(
+        toneMappingOperator: 'aces',
+        midtonesContrast: [1.22, 1.22, 1.22],
+        midtonesSaturation: [1.16, 1.16, 1.16],
+        midtonesGain: [1.0, 1.0, 1.0],
+        temperature: 5400.0,
+      ),
+    ),
   ),
   const ShaderPresetConfig(
     id: 'vanilla_plus',
     name: 'Vanilla+ Enhanced',
-    creator: 'SteveStudio',
+    creator: 'Piglix Labs',
     description:
         'Lightweight performance preset preserving classic Minecraft aesthetics with smooth 3D clouds and soft deferred shafts.',
     rating: 4.7,
-    downloads: '14.2k',
+    downloads: '19.8k',
     tags: ['Performance', 'Vanilla Feel', 'Smooth 60FPS'],
     morningColor: Color(0xFFFFA040),
     noonColor: Color(0xFF87CEEB),
@@ -371,9 +752,27 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     foliageWaveSpeed: 1.0,
     toneMapFilter: 'ACES (Cinematic)',
     biomeTone: 'Dynamic',
-    saturation: 1.0,
-    contrast: 1.0,
+    saturation: 1.02,
+    contrast: 1.05,
     autoExposure: 1.0,
+    vvConfig: VVShaderConfig(
+      packName: 'Vanilla+ Enhanced',
+      packDescription:
+          'Lightweight performance preset preserving classic Minecraft aesthetics with smooth 3D clouds and soft deferred shafts.',
+      lighting: LightingConfig(
+        sunBrightnessMultiplier: 1.0,
+        ambientIlluminance: 0.12,
+        skyIntensity: 0.38,
+        shadowStyle: 'soft_shadows',
+        shadowTexelSize: 512,
+      ),
+      colorGrading: ColorGradingConfig(
+        toneMappingOperator: 'aces',
+        midtonesContrast: [1.05, 1.05, 1.05],
+        midtonesSaturation: [1.02, 1.02, 1.02],
+        midtonesGain: [1.0, 1.0, 1.0],
+      ),
+    ),
   ),
 ];
 
@@ -383,6 +782,10 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
 
 Color presetAccentColor(ShaderPresetConfig p) {
   switch (p.id) {
+    case 'definitive_balanced':
+      return const Color(0xFF38BDF8);
+    case 'better_vibrant':
+      return const Color(0xFFFBBF24);
     case 'ultra_vibrant':
       return const Color(0xFF22C55E);
     case 'pink_atmosphere':
@@ -746,6 +1149,7 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
   final List<String> _categories = [
     'ALL',
     'POPULAR',
+    'BALANCED (60FPS)',
     'CINEMATIC',
     'ATMOSPHERE',
     'NIGHT & CYBER',
@@ -759,19 +1163,37 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
             .where(
               (p) =>
                   p.rating >= 4.9 ||
-                  p.id == 'ultra_vibrant' ||
+                  p.id == 'definitive_balanced' ||
+                  p.id == 'better_vibrant' ||
+                  p.id == 'ultra_vibrant',
+            )
+            .toList();
+      case 'BALANCED (60FPS)':
+        return kDefaultShaderPresets
+            .where(
+              (p) =>
+                  p.id == 'definitive_balanced' ||
+                  p.id == 'better_vibrant' ||
                   p.id == 'vanilla_plus',
             )
             .toList();
       case 'CINEMATIC':
         return kDefaultShaderPresets
             .where(
-              (p) => p.id == 'ultra_vibrant' || p.id == 'cinematic_realism',
+              (p) =>
+                  p.id == 'ultra_vibrant' ||
+                  p.id == 'cinematic_realism' ||
+                  p.id == 'better_vibrant',
             )
             .toList();
       case 'ATMOSPHERE':
         return kDefaultShaderPresets
-            .where((p) => p.id == 'pink_atmosphere' || p.id == 'golden_hour')
+            .where(
+              (p) =>
+                  p.id == 'pink_atmosphere' ||
+                  p.id == 'golden_hour' ||
+                  p.id == 'definitive_balanced',
+            )
             .toList();
       case 'NIGHT & CYBER':
         return kDefaultShaderPresets
@@ -788,6 +1210,10 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
 
   VoxelIconType _getPresetIcon(String id) {
     switch (id) {
+      case 'definitive_balanced':
+        return VoxelIconType.pearl;
+      case 'better_vibrant':
+        return VoxelIconType.sun;
       case 'ultra_vibrant':
         return VoxelIconType.enchantedBook;
       case 'pink_atmosphere':

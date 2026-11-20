@@ -2008,11 +2008,7 @@ MigrationResult migrateFromLegacy(Map<String, dynamic> legacy) {
   final moonRay = (legacy['moonRayIntensity'] as num?)?.toDouble() ?? 1.0;
 
   final atmosphere = defaultAtmo.copyWith(
-    autoDeriveZenith: false,
-    noonZenith: noonHorizon,
-    sunriseZenith: sunriseHorizon,
-    sunsetZenith: sunsetHorizon,
-    nightZenith: nightHorizon,
+    autoDeriveZenith: true,
     noonHorizon: noonHorizon,
     sunriseHorizon: sunriseHorizon,
     sunsetHorizon: sunsetHorizon,

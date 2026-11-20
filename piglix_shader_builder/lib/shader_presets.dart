@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'minecraft_icons.dart';
 import 'piglix_logo_data.dart';
 import 'theme_controller.dart';
 import 'vv_global_nav_bar.dart';
@@ -68,6 +67,9 @@ class ShaderPresetConfig {
   /// Native Vibrant Visuals engine configuration for authentic rendering.
   final VVShaderConfig? vvConfig;
 
+  /// Optional thumbnail image path (e.g. 'assets/screenshots/prizma.png' or network URL)
+  final String? thumbnailPath;
+
   const ShaderPresetConfig({
     required this.id,
     required this.name,
@@ -76,6 +78,7 @@ class ShaderPresetConfig {
     this.rating = 4.9,
     this.downloads = '12.4k',
     this.tags = const ['Vibrant Visuals', 'Deferred PBR', '60 FPS'],
+    this.thumbnailPath,
     required this.morningColor,
     required this.noonColor,
     required this.eveningColor,
@@ -1244,28 +1247,6 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
     }
   }
 
-  VoxelIconType _getPresetIcon(String id) {
-    switch (id) {
-      case 'prizma_visuals':
-        return VoxelIconType.diamond;
-      case 'definitive_vibrant':
-        return VoxelIconType.pearl;
-      case 'revolution_visuals':
-        return VoxelIconType.sun;
-      case 'dark_fantasy':
-        return VoxelIconType.pickaxe;
-      case 'luminous_dreams':
-        return VoxelIconType.enchantedBook;
-      case 'bslb_dreamy':
-        return VoxelIconType.cloud;
-      case 'better_vibrant':
-        return VoxelIconType.sun;
-      case 'pink_atmosphere':
-      default:
-        return VoxelIconType.waterDroplet;
-    }
-  }
-
   Color _getPresetAccent(String id) => presetAccentColor(
         kDefaultShaderPresets.firstWhere(
           (p) => p.id == id,
@@ -1427,212 +1408,192 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
     AppPalette palette,
   ) {
     final accent = _getPresetAccent(p.id);
-    final icon = _getPresetIcon(p.id);
 
-    return InkWell(
-      onTap: () => widget.onSelectPreset(p),
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        decoration: BoxDecoration(
-          color: palette.surface,
+    return Container(
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: palette.border, width: 1.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.35),
+            blurRadius: 14,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => widget.onSelectPreset(p),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: palette.border, width: 1.2),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.4),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // 1. Sleek 4-Phase Sky Atmosphere Gradient Strip
-            Container(
-              height: 24,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    p.morningColor,
-                    p.noonColor,
-                    p.eveningColor,
-                    p.nightColor,
-                  ],
-                  stops: const [0.0, 0.33, 0.66, 1.0],
-                ),
-              ),
-              child: Row(
-                children: const [
-                  Icon(
-                    Icons.wb_twilight_rounded,
-                    size: 12,
-                    color: Colors.white,
-                  ),
-                  SizedBox(width: 4),
-                  Text(
-                    'DAWN',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 8.5,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.8,
-                      shadows: [Shadow(color: Colors.black87, blurRadius: 4)],
-                    ),
-                  ),
-                  Spacer(),
-                  Icon(Icons.wb_sunny_rounded, size: 12, color: Colors.white),
-                  SizedBox(width: 4),
-                  Text(
-                    'NOON',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 8.5,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.8,
-                      shadows: [Shadow(color: Colors.black87, blurRadius: 4)],
-                    ),
-                  ),
-                  Spacer(),
-                  Icon(
-                    Icons.nights_stay_rounded,
-                    size: 12,
-                    color: Colors.white,
-                  ),
-                  SizedBox(width: 4),
-                  Text(
-                    'NIGHT',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 8.5,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.8,
-                      shadows: [Shadow(color: Colors.black87, blurRadius: 4)],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 1. YouTube-Style 16:9 Widescreen Thumbnail Image Banner
+              _PresetThumbnail(preset: p, accent: accent),
 
-            // 2. Main Preset Info & Action
-            Padding(
-              padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Icon badge
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: accent.withValues(alpha: 0.16),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: accent.withValues(alpha: 0.4),
-                        width: 1.2,
-                      ),
-                    ),
-                    child: Center(
-                      child: AnimatedMinecraftIcon(type: icon, size: 26),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-
-                  // Preset title, description & chips
-                  Expanded(
-                    child: Column(
+              // 2. YouTube-Style Video Details Section
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Creator Avatar + Preset Title + Channel Row
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          p.name,
-                          style: TextStyle(
-                            color: palette.textPrimary,
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.3,
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          p.description,
-                          style: TextStyle(
-                            color: palette.textSecondary,
-                            fontSize: 11.5,
-                            height: 1.25,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 8),
-                        // Clean Feature Badges
-                        Wrap(
-                          spacing: 6,
-                          runSpacing: 4,
-                          children: [
-                            _featureBadge(p.toneMapFilter, accent, palette),
-                            _featureBadge(
-                              '${p.cloudType} Clouds',
-                              accent,
-                              palette,
+                        // Channel / Preset Avatar Icon
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [accent, const Color(0xFF22C55E)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
                             ),
-                            _featureBadge(
-                              p.volumetricFogProfile == 'Cinematic'
-                                  ? 'Cinematic Fog'
-                                  : 'Light Mist',
-                              accent,
-                              palette,
+                            boxShadow: [
+                              BoxShadow(
+                                color: accent.withValues(alpha: 0.35),
+                                blurRadius: 8,
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              p.name.isNotEmpty ? p.name[0] : 'P',
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+
+                        // Title, Creator, Verification & Downloads
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                p.name,
+                                style: TextStyle(
+                                  color: palette.textPrimary,
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.2,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 3),
+                              Row(
+                                children: [
+                                  Text(
+                                    p.creator,
+                                    style: TextStyle(
+                                      color: palette.textSecondary,
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  const Icon(
+                                    Icons.check_circle_rounded,
+                                    size: 13,
+                                    color: Color(0xFF22C55E),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    '•  ${p.downloads} downloads',
+                                    style: TextStyle(
+                                      color: palette.textSecondary,
+                                      fontSize: 11.5,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // Preset Description
+                    Text(
+                      p.description,
+                      style: TextStyle(
+                        color: palette.textSecondary,
+                        fontSize: 12.0,
+                        height: 1.35,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // Feature Tags (YouTube Video Tags / Chips)
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      children: p.tags
+                          .map((tag) => _featureBadge(tag, accent, palette))
+                          .toList(),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // YouTube-Action Full Width "APPLY PRESET" Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => widget.onSelectPreset(p),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF22C55E),
+                          foregroundColor: Colors.black,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(
+                              Icons.auto_awesome_rounded,
+                              size: 16,
+                              color: Colors.black,
+                            ),
+                            SizedBox(width: 6),
+                            Text(
+                              'APPLY PRESET',
+                              style: TextStyle(
+                                fontSize: 12.5,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.8,
+                              ),
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(width: 10),
-
-                  // Apply Button
-                  ElevatedButton(
-                    onPressed: () => widget.onSelectPreset(p),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF22C55E),
-                      foregroundColor: Colors.black,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 12,
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(
-                          Icons.check_rounded,
-                          size: 15,
-                          color: Colors.black,
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          'APPLY',
-                          style: TextStyle(
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.6,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -1640,7 +1601,7 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
 
   Widget _featureBadge(String text, Color accent, AppPalette palette) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
         color: palette.border.withValues(alpha: 0.35),
         borderRadius: BorderRadius.circular(5),
@@ -1658,6 +1619,467 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
         ),
       ),
     );
+  }
+}
+
+/// YouTube-style 16:9 widescreen preset video thumbnail widget.
+/// Displays an image asset / network screenshot if provided, or renders a dynamic,
+/// atmospheric procedural Minecraft shader scene fallback.
+class _PresetThumbnail extends StatelessWidget {
+  final ShaderPresetConfig preset;
+  final Color accent;
+
+  const _PresetThumbnail({
+    required this.preset,
+    required this.accent,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Widget content;
+    final thumb = preset.thumbnailPath;
+    if (thumb != null && thumb.trim().isNotEmpty) {
+      final isNetwork =
+          thumb.startsWith('http://') || thumb.startsWith('https://');
+      content = isNetwork
+          ? Image.network(
+              thumb,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  _buildFallbackPainter(),
+            )
+          : Image.asset(
+              thumb,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  _buildFallbackPainter(),
+            );
+    } else {
+      content = _buildFallbackPainter();
+    }
+
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          content,
+
+          // Subtle gradient scrim overlay for readability of badges & text
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black.withValues(alpha: 0.35),
+                  Colors.transparent,
+                  Colors.black.withValues(alpha: 0.65),
+                ],
+                stops: const [0.0, 0.45, 1.0],
+              ),
+            ),
+          ),
+
+          // Top-Left Category / Style Badge
+          Positioned(
+            top: 10,
+            left: 10,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.70),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  color: accent.withValues(alpha: 0.7),
+                  width: 1.0,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: accent.withValues(alpha: 0.3),
+                    blurRadius: 6,
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: accent,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    preset.tags.isNotEmpty
+                        ? preset.tags.first.toUpperCase()
+                        : 'VIBRANT',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.6,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Top-Right Rating Badge
+          Positioned(
+            top: 10,
+            right: 10,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.75),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.15),
+                  width: 0.8,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.star_rounded,
+                    color: Color(0xFFFBBF24),
+                    size: 13,
+                  ),
+                  const SizedBox(width: 3),
+                  Text(
+                    preset.rating.toStringAsFixed(2),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Center interactive preview icon
+          Center(
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.45),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.4),
+                  width: 1.5,
+                ),
+              ),
+              child: const Icon(
+                Icons.play_arrow_rounded,
+                color: Colors.white,
+                size: 26,
+              ),
+            ),
+          ),
+
+          // Bottom-Right Duration / Spec Chip (YouTube-style time badge)
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.85),
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  width: 0.6,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(
+                    Icons.hd_rounded,
+                    color: Color(0xFF22C55E),
+                    size: 13,
+                  ),
+                  SizedBox(width: 4),
+                  Text(
+                    '1.21+ DEFERRED',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Bottom-Left Atmospheric Color Gradient Strip Preview
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 3.5,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    preset.morningColor,
+                    preset.noonColor,
+                    preset.eveningColor,
+                    preset.nightColor,
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFallbackPainter() {
+    return CustomPaint(
+      painter: _PresetAtmosphereScenePainter(
+        preset: preset,
+        accent: accent,
+      ),
+      size: Size.infinite,
+    );
+  }
+}
+
+/// Dynamic procedural Minecraft shader scene painter for presets when no image file is loaded yet.
+/// Renders an authentic Minecraft deferred atmosphere with glowing bloom sun, voxel clouds,
+/// distant mountain silhouettes, and water surface with specular reflection & caustics.
+class _PresetAtmosphereScenePainter extends CustomPainter {
+  final ShaderPresetConfig preset;
+  final Color accent;
+
+  const _PresetAtmosphereScenePainter({
+    required this.preset,
+    required this.accent,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final horizonY = h * 0.60;
+
+    // 1. Sky Gradient (Zenith to Horizon)
+    final skyPaint = Paint()
+      ..shader = ui.Gradient.linear(
+        Offset(w * 0.5, 0),
+        Offset(w * 0.5, horizonY),
+        [
+          preset.noonColor,
+          preset.morningColor.withValues(alpha: 0.85),
+          preset.eveningColor,
+        ],
+        [0.0, 0.55, 1.0],
+      );
+    canvas.drawRect(Rect.fromLTWH(0, 0, w, horizonY + 2), skyPaint);
+
+    // 2. Glowing Sun with Mie Scattering Bloom
+    final sunX = w * 0.74;
+    final sunY = horizonY * 0.40;
+
+    // Outer bloom halo
+    final bloomPaint = Paint()
+      ..shader = ui.Gradient.radial(
+        Offset(sunX, sunY),
+        w * 0.32,
+        [
+          preset.rayNoonColor.withValues(alpha: 0.45),
+          preset.rayEveningColor.withValues(alpha: 0.15),
+          Colors.transparent,
+        ],
+        [0.0, 0.4, 1.0],
+      );
+    canvas.drawCircle(Offset(sunX, sunY), w * 0.32, bloomPaint);
+
+    // Sun Disc (Minecraft square style)
+    final sunDiscPaint = Paint()..color = Colors.white;
+    final sunSize = 16.0 * preset.sunSize.clamp(0.8, 1.6);
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(sunX, sunY),
+        width: sunSize,
+        height: sunSize,
+      ),
+      sunDiscPaint,
+    );
+
+    // Subtle volumetric God ray polygon
+    final rayPaint = Paint()
+      ..shader = ui.Gradient.linear(
+        Offset(sunX, sunY),
+        Offset(w * 0.5, horizonY),
+        [
+          preset.rayMorningColor.withValues(alpha: 0.20),
+          Colors.transparent,
+        ],
+      );
+    final rayPath = Path()
+      ..moveTo(sunX - sunSize * 0.5, sunY + sunSize * 0.5)
+      ..lineTo(w * 0.20, horizonY)
+      ..lineTo(w * 0.52, horizonY)
+      ..lineTo(sunX + sunSize * 0.5, sunY + sunSize * 0.5)
+      ..close();
+    canvas.drawPath(rayPath, rayPaint);
+
+    // 3. Volumetric Minecraft Clouds
+    final cloudPaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.38)
+      ..style = PaintingStyle.fill;
+    final cloudShadowPaint = Paint()
+      ..color = preset.noonColor.withValues(alpha: 0.25)
+      ..style = PaintingStyle.fill;
+
+    _drawVoxelCloud(
+        canvas, w * 0.08, h * 0.12, 110, 16, cloudPaint, cloudShadowPaint);
+    _drawVoxelCloud(
+        canvas, w * 0.46, h * 0.22, 130, 18, cloudPaint, cloudShadowPaint);
+
+    // 4. Distant Mountain Silhouette
+    final distantMtnPaint = Paint()
+      ..color = Color.alphaBlend(
+        preset.rainFogColor.withValues(alpha: 0.65),
+        preset.noonColor,
+      );
+    final mtnPath = Path()
+      ..moveTo(0, horizonY)
+      ..lineTo(0, horizonY - 24)
+      ..lineTo(w * 0.12, horizonY - 38)
+      ..lineTo(w * 0.24, horizonY - 20)
+      ..lineTo(w * 0.40, horizonY - 50)
+      ..lineTo(w * 0.56, horizonY - 28)
+      ..lineTo(w * 0.70, horizonY - 44)
+      ..lineTo(w * 0.86, horizonY - 18)
+      ..lineTo(w, horizonY - 32)
+      ..lineTo(w, horizonY)
+      ..close();
+    canvas.drawPath(mtnPath, distantMtnPaint);
+
+    // 5. Water Plane (Horizon to Bottom)
+    final waterPaint = Paint()
+      ..shader = ui.Gradient.linear(
+        Offset(w * 0.5, horizonY),
+        Offset(w * 0.5, h),
+        [
+          preset.waterColor.withValues(alpha: 0.85),
+          preset.waterColor,
+          preset.rainWaterColor,
+        ],
+        [0.0, 0.4, 1.0],
+      );
+    canvas.drawRect(Rect.fromLTWH(0, horizonY, w, h - horizonY), waterPaint);
+
+    // Sun vertical specular reflection trail on water
+    final reflectPaint = Paint()
+      ..shader = ui.Gradient.linear(
+        Offset(sunX, horizonY),
+        Offset(sunX, h),
+        [
+          preset.rayNoonColor.withValues(alpha: 0.55),
+          preset.eveningColor.withValues(alpha: 0.25),
+          Colors.transparent,
+        ],
+        [0.0, 0.5, 1.0],
+      );
+    final reflectPath = Path()
+      ..moveTo(sunX - 10, horizonY)
+      ..lineTo(sunX + 10, horizonY)
+      ..lineTo(sunX + 32, h)
+      ..lineTo(sunX - 32, h)
+      ..close();
+    canvas.drawPath(reflectPath, reflectPaint);
+
+    // Caustics shimmer lines
+    final wavePaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.22)
+      ..strokeWidth = 1.2
+      ..style = PaintingStyle.stroke;
+    for (int i = 0; i < 5; i++) {
+      final waveY = horizonY + 8 + i * 12;
+      canvas.drawLine(
+        Offset(sunX - 25 - i * 8, waveY),
+        Offset(sunX + 25 + i * 8, waveY),
+        wavePaint,
+      );
+    }
+
+    // 6. Foreground Grassy Shoreline (Bottom Left)
+    final shorePaint = Paint()
+      ..color = const Color(0xFF1E3922)
+      ..style = PaintingStyle.fill;
+    final shorePath = Path()
+      ..moveTo(0, h)
+      ..lineTo(0, horizonY - 8)
+      ..lineTo(w * 0.16, horizonY + 6)
+      ..lineTo(w * 0.30, horizonY + 22)
+      ..lineTo(w * 0.22, h)
+      ..close();
+    canvas.drawPath(shorePath, shorePaint);
+
+    // Grass edge rim highlight catching sunlight
+    final grassRimPaint = Paint()
+      ..color = accent.withValues(alpha: 0.8)
+      ..strokeWidth = 2.0
+      ..style = PaintingStyle.stroke;
+    final grassRim = Path()
+      ..moveTo(0, horizonY - 8)
+      ..lineTo(w * 0.16, horizonY + 6)
+      ..lineTo(w * 0.30, horizonY + 22);
+    canvas.drawPath(grassRim, grassRimPaint);
+
+    // Blocky oak tree silhouette
+    final trunkPaint = Paint()..color = const Color(0xFF2C1E14);
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.07, horizonY - 26, 7, 22),
+      trunkPaint,
+    );
+    final leavesPaint = Paint()..color = const Color(0xFF1B4D20);
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.035, horizonY - 48, 22, 22),
+      leavesPaint,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.055, horizonY - 56, 14, 10),
+      leavesPaint,
+    );
+  }
+
+  void _drawVoxelCloud(
+    Canvas canvas,
+    double x,
+    double y,
+    double width,
+    double height,
+    Paint mainPaint,
+    Paint shadowPaint,
+  ) {
+    canvas.drawRect(Rect.fromLTWH(x, y, width, height * 0.7), mainPaint);
+    canvas.drawRect(
+        Rect.fromLTWH(x + 16, y - height * 0.4, width * 0.6, height * 0.4),
+        mainPaint);
+    canvas.drawRect(
+        Rect.fromLTWH(x, y + height * 0.7, width, height * 0.3), shadowPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _PresetAtmosphereScenePainter oldDelegate) {
+    return oldDelegate.preset.id != preset.id || oldDelegate.accent != accent;
   }
 }
 

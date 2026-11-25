@@ -69,6 +69,7 @@ flutter:
   assets:
     - assets/base_shader.zip
     - assets/hero_sunset.webp
+    - assets/app_logo.png
     - assets/screenshots/
     - assets/guide/
 

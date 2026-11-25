@@ -596,109 +596,118 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
 
     return Container(
       width: double.infinity,
-      height: 175,
+      height: 180,
       decoration: BoxDecoration(
         color: const Color(0xFF070B10),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: const Color(0xFF22C55E), // Solid, highly visible Piglix green border
-          width: 2.0,
+          width: 2.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF22C55E).withValues(alpha: 0.28),
+            color: const Color(0xFF22C55E).withValues(alpha: 0.38),
             blurRadius: 14,
             spreadRadius: 1,
             offset: const Offset(0, 3),
           ),
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.6),
+            color: Colors.black.withValues(alpha: 0.65),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          if (hasAsset)
-            Image.asset(
-              effectivePath,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Image.network(
-                'public/guide/$fileName',
+      foregroundDecoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: const Color(0xFF22C55E), // Crisp foreground overlay so corners are 100% visible
+          width: 2.5,
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(9.5),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (hasAsset)
+              Image.asset(
+                effectivePath,
                 fit: BoxFit.cover,
-                errorBuilder: (c, e, s) => Image.network(
-                  'guide/$fileName',
+                errorBuilder: (context, error, stackTrace) => Image.network(
+                  'public/guide/$fileName',
                   fit: BoxFit.cover,
-                  errorBuilder: (c2, e2, s2) =>
-                      _buildEmptySlotContent(fileName, accent),
+                  errorBuilder: (c, e, s) => Image.network(
+                    'guide/$fileName',
+                    fit: BoxFit.cover,
+                    errorBuilder: (c2, e2, s2) =>
+                        _buildEmptySlotContent(fileName, accent),
+                  ),
                 ),
-              ),
-            )
-          else
-            _buildEmptySlotContent(fileName, accent),
+              )
+            else
+              _buildEmptySlotContent(fileName, accent),
 
-          // Subtle gradient scrim overlay for readability
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.black.withValues(alpha: 0.35),
-                  Colors.transparent,
-                  Colors.black.withValues(alpha: 0.45),
-                ],
-                stops: const [0.0, 0.4, 1.0],
-              ),
-            ),
-          ),
-
-          // Top right status pill
-          Positioned(
-            top: 8,
-            right: 8,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            // Subtle gradient scrim overlay for readability
+            Container(
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.88),
-                borderRadius: BorderRadius.circular(5),
-                border: Border.all(
-                  color: _kGreenAccent,
-                  width: 1.0,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.35),
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: 0.45),
+                  ],
+                  stops: const [0.0, 0.4, 1.0],
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.5),
-                    blurRadius: 4,
-                  ),
-                ],
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.check_circle_rounded,
-                    size: 12,
-                    color: _kGreenAccent,
-                  ),
-                  SizedBox(width: 5),
-                  Text(
-                    'OFFICIAL SCREENSHOT',
-                    style: TextStyle(
-                      fontSize: 9.5,
-                      fontWeight: FontWeight.w900,
-                      color: _kGreenAccent,
-                      letterSpacing: 0.4,
-                    ),
-                  ),
-                ],
               ),
             ),
-          ),
-        ],
+
+            // Top right status pill
+            Positioned(
+              top: 8,
+              right: 8,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.88),
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(
+                    color: _kGreenAccent,
+                    width: 1.0,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      blurRadius: 4,
+                    ),
+                  ],
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.check_circle_rounded,
+                      size: 12,
+                      color: _kGreenAccent,
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      'OFFICIAL SCREENSHOT',
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w900,
+                        color: _kGreenAccent,
+                        letterSpacing: 0.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

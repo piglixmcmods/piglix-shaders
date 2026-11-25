@@ -260,7 +260,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
   // ─── 1. MODAL HEADER ────────────────────────────────────────────────────────
   Widget _buildModalHeader(BuildContext context, bool isCompact) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(14, 12, 10, 12),
+      padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
       decoration: const BoxDecoration(
         color: Color(0xFF0C131D),
         border: Border(bottom: BorderSide(color: _kBorder, width: 1.4)),
@@ -268,20 +268,26 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
       child: Row(
         children: [
           Container(
-            width: 32,
-            height: 32,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
-              color: _kGreenPrimary.withValues(alpha: 0.18),
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: _kGreenPrimary, width: 1.2),
+              color: _kGreenPrimary.withValues(alpha: 0.20),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: _kGreenPrimary, width: 1.4),
+              boxShadow: [
+                BoxShadow(
+                  color: _kGreenPrimary.withValues(alpha: 0.25),
+                  blurRadius: 8,
+                ),
+              ],
             ),
             alignment: Alignment.center,
             child: const AnimatedMinecraftIcon(
               type: VoxelIconType.goldBlock,
-              size: 20,
+              size: 22,
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,17 +297,18 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                   'MINECRAFT SHADER GUIDE',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.3,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.4,
                   ),
                 ),
+                SizedBox(height: 1),
                 Text(
                   'Bedrock Vibrant Visuals Setup',
                   style: TextStyle(
                     color: _kGreenAccent,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
@@ -309,10 +316,10 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
           ),
           IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.close_rounded, color: Colors.white60, size: 20),
+            icon: const Icon(Icons.close_rounded, color: Colors.white70, size: 22),
             padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-            splashRadius: 18,
+            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+            splashRadius: 20,
           ),
         ],
       ),
@@ -323,17 +330,17 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
   Widget _buildParameterAlertCard(bool isCompact) {
     return Container(
       margin: const EdgeInsets.fromLTRB(14, 10, 14, 2),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
         color: _kGreenPrimary.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: _kGreenPrimary.withValues(alpha: 0.45), width: 1.2),
+        border: Border.all(color: _kGreenPrimary.withValues(alpha: 0.50), width: 1.4),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.lightbulb_outline_rounded, size: 16, color: _kGreenAccent),
-          const SizedBox(width: 8),
+          const Icon(Icons.lightbulb_outline_rounded, size: 18, color: _kGreenAccent),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -342,18 +349,18 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                   'Quick Tip: ${widget.parameterTitle!}',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
                 if (widget.parameterTooltip != null) ...[
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 3),
                   Text(
                     widget.parameterTooltip!,
                     style: const TextStyle(
-                      color: Color(0xFFD4D4D8),
-                      fontSize: 11.5,
-                      height: 1.3,
+                      color: Color(0xFFE4E4E7),
+                      fontSize: 12,
+                      height: 1.35,
                     ),
                   ),
                 ],
@@ -368,7 +375,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
   // ─── 2. HORIZONTAL STEP TABS ────────────────────────────────────────────────
   Widget _buildHorizontalStepTabs(bool isCompact) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
       decoration: const BoxDecoration(
         color: Color(0xFF0C131D),
         border: Border(bottom: BorderSide(color: _kBorder, width: 1.2)),
@@ -386,7 +393,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 220),
                   curve: Curves.easeInOut,
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
                   decoration: BoxDecoration(
                     color: _currentStep == i
                         ? _kGreenPrimary
@@ -394,7 +401,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(
                       color: _currentStep == i ? _kGreenPrimary : _kBorder,
-                      width: 1.2,
+                      width: 1.4,
                     ),
                     boxShadow: _currentStep == i
                         ? [
@@ -412,7 +419,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                       Text(
                         '${i + 1}. ${_kGuideSteps[i].tabLabel}',
                         style: TextStyle(
-                          fontSize: isCompact ? 10.5 : 11.5,
+                          fontSize: isCompact ? 11.0 : 12.0,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 0.3,
                           color: _currentStep == i ? Colors.black : Colors.white70,
@@ -432,7 +439,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
   // ─── 3. STEP CONTENT PAGE ───────────────────────────────────────────────────
   Widget _buildStepPage(BuildContext context, _GuideStep step, bool isCompact) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -440,56 +447,64 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: _kGreenPrimary,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _kGreenPrimary.withValues(alpha: 0.3),
+                      blurRadius: 6,
+                    ),
+                  ],
                 ),
                 child: Text(
                   'STEP ${step.num}',
                   style: const TextStyle(
-                    fontSize: 10.5,
+                    fontSize: 11.5,
                     fontWeight: FontWeight.w900,
                     color: Colors.black,
+                    letterSpacing: 0.4,
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   step.title,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 15.5,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.2,
                   ),
                 ),
               ),
-              AnimatedMinecraftIcon(type: step.icon, size: 20),
+              AnimatedMinecraftIcon(type: step.icon, size: 24),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
 
           // Breadcrumb Path Tag
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(color: _kBorder),
+              color: Colors.black.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: _kBorder, width: 1.2),
             ),
             child: Row(
               children: [
-                const Icon(Icons.folder_open_rounded, size: 13, color: _kGreenAccent),
-                const SizedBox(width: 6),
+                const Icon(Icons.folder_open_rounded, size: 15, color: _kGreenAccent),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     step.pathTag,
                     style: const TextStyle(
                       color: _kGreenAccent,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -498,58 +513,60 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
               ],
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
 
-          // Description (Short & Clean)
+          // Description (Clean & Readable)
           Text(
             step.desc,
             style: const TextStyle(
-              color: Color(0xFFD4D4D8),
-              fontSize: 12,
-              height: 1.4,
+              color: Color(0xFFE4E4E7),
+              fontSize: 13.5,
+              height: 1.45,
+              fontWeight: FontWeight.w400,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
 
-          // Screenshot Slot with Real Image
+          // Screenshot Slot with Highly Visible Proper Emerald Border
           _buildScreenshotPlaceholder(
             title: step.title,
             fileName: step.fileName,
             assetPath: step.getAsset(),
             accent: _kGreenPrimary,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
 
-          // Key Action Bullets (Clean & Punchy)
+          // Key Action Bullets (Larger, Punchy Text)
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: _kBgCard,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: _kBorder),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: _kBorder, width: 1.2),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 for (final bullet in step.bullets) ...[
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 3),
+                    padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Icon(
                           Icons.check_circle_rounded,
-                          size: 15,
+                          size: 17,
                           color: _kGreenAccent,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Text(
                             bullet,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 11.5,
-                              height: 1.35,
+                              fontSize: 13.0,
+                              height: 1.4,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
@@ -565,7 +582,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
     );
   }
 
-  // ─── OFFICIAL SCREENSHOT SLOT (REAL IMAGES WITH FALLBACK) ───────────────────
+  // ─── OFFICIAL SCREENSHOT SLOT (HIGHLY VISIBLE PROPER BORDER) ───────────────
   Widget _buildScreenshotPlaceholder({
     required String title,
     required String fileName,
@@ -577,18 +594,24 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
 
     return Container(
       width: double.infinity,
-      height: 155,
+      height: 175,
       decoration: BoxDecoration(
         color: const Color(0xFF070B10),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: _kGreenPrimary.withValues(alpha: 0.5),
-          width: 1.2,
+          color: const Color(0xFF22C55E), // Solid, highly visible Piglix green border
+          width: 2.0,
         ),
         boxShadow: [
           BoxShadow(
-            color: _kGreenPrimary.withValues(alpha: 0.12),
-            blurRadius: 10,
+            color: const Color(0xFF22C55E).withValues(alpha: 0.28),
+            blurRadius: 14,
+            spreadRadius: 1,
+            offset: const Offset(0, 3),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.6),
+            blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
@@ -633,34 +656,40 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
 
           // Top right status pill
           Positioned(
-            top: 7,
-            right: 7,
+            top: 8,
+            right: 8,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.85),
-                borderRadius: BorderRadius.circular(4),
+                color: Colors.black.withValues(alpha: 0.88),
+                borderRadius: BorderRadius.circular(5),
                 border: Border.all(
-                  color: _kGreenAccent.withValues(alpha: 0.8),
-                  width: 0.8,
+                  color: _kGreenAccent,
+                  width: 1.0,
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    blurRadius: 4,
+                  ),
+                ],
               ),
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     Icons.check_circle_rounded,
-                    size: 11,
+                    size: 12,
                     color: _kGreenAccent,
                   ),
-                  SizedBox(width: 4),
+                  SizedBox(width: 5),
                   Text(
                     'OFFICIAL SCREENSHOT',
                     style: TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w800,
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w900,
                       color: _kGreenAccent,
-                      letterSpacing: 0.3,
+                      letterSpacing: 0.4,
                     ),
                   ),
                 ],

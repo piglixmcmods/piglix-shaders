@@ -159,6 +159,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
   final TextEditingController _shaderNameCtrl = TextEditingController(
     text: 'Piglix Shader',
   );
+  final FocusNode _shaderNameFocusNode = FocusNode();
 
   final List<String> _namePresets = [
     'Piglix Shader',
@@ -188,6 +189,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
     WidgetsBinding.instance.removeObserver(this);
     _pulseCtrl.dispose();
     _shaderNameCtrl.dispose();
+    _shaderNameFocusNode.dispose();
     super.dispose();
   }
 
@@ -955,53 +957,70 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
         Row(
           children: [
             Expanded(
-              child: CustomPaint(
-                painter: _PixelatedCardPainter(
-                  fillColor: palette.card,
-                  borderColor: palette.border,
-                  borderWidth: 1.4,
-                  step: s,
-                  hasShadow: false,
-                ),
-                foregroundPainter: _PixelatedBorderPainter(
-                  borderColor: palette.border,
-                  borderWidth: 1.4,
-                  step: s,
-                ),
-                child: ClipPath(
-                  clipper: _PixelatedClipper(s),
-                  child: Container(
-                    height: 48,
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.edit_rounded,
-                          color: Color(0xFF22C55E),
-                          size: 18,
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: TextField(
-                            controller: _shaderNameCtrl,
-                            style: TextStyle(
-                              color: palette.textPrimary,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Enter shader name...',
-                              hintStyle: TextStyle(
-                                color: palette.textMuted,
-                                fontSize: 13.0,
-                              ),
-                              isDense: true,
-                              contentPadding: EdgeInsets.zero,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  _shaderNameFocusNode.requestFocus();
+                },
+                child: CustomPaint(
+                  painter: _PixelatedCardPainter(
+                    fillColor: palette.card,
+                    borderColor: palette.border,
+                    borderWidth: 1.4,
+                    step: s,
+                    hasShadow: false,
+                  ),
+                  foregroundPainter: _PixelatedBorderPainter(
+                    borderColor: palette.border,
+                    borderWidth: 1.4,
+                    step: s,
+                  ),
+                  child: ClipPath(
+                    clipper: _PixelatedClipper(s),
+                    child: Container(
+                      height: 48,
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => _shaderNameFocusNode.requestFocus(),
+                            child: const Icon(
+                              Icons.edit_rounded,
+                              color: Color(0xFF22C55E),
+                              size: 18,
                             ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: _shaderNameCtrl,
+                              focusNode: _shaderNameFocusNode,
+                              keyboardType: TextInputType.text,
+                              textInputAction: TextInputAction.done,
+                              enableInteractiveSelection: true,
+                              cursorColor: const Color(0xFF22C55E),
+                              onTap: () => _shaderNameFocusNode.requestFocus(),
+                              style: TextStyle(
+                                color: palette.textPrimary,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Enter shader name...',
+                                hintStyle: TextStyle(
+                                  color: palette.textMuted,
+                                  fontSize: 13.0,
+                                ),
+                                isDense: false,
+                                contentPadding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -1077,6 +1096,67 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                                 ),
                               );
                             }).toList(),
+                          ),
+                          const SizedBox(height: 14),
+                          Text(
+                            'OR TYPE CUSTOM NAME:',
+                            style: TextStyle(
+                              color: palette.textSecondary,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11,
+                              letterSpacing: 0.6,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 42,
+                                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                                  decoration: BoxDecoration(
+                                    color: palette.card,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: palette.border),
+                                  ),
+                                  child: TextField(
+                                    controller: _shaderNameCtrl,
+                                    keyboardType: TextInputType.text,
+                                    textInputAction: TextInputAction.done,
+                                    onSubmitted: (_) => Navigator.pop(ctx),
+                                    style: TextStyle(
+                                      color: palette.textPrimary,
+                                      fontSize: 13.5,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'Type custom shader name...',
+                                      hintStyle: TextStyle(
+                                        color: palette.textMuted,
+                                        fontSize: 12.5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF22C55E),
+                                  foregroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                                ),
+                                onPressed: () => Navigator.pop(ctx),
+                                child: const Text(
+                                  'Done',
+                                  style: TextStyle(fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 10),
                         ],

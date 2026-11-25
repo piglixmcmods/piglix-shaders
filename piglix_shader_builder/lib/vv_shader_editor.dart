@@ -1608,15 +1608,25 @@ class _RenameShaderDialog extends StatefulWidget {
 
 class _RenameShaderDialogState extends State<_RenameShaderDialog> {
   late final TextEditingController _ctrl;
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _ctrl = TextEditingController(text: widget.initialName);
+    // Request focus after frame to ensure mobile keyboard opens immediately
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 120), () {
+        if (mounted) {
+          _focusNode.requestFocus();
+        }
+      });
+    });
   }
 
   @override
   void dispose() {
+    _focusNode.dispose();
     _ctrl.dispose();
     super.dispose();
   }
@@ -1640,7 +1650,19 @@ class _RenameShaderDialogState extends State<_RenameShaderDialog> {
       ),
       content: TextField(
         controller: _ctrl,
+        focusNode: _focusNode,
         autofocus: true,
+        keyboardType: TextInputType.text,
+        textInputAction: TextInputAction.done,
+        enableInteractiveSelection: true,
+        cursorColor: accent,
+        onSubmitted: (next) {
+          final trimmed = next.trim();
+          if (trimmed.isNotEmpty) {
+            widget.onSave(trimmed);
+          }
+          Navigator.pop(context);
+        },
         style: const TextStyle(
           color: Colors.white,
           fontSize: 14,

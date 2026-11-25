@@ -2157,6 +2157,9 @@ class _VVExportTabState extends State<VVExportTab> {
                     children: [
                       TextFormField(
                         controller: _nameController,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.done,
+                        enableInteractiveSelection: true,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 13.5,

@@ -333,8 +333,8 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
         fastPush(
           context,
           ShaderEditorScreen(
-            uploadedShaderBytes: _uploadedShaderBytes,
-            uploadedShaderName: _uploadedShaderName,
+            uploadedShaderBytes: null,
+            uploadedShaderName: null,
             uploadedLogoBytes: iconBytes,
             shaderName: preset.name,
             initialVVConfig: preset.vvConfig?.copyWith(packName: preset.name),

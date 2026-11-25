@@ -23,6 +23,7 @@ import 'vv_tab_previews.dart';
 import 'vv_tabs_visual.dart';
 import 'vv_tabs_world.dart';
 import 'vv_guide_modal.dart';
+import 'analytics_service.dart';
 
 Archive _decodeZipWorker(List<int> bytes) => ZipDecoder().decodeBytes(bytes);
 List<int> _encodeZipWorker(Archive archive) => ZipEncoder().encode(archive);
@@ -449,6 +450,11 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
   Future<void> _downloadPack() async {
     if (_generatedPackBytes == null) return;
     final pName = _generatedPackName ?? 'piglix_shader.mcpack';
+    AnalyticsService.logShaderExport(
+      packName: pName,
+      format: 'mcpack',
+      byteSize: _generatedPackBytes?.length,
+    );
     try {
       if (kIsWeb) {
         final blob = html.Blob([
@@ -483,6 +489,7 @@ class _ShaderEditorScreenState extends State<ShaderEditorScreen>
   Future<void> _openWithMinecraft() async {
     if (_generatedPackBytes == null) return;
     final pName = _generatedPackName ?? 'piglix_shader.mcpack';
+    AnalyticsService.logOpenWithMinecraft(packName: pName);
     if (kIsWeb) {
       await _downloadPack();
       return;

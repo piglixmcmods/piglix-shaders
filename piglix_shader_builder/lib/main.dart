@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'new_ui.dart';
 import 'theme_controller.dart';
 import 'my_shaders_screen.dart';
+import 'analytics_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,6 +73,7 @@ void main() async {
   }
 
   await AppThemeController.init();
+  await AnalyticsService.init();
 
   if (kIsWeb) {
     // On web, initialize UserShaderStore asynchronously without blocking the first frame render
@@ -95,6 +97,9 @@ class PiglixProApp extends StatelessWidget {
         return MaterialApp(
           title: 'Shader Generator for MCPE',
           debugShowCheckedModeBanner: false,
+          navigatorObservers: [
+            if (AnalyticsService.observer != null) AnalyticsService.observer!,
+          ],
           themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
           theme: ThemeData(
             brightness: Brightness.light,

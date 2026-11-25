@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "732310820490",
+    "project_id": "shader-generator-for-mcpe",
+    "storage_bucket": "shader-generator-for-mcpe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:732310820490:android:5b688af430b279e1187f73",
+        "android_client_info": {
+          "package_name": "com.piglixlabs.shadermakerformcpe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDJyqLKosjjaqBdFXqfZMMb96DWy9Ef30"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'minecraft_icons.dart';
 import 'vv_tab_previews.dart';
+import 'analytics_service.dart';
 
 /// Official Screenshot Asset Registry.
 /// Defaults to authentic in-game Minecraft and Piglix Builder screenshots.
@@ -30,6 +31,7 @@ Future<void> showMinecraftGuideModal(
   String? parameterTitle,
   String? parameterTooltip,
 }) {
+  AnalyticsService.logGuideOpened(source: parameterTitle ?? 'general');
   return showDialog<void>(
     context: context,
     barrierColor: Colors.black.withValues(alpha: 0.85),

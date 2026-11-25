@@ -15,6 +15,7 @@ import 'shader_presets.dart';
 import 'vv_import.dart';
 import 'vv_shader_editor.dart';
 import 'vv_guide_modal.dart';
+import 'analytics_service.dart';
 import 'vv_global_nav_bar.dart';
 
 export 'vv_shader_editor.dart' show ShaderEditorScreen;
@@ -323,6 +324,10 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
   Widget _buildPresetsScreen() {
     return ShaderPresetsScreen(
       onSelectPreset: (preset) async {
+        AnalyticsService.logPresetApplied(
+          presetName: preset.name,
+          presetId: preset.id,
+        );
         final iconBytes = await getOrGeneratePresetPackIcon(preset);
         if (!mounted) return;
         setState(() {

@@ -3,15 +3,13 @@ import 'minecraft_icons.dart';
 import 'vv_tab_previews.dart';
 
 /// Official Screenshot Asset Registry.
-/// Drop your official screenshots in `public/screenshots/` or `assets/screenshots/`
-/// and assign them here, or pass custom paths.
-/// When null or empty, an elegant Minecraft-themed empty placeholder renders.
+/// Defaults to authentic in-game Minecraft and Piglix Builder screenshots.
 class OfficialGuideScreenshots {
-  static String? step1Generate;
-  static String? step2WhatYouGet;
-  static String? step3Import;
-  static String? step4Activate;
-  static String? step5Play;
+  static String? step1Generate = 'assets/guide/step1_generate.png';
+  static String? step2WhatYouGet = 'assets/guide/step2_what_you_get.png';
+  static String? step3Import = 'assets/guide/step3_import.png';
+  static String? step4Activate = 'assets/guide/step4_activate.png';
+  static String? step5Play = 'assets/guide/step5_play.png';
 
   // Backwards compatibility aliases
   static String? get step1Import => step3Import;
@@ -34,7 +32,7 @@ Future<void> showMinecraftGuideModal(
 }) {
   return showDialog<void>(
     context: context,
-    barrierColor: Colors.black.withValues(alpha: 0.82),
+    barrierColor: Colors.black.withValues(alpha: 0.85),
     builder: (ctx) => VVMinecraftGuideModal(
       initialTab: initialTab,
       initialStep: initialStep,
@@ -72,14 +70,13 @@ final List<_GuideStep> _kGuideSteps = [
   _GuideStep(
     num: '01',
     tabLabel: 'GENERATE',
-    title: 'Customize & Generate .mcpack',
-    pathTag: 'Piglix Builder > Customize > Export Tab',
+    title: 'Customize & Export Pack',
+    pathTag: 'Piglix Builder > Export Tab',
     desc:
-        'Tweak your sky, sun glow, water, and fog in the Builder. When ready, switch to the Export tab to compile your pack.',
+        'Customize your sky, water, and fog in the tabs, then tap Export to build your .mcpack.',
     bullets: [
-      'Adjust Sunlight, Shadows, Water clarity, and Fog to your preference.',
-      'Open the Export tab (Tab 8) and confirm the Validation Report shows all checks passed.',
-      'Tap "GENERATE .MCPACK" in the bottom action bar to build your shader package.',
+      'Adjust Sunlight, Water clarity, and Fog to your preference.',
+      'Tap "GENERATE .MCPACK" on the Export tab to compile.',
     ],
     icon: VoxelIconType.goldBlock,
     fileName: 'step1_generate.png',
@@ -88,15 +85,14 @@ final List<_GuideStep> _kGuideSteps = [
   _GuideStep(
     num: '02',
     tabLabel: 'WHAT YOU GET',
-    title: 'What You Get in Your Shader Pack',
-    pathTag: 'Pack Output: Bedrock Vibrant Visuals PBR',
+    title: 'Bedrock Vibrant Visuals Shaders',
+    pathTag: 'Pack Output: Official Bedrock PBR Shaders',
     desc:
-        'Your generated .mcpack file contains full official Bedrock Deferred Technical Preview PBR shaders:',
+        'Your .mcpack includes authentic deferred rendering features for Minecraft Bedrock:',
     bullets: [
-      '☀️ Atmospheric Sky & Sun/Moon directional light scattering.',
-      '🌊 Real-time water surface reflections, waves, and prismatic seabed caustics.',
-      '🌫️ Volumetric air and ground mist tailored across all 87 biomes.',
-      '⚡ All 4 Quality Modes (Low, Medium, High, Ultra) built into one slider.',
+      'Atmospheric sky scattering & glowing sun/moon bloom.',
+      'Real-time water reflections & seabed wave caustics.',
+      'Volumetric mist & cinematic ACES color grading.',
     ],
     icon: VoxelIconType.chest,
     fileName: 'step2_what_you_get.png',
@@ -106,13 +102,12 @@ final List<_GuideStep> _kGuideSteps = [
     num: '03',
     tabLabel: 'IMPORT',
     title: 'One-Tap Import into Minecraft',
-    pathTag: 'Piglix Bottom Bar > "OPEN WITH MINECRAFT" or "Share"',
+    pathTag: 'Tap .mcpack file > Open with Minecraft',
     desc:
-        'Send your generated shader package directly into Minecraft Bedrock with a single tap:',
+        'Send your generated shader package directly into Minecraft Bedrock with one tap:',
     bullets: [
-      'Tap "OPEN WITH MINECRAFT" in the bottom bar to launch Minecraft automatically.',
-      'Or tap the Share button beside it to share the file to Discord, Drive, or WhatsApp.',
-      'Minecraft will open with "Import Started..." followed by "Successfully imported".',
+      'Tap "OPEN WITH MINECRAFT" or tap your saved .mcpack file.',
+      'Minecraft will open showing "Import Started..." then "Successfully imported".',
     ],
     icon: VoxelIconType.pickaxe,
     fileName: 'step3_import.png',
@@ -126,10 +121,9 @@ final List<_GuideStep> _kGuideSteps = [
     desc:
         'Activate your shader pack in Minecraft so it applies to all your worlds:',
     bullets: [
-      'In Minecraft, open Settings -> Global Resources -> MY PACKS.',
-      'Select your shader pack and press "ACTIVATE".',
-      'Under the ACTIVE section, move your shader pack to the VERY TOP.',
-      'Optional: Tap the gear icon on the pack to slide between Low, Medium, High, or Ultra.',
+      'In Minecraft, go to Settings -> Global Resources -> MY PACKS.',
+      'Select your shader pack and tap "ACTIVATE".',
+      'Make sure your pack is at the very TOP of ACTIVE packs.',
     ],
     icon: VoxelIconType.gear,
     fileName: 'step4_activate.png',
@@ -139,14 +133,13 @@ final List<_GuideStep> _kGuideSteps = [
     num: '05',
     tabLabel: 'PLAY',
     title: 'Turn On Vibrant Visuals & Play',
-    pathTag: 'Minecraft > Settings > Video > Graphics Mode > Vibrant Visuals',
+    pathTag: 'Minecraft > Settings > Video > Graphics Mode: Vibrant Visuals',
     desc:
-        'Switch on Minecraft\'s official deferred shader pipeline and launch your world:',
+        'Turn on Minecraft\'s deferred shader pipeline and launch your world:',
     bullets: [
-      'Go to Minecraft Settings -> Video -> Graphics Mode and choose "Vibrant Visuals".',
-      'Set Brightness / Gamma to 50% (prevents overexposed daylight and washed-out shadows).',
-      'Turn Bloom: ON and set Upscaling: TAAU for smooth antialiased geometry.',
-      'Launch any world and enjoy your custom Vibrant Visuals shaders!',
+      'In Settings -> Video, set Graphics Mode to "Vibrant Visuals".',
+      'Set Brightness to 50% for optimal contrast and bloom.',
+      'Launch any world and enjoy your custom shaders!',
     ],
     icon: VoxelIconType.sparkles,
     fileName: 'step5_play.png',
@@ -154,7 +147,7 @@ final List<_GuideStep> _kGuideSteps = [
   ),
 ];
 
-/// Simple, Horizontal Step-by-Step Minecraft Activation Guide (Yellow Dark Theme)
+/// Minimal, Clean Step-by-Step Minecraft Activation Guide (Emerald Green Theme)
 class VVMinecraftGuideModal extends StatefulWidget {
   final int initialTab;
   final int initialStep;
@@ -174,11 +167,12 @@ class VVMinecraftGuideModal extends StatefulWidget {
 }
 
 class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
-  // Yellow Dark Theme Color Palette
-  static const Color _kGoldPrimary = Color(0xFFFBBF24); // Minecraft Gold
-  static const Color _kBgModal = Color(0xFF111114);
-  static const Color _kBgCard = Color(0xFF18181D);
-  static const Color _kBorder = Color(0xFF2E2E38);
+  // Emerald Green Theme Color Palette (Matching App Theme)
+  static const Color _kGreenPrimary = Color(0xFF22C55E); // Piglix Emerald Green
+  static const Color _kGreenAccent = Color(0xFF4ADE80); // Mint green
+  static const Color _kBgModal = Color(0xFF090E15); // Dark modal surface
+  static const Color _kBgCard = Color(0xFF101823); // Elevated card
+  static const Color _kBorder = Color(0xFF1E2D3D); // Border color
 
   late final PageController _pageController;
   late int _currentStep;
@@ -223,14 +217,14 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
           ),
           child: VVPixelBox(
             fillColor: _kBgModal,
-            borderColor: _kGoldPrimary.withValues(alpha: 0.65),
+            borderColor: _kGreenPrimary.withValues(alpha: 0.65),
             borderWidth: 2.0,
             step: 3.5,
             hasShadow: true,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // 1. Pixelated Minecraft Header
+                // 1. Pixelated Header
                 _buildModalHeader(context, isCompact),
 
                 // Parameter quick-reference alert if opened from a specific slider
@@ -268,7 +262,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 12, 10, 12),
       decoration: const BoxDecoration(
-        color: Color(0xFF141418),
+        color: Color(0xFF0C131D),
         border: Border(bottom: BorderSide(color: _kBorder, width: 1.4)),
       ),
       child: Row(
@@ -277,9 +271,9 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: _kGoldPrimary.withValues(alpha: 0.18),
+              color: _kGreenPrimary.withValues(alpha: 0.18),
               borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: _kGoldPrimary, width: 1.2),
+              border: Border.all(color: _kGreenPrimary, width: 1.2),
             ),
             alignment: Alignment.center,
             child: const AnimatedMinecraftIcon(
@@ -292,20 +286,20 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
+              children: const [
+                Text(
                   'MINECRAFT SHADER GUIDE',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w800,
                     letterSpacing: 0.3,
                   ),
                 ),
                 Text(
                   'Bedrock Vibrant Visuals Setup',
                   style: TextStyle(
-                    color: _kGoldPrimary,
+                    color: _kGreenAccent,
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                   ),
@@ -331,14 +325,14 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
       margin: const EdgeInsets.fromLTRB(14, 10, 14, 2),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: _kGoldPrimary.withValues(alpha: 0.12),
+        color: _kGreenPrimary.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: _kGoldPrimary.withValues(alpha: 0.45), width: 1.2),
+        border: Border.all(color: _kGreenPrimary.withValues(alpha: 0.45), width: 1.2),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.lightbulb_outline_rounded, size: 16, color: _kGoldPrimary),
+          const Icon(Icons.lightbulb_outline_rounded, size: 16, color: _kGreenAccent),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -376,7 +370,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: const BoxDecoration(
-        color: Color(0xFF141418),
+        color: Color(0xFF0C131D),
         border: Border(bottom: BorderSide(color: _kBorder, width: 1.2)),
       ),
       child: SingleChildScrollView(
@@ -392,20 +386,20 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 220),
                   curve: Curves.easeInOut,
-                  padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                     color: _currentStep == i
-                        ? _kGoldPrimary
-                        : const Color(0xFF1E1E24),
+                        ? _kGreenPrimary
+                        : const Color(0xFF131B26),
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(
-                      color: _currentStep == i ? _kGoldPrimary : _kBorder,
+                      color: _currentStep == i ? _kGreenPrimary : _kBorder,
                       width: 1.2,
                     ),
                     boxShadow: _currentStep == i
                         ? [
                             BoxShadow(
-                              color: _kGoldPrimary.withValues(alpha: 0.35),
+                              color: _kGreenPrimary.withValues(alpha: 0.35),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
@@ -419,8 +413,8 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                         '${i + 1}. ${_kGuideSteps[i].tabLabel}',
                         style: TextStyle(
                           fontSize: isCompact ? 10.5 : 11.5,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.2,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.3,
                           color: _currentStep == i ? Colors.black : Colors.white70,
                         ),
                       ),
@@ -448,14 +442,14 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                 decoration: BoxDecoration(
-                  color: _kGoldPrimary,
+                  color: _kGreenPrimary,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
                   'STEP ${step.num}',
                   style: const TextStyle(
                     fontSize: 10.5,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w900,
                     color: Colors.black,
                   ),
                 ),
@@ -467,7 +461,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 13.5,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
@@ -487,13 +481,13 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.folder_open_rounded, size: 13, color: _kGoldPrimary),
+                const Icon(Icons.folder_open_rounded, size: 13, color: _kGreenAccent),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
                     step.pathTag,
                     style: const TextStyle(
-                      color: _kGoldPrimary,
+                      color: _kGreenAccent,
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                     ),
@@ -506,7 +500,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
           ),
           const SizedBox(height: 10),
 
-          // Description
+          // Description (Short & Clean)
           Text(
             step.desc,
             style: const TextStyle(
@@ -517,16 +511,16 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
           ),
           const SizedBox(height: 12),
 
-          // Official Screenshot Placeholder / Slot
+          // Screenshot Slot with Real Image
           _buildScreenshotPlaceholder(
             title: step.title,
             fileName: step.fileName,
             assetPath: step.getAsset(),
-            accent: _kGoldPrimary,
+            accent: _kGreenPrimary,
           ),
           const SizedBox(height: 12),
 
-          // Key Action Bullets
+          // Key Action Bullets (Clean & Punchy)
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -546,7 +540,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                         const Icon(
                           Icons.check_circle_rounded,
                           size: 15,
-                          color: _kGoldPrimary,
+                          color: _kGreenAccent,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -571,71 +565,101 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
     );
   }
 
-  // ─── OFFICIAL SCREENSHOT SLOT (EMPTY PLACEHOLDER BY DEFAULT) ────────────────
+  // ─── OFFICIAL SCREENSHOT SLOT (REAL IMAGES WITH FALLBACK) ───────────────────
   Widget _buildScreenshotPlaceholder({
     required String title,
     required String fileName,
     String? assetPath,
     required Color accent,
   }) {
-    final hasAsset = assetPath != null && assetPath.trim().isNotEmpty;
+    final effectivePath = assetPath ?? 'assets/guide/$fileName';
+    final hasAsset = effectivePath.trim().isNotEmpty;
 
     return Container(
       width: double.infinity,
-      height: 145,
+      height: 155,
       decoration: BoxDecoration(
-        color: const Color(0xFF0D0D10),
+        color: const Color(0xFF070B10),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: hasAsset ? accent.withValues(alpha: 0.6) : accent.withValues(alpha: 0.35),
+          color: _kGreenPrimary.withValues(alpha: 0.5),
           width: 1.2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: _kGreenPrimary.withValues(alpha: 0.12),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       clipBehavior: Clip.antiAlias,
       child: Stack(
+        fit: StackFit.expand,
         children: [
           if (hasAsset)
-            Positioned.fill(
-              child: Image.asset(
-                assetPath,
+            Image.asset(
+              effectivePath,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Image.network(
+                'public/guide/$fileName',
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) =>
-                    _buildEmptySlotContent(fileName, accent),
+                errorBuilder: (c, e, s) => Image.network(
+                  'guide/$fileName',
+                  fit: BoxFit.cover,
+                  errorBuilder: (c2, e2, s2) =>
+                      _buildEmptySlotContent(fileName, accent),
+                ),
               ),
             )
           else
-            Positioned.fill(
-              child: _buildEmptySlotContent(fileName, accent),
+            _buildEmptySlotContent(fileName, accent),
+
+          // Subtle gradient scrim overlay for readability
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black.withValues(alpha: 0.35),
+                  Colors.transparent,
+                  Colors.black.withValues(alpha: 0.45),
+                ],
+                stops: const [0.0, 0.4, 1.0],
+              ),
             ),
+          ),
+
           // Top right status pill
           Positioned(
             top: 7,
             right: 7,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2.5),
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
               decoration: BoxDecoration(
                 color: Colors.black.withValues(alpha: 0.85),
                 borderRadius: BorderRadius.circular(4),
                 border: Border.all(
-                  color: hasAsset ? const Color(0xFF4ADE80) : accent.withValues(alpha: 0.5),
+                  color: _kGreenAccent.withValues(alpha: 0.8),
                   width: 0.8,
                 ),
               ),
-              child: Row(
+              child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    hasAsset ? Icons.check_circle_rounded : Icons.photo_camera_outlined,
+                    Icons.check_circle_rounded,
                     size: 11,
-                    color: hasAsset ? const Color(0xFF4ADE80) : accent,
+                    color: _kGreenAccent,
                   ),
-                  const SizedBox(width: 4),
+                  SizedBox(width: 4),
                   Text(
-                    hasAsset ? 'OFFICIAL SCREENSHOT' : 'SCREENSHOT PLACEHOLDER',
+                    'OFFICIAL SCREENSHOT',
                     style: TextStyle(
                       fontSize: 9,
-                      fontWeight: FontWeight.w700,
-                      color: hasAsset ? const Color(0xFF4ADE80) : accent,
+                      fontWeight: FontWeight.w800,
+                      color: _kGreenAccent,
                       letterSpacing: 0.3,
                     ),
                   ),
@@ -664,7 +688,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
               border: Border.all(color: accent.withValues(alpha: 0.4), width: 1.2),
             ),
             child: Icon(
-              Icons.add_photo_alternate_outlined,
+              Icons.photo_camera_outlined,
               size: 18,
               color: accent,
             ),
@@ -680,7 +704,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
           ),
           const SizedBox(height: 3),
           Text(
-            'Drop image into: public/$fileName or assets/$fileName',
+            'assets/guide/$fileName',
             style: const TextStyle(
               color: Colors.white54,
               fontSize: 10,
@@ -699,7 +723,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
       decoration: const BoxDecoration(
-        color: Color(0xFF141418),
+        color: Color(0xFF0C131D),
         border: Border(top: BorderSide(color: _kBorder, width: 1.2)),
       ),
       child: Row(
@@ -712,7 +736,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF22222A),
+                  color: const Color(0xFF131B26),
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(color: _kBorder),
                 ),
@@ -745,10 +769,10 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 240),
                     margin: const EdgeInsets.symmetric(horizontal: 3),
-                    width: _currentStep == i ? 16 : 6,
+                    width: _currentStep == i ? 18 : 6,
                     height: 6,
                     decoration: BoxDecoration(
-                      color: _currentStep == i ? _kGoldPrimary : Colors.white24,
+                      color: _currentStep == i ? _kGreenPrimary : Colors.white24,
                       borderRadius: BorderRadius.circular(3),
                     ),
                   ),
@@ -768,13 +792,17 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
             },
             behavior: HitTestBehavior.opaque,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
               decoration: BoxDecoration(
-                color: _kGoldPrimary,
+                gradient: const LinearGradient(
+                  colors: [_kGreenPrimary, Color(0xFF16A34A)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
                 borderRadius: BorderRadius.circular(6),
                 boxShadow: [
                   BoxShadow(
-                    color: _kGoldPrimary.withValues(alpha: 0.35),
+                    color: _kGreenPrimary.withValues(alpha: 0.35),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -787,7 +815,7 @@ class _VVMinecraftGuideModalState extends State<VVMinecraftGuideModal> {
                     isLast ? 'READY TO PLAY ✓' : 'NEXT STEP >',
                     style: const TextStyle(
                       fontSize: 12,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w900,
                       color: Colors.black,
                       letterSpacing: 0.3,
                     ),

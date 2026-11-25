@@ -358,7 +358,7 @@ void main() {
     });
 
     testWidgets(
-        'VVMinecraftGuideModal renders Yellow Dark Theme with 5 horizontal steps & empty screenshot slot',
+        'VVMinecraftGuideModal renders Green Theme with 5 horizontal steps & official screenshot slot',
         (WidgetTester tester) async {
       await pumpEditor(tester);
 
@@ -368,7 +368,7 @@ void main() {
       await tester.tap(helpBtn);
       await tester.pumpAndSettle();
 
-      // Verify Yellow Dark Theme Header & Guide
+      // Verify Green Theme Header & Guide
       expect(find.text('MINECRAFT SHADER GUIDE'), findsOneWidget);
       expect(find.text('1. GENERATE'), findsOneWidget);
       expect(find.text('2. WHAT YOU GET'), findsOneWidget);
@@ -376,9 +376,8 @@ void main() {
       expect(find.text('4. ACTIVATE'), findsOneWidget);
       expect(find.text('5. PLAY'), findsOneWidget);
 
-      // Verify empty screenshot placeholder
-      expect(find.text('Official Screenshot Placeholder'), findsOneWidget);
-      expect(find.text('SCREENSHOT PLACEHOLDER'), findsOneWidget);
+      // Verify official screenshot slot
+      expect(find.text('OFFICIAL SCREENSHOT'), findsOneWidget);
 
       // Tap NEXT STEP > to advance to Step 2
       await tester.tap(find.text('NEXT STEP >'));

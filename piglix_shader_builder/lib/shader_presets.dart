@@ -128,6 +128,7 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     rating: 4.95,
     downloads: '85.4k',
     tags: ['Prizma', 'Pastel Pink', 'Lilac Sky', 'Community Top'],
+    thumbnailPath: 'assets/screenshots/prizma_visuals.webp',
     morningColor: Color(0xFFFCE7F3),
     noonColor: Color(0xFFF472B6),
     eveningColor: Color(0xFFE879F9),
@@ -218,6 +219,7 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     rating: 4.93,
     downloads: '78.1k',
     tags: ['Definitive', 'Autumn Amber', 'Golden Sunlight', 'Top Rated'],
+    thumbnailPath: 'assets/screenshots/definitive_vibrant.webp',
     morningColor: Color(0xFFFFBE53),
     noonColor: Color(0xFFF59E0B),
     eveningColor: Color(0xFFEA580C),
@@ -311,6 +313,7 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     rating: 4.90,
     downloads: '64.3k',
     tags: ['Revolution', 'Bright Clean', 'Crystal Skies', 'Marketplace Grade'],
+    thumbnailPath: 'assets/screenshots/revolution_visuals.webp',
     morningColor: Color(0xFF7DD3FC),
     noonColor: Color(0xFF0284C7),
     eveningColor: Color(0xFF38BDF8),
@@ -388,96 +391,6 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     ),
   ),
   const ShaderPresetConfig(
-    id: 'dark_fantasy',
-    name: 'Dark Fantasy (Dark Souls)',
-    creator: 'Piglix Labs',
-    description:
-        'Grim, moody atmosphere inspired by Dark Souls with desaturated earthy tones, somber copper dusk horizons, Reinhard tonemapping, and blood-red sunset.',
-    rating: 4.88,
-    downloads: '51.7k',
-    tags: ['Dark Souls', 'Grim Fantasy', 'Reinhard', 'Moody'],
-    morningColor: Color(0xFFB48250),
-    noonColor: Color(0xFF677B78),
-    eveningColor: Color(0xFFE8823C),
-    nightColor: Color(0xFF0F1420),
-    sunSize: 0.9,
-    nightVision: 1.3,
-    fogDensity: 1.3,
-    cloudType: 'Realistic 3D',
-    torchColor: Color(0xFFFF7820),
-    lightIntensity: 0.85,
-    blockLightIntensity: 1.3,
-    shadowQuality: 'Ultra',
-    enablePointLightShadows: true,
-    volumetricFogProfile: 'Cinematic',
-    rayMorningColor: Color(0xFFB48250),
-    rayNoonColor: Color(0xFFB4A664),
-    rayEveningColor: Color(0xFFFF5014),
-    rayNightColor: Color(0xFF55648C),
-    waterColor: Color(0xFF28323C),
-    windSpeed: 0.8,
-    waterQuality: 'High',
-    underwaterCaustics: false,
-    rainFogColor: Color(0xFF202528),
-    rainWaterColor: Color(0xFF151820),
-    worldReflections: true,
-    enablePBR: true,
-    metalness: 0.35,
-    wavingFoliage: true,
-    foliageWaveSpeed: 0.7,
-    toneMapFilter: 'Reinhard',
-    biomeTone: 'Moody',
-    saturation: 0.82,
-    contrast: 1.30,
-    autoExposure: 0.9,
-    vvConfig: VVShaderConfig(
-      packName: 'Dark Fantasy (Dark Souls)',
-      packDescription:
-          'Grim, moody atmosphere inspired by Dark Souls with desaturated earthy tones, somber copper dusk horizons, Reinhard tonemapping, and blood-red sunset.',
-      lighting: LightingConfig(
-        sunBrightnessMultiplier: 0.85,
-        sunColorNoon: Color(0xFFB4A664),
-        sunColorSunset: Color(0xFFFF5014),
-        sunColorSunrise: Color(0xFFB48250),
-        nightMoonColor: Color(0xFF55648C),
-        moonIlluminance: 1.2,
-        ambientIlluminance: 0.08,
-        ambientColor: Color(0xFF0A0C10),
-        skyIntensity: 0.3,
-        shadowStyle: 'soft_shadows',
-        shadowTexelSize: 1024,
-      ),
-      atmosphere: AtmosphereConfig(
-        rayleighNoon: 4.0,
-        rayleighSunset: 2.5,
-        rayleighSunrise: 2.5,
-        rayleighNight: 3.0,
-        sunGlowNoon: 1.5,
-        noonZenith: Color(0xFF677B78),
-        noonHorizon: Color(0xFFB4C6C6),
-        sunsetZenith: Color(0xFF9A5A41),
-        sunsetHorizon: Color(0xFFE8823C),
-        nightZenith: Color(0xFF55648C),
-        nightHorizon: Color(0xFF91B9EA),
-        sunriseZenith: Color(0xFF9A5A41),
-        sunriseHorizon: Color(0xFFE8823C),
-      ),
-      fog: FogConfig(
-        airFogStart: 0.82,
-        airFogEnd: 0.98,
-        airFogColor: Color(0xFF404848),
-        volumetricMaxDensity: 0.065,
-        weatherFogColor: Color(0xFF1E2428),
-      ),
-      colorGrading: ColorGradingConfig(
-        toneMappingOperator: 'reinhard',
-        midtonesContrast: [1.3, 1.3, 1.3],
-        midtonesSaturation: [0.76, 0.85, 0.78],
-        midtonesGain: [1.0, 0.98, 1.0],
-      ),
-    ),
-  ),
-  const ShaderPresetConfig(
     id: 'luminous_dreams',
     name: 'Luminous Dreams',
     creator: 'Piglix Labs',
@@ -486,6 +399,7 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     rating: 4.92,
     downloads: '72.9k',
     tags: ['Luminous', 'Filmic Hable', '181 Lux', 'Legendary'],
+    thumbnailPath: 'assets/screenshots/luminous_dreams.webp',
     morningColor: Color(0xFFFFA0B2),
     noonColor: Color(0xFF5B7AFF),
     eveningColor: Color(0xFFFF5A20),
@@ -571,6 +485,7 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     rating: 4.89,
     downloads: '44.6k',
     tags: ['Dreamy', 'Ethereal', 'Soft Bloom', 'ACES'],
+    thumbnailPath: 'assets/screenshots/bslb_dreamy.webp',
     morningColor: Color(0xFFFFB482),
     noonColor: Color(0xFF78A0FF),
     eveningColor: Color(0xFFFF643C),
@@ -653,6 +568,7 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
     rating: 4.90,
     downloads: '48.3k',
     tags: ['Natural Light', 'Warm Sun', 'Cinematic', '60 FPS'],
+    thumbnailPath: 'assets/screenshots/better_vibrant.webp',
     morningColor: Color(0xFFFFA040),
     noonColor: Color(0xFF6782AA),
     eveningColor: Color(0xFFFFBBA3),
@@ -731,94 +647,6 @@ final List<ShaderPresetConfig> kDefaultShaderPresets = [
       ),
     ),
   ),
-  const ShaderPresetConfig(
-    id: 'pink_atmosphere',
-    name: 'Pink Atmosphere (Sakura)',
-    creator: 'Piglix Labs',
-    description:
-        'Dreamy pastel aesthetic with cherry blossom haze, soft pearl daylight, glowing rose twilight horizons, and lavender dusk mist.',
-    rating: 4.88,
-    downloads: '56.0k',
-    tags: ['Sakura Pink', 'Pastel Bloom', 'Aesthetic', 'Popular'],
-    morningColor: Color(0xFFFF8DA6),
-    noonColor: Color(0xFFF472B6),
-    eveningColor: Color(0xFFE11D48),
-    nightColor: Color(0xFF3B0764),
-    sunSize: 1.15,
-    nightVision: 1.1,
-    fogDensity: 1.25,
-    cloudType: 'Realistic 3D',
-    torchColor: Color(0xFFF97316),
-    lightIntensity: 1.1,
-    blockLightIntensity: 1.2,
-    shadowQuality: 'High',
-    enablePointLightShadows: true,
-    volumetricFogProfile: 'Cinematic',
-    rayMorningColor: Color(0xFFFB7185),
-    rayNoonColor: Color(0xFFF472B6),
-    rayEveningColor: Color(0xFFE11D48),
-    rayNightColor: Color(0xFF818CF8),
-    waterColor: Color(0xFFFB7185),
-    windSpeed: 0.95,
-    waterQuality: 'Ultra',
-    underwaterCaustics: true,
-    rainFogColor: Color(0xFF831843),
-    rainWaterColor: Color(0xFF4C0519),
-    worldReflections: true,
-    enablePBR: true,
-    metalness: 0.05,
-    wavingFoliage: true,
-    foliageWaveSpeed: 1.0,
-    toneMapFilter: 'ACES (Cinematic)',
-    biomeTone: 'Moody',
-    saturation: 1.15,
-    contrast: 1.12,
-    autoExposure: 1.0,
-    vvConfig: VVShaderConfig(
-      packName: 'Pink Atmosphere (Sakura)',
-      packDescription:
-          'Dreamy pastel aesthetic with cherry blossom haze, soft pearl daylight, glowing rose twilight horizons, and lavender dusk mist.',
-      lighting: LightingConfig(
-        sunBrightnessMultiplier: 1.0,
-        sunColorNoon: Color(0xFFFFF0F5),
-        sunColorSunrise: Color(0xFFFF9EB5),
-        sunColorSunset: Color(0xFFFF6B95),
-        nightMoonColor: Color(0xFF8A9AFF),
-        moonIlluminance: 2.1,
-        ambientIlluminance: 0.09,
-        ambientColor: Color(0xFF2D1E2D),
-        skyIntensity: 0.35,
-        shadowStyle: 'soft_shadows',
-        shadowTexelSize: 1024,
-      ),
-      atmosphere: AtmosphereConfig(
-        rayleighNoon: 2.1,
-        rayleighSunset: 3.2,
-        sunGlowNoon: 4.5,
-        noonZenith: Color(0xFF6B8AFF),
-        noonHorizon: Color(0xFFFFE8EF),
-        sunsetZenith: Color(0xFFB878D6),
-        sunsetHorizon: Color(0xFFFF8EAA),
-        nightZenith: Color(0xFF141233),
-        nightHorizon: Color(0xFF382D4A),
-        sunriseZenith: Color(0xFF9E88E8),
-        sunriseHorizon: Color(0xFFFFB5C8),
-      ),
-      fog: FogConfig(
-        airFogStart: 0.85,
-        airFogEnd: 1.0,
-        airFogColor: Color(0xFFF3D5E8),
-        waterFogColor: Color(0xFF1EA8D6),
-        volumetricMaxDensity: 0.05,
-      ),
-      colorGrading: ColorGradingConfig(
-        toneMappingOperator: 'hable',
-        midtonesContrast: [1.12, 1.12, 1.12],
-        midtonesSaturation: [1.15, 1.15, 1.15],
-        temperature: 6100.0,
-      ),
-    ),
-  ),
 ];
 
 // ─────────────────────────────────────────────────────────────────
@@ -833,17 +661,14 @@ Color presetAccentColor(ShaderPresetConfig p) {
       return const Color(0xFFF59E0B); // Autumn Golden Amber
     case 'revolution_visuals':
       return const Color(0xFF38BDF8); // Bright Clean Sky Azure
-    case 'dark_fantasy':
-      return const Color(0xFF94A3B8); // Grim Steel / Ember
     case 'luminous_dreams':
       return const Color(0xFF22C55E); // Emerald Cyan
     case 'bslb_dreamy':
       return const Color(0xFF818CF8); // Dreamy Violet Bloom
     case 'better_vibrant':
       return const Color(0xFFFBBF24); // Warm Gold
-    case 'pink_atmosphere':
     default:
-      return const Color(0xFFEC4899); // Sakura Pink
+      return const Color(0xFF22C55E);
   }
 }
 
@@ -886,7 +711,6 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
     'BALANCED (60FPS)',
     'CINEMATIC',
     'ATMOSPHERE',
-    'DARK FANTASY',
   ];
 
   List<ShaderPresetConfig> _filteredPresets() {
@@ -923,14 +747,9 @@ class _ShaderPresetsScreenState extends State<ShaderPresetsScreen> {
         return kDefaultShaderPresets
             .where(
               (p) =>
-                  p.id == 'pink_atmosphere' ||
                   p.id == 'prizma_visuals' ||
                   p.id == 'bslb_dreamy',
             )
-            .toList();
-      case 'DARK FANTASY':
-        return kDefaultShaderPresets
-            .where((p) => p.id == 'dark_fantasy')
             .toList();
       default:
         return kDefaultShaderPresets;

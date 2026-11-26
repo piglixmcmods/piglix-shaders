@@ -9,7 +9,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() async {
-    final preset = kDefaultShaderPresets.firstWhere((p) => p.id == 'pink_atmosphere');
+    final preset = kDefaultShaderPresets.firstWhere((p) => p.id == 'prizma_visuals');
     await getOrGeneratePresetPackIcon(preset);
     await generateShaderItemPackIcon('My Custom Shader', const Color(0xFF22C55E));
     await generateShaderItemPackIcon('Gallery RTX Pack', const Color(0xFFF472B6));
@@ -17,7 +17,7 @@ void main() {
 
   group('Preset and Gallery Edit Flow Tests', () {
     test('getOrGeneratePresetPackIcon generates valid cached PNG bytes for presets', () async {
-      final preset = kDefaultShaderPresets.firstWhere((p) => p.id == 'pink_atmosphere');
+      final preset = kDefaultShaderPresets.firstWhere((p) => p.id == 'prizma_visuals');
       final bytes = await getOrGeneratePresetPackIcon(preset);
       expect(bytes, isNotNull);
       expect(bytes.isNotEmpty, isTrue);
@@ -51,7 +51,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      final preset = kDefaultShaderPresets.firstWhere((p) => p.id == 'pink_atmosphere');
+      final preset = kDefaultShaderPresets.firstWhere((p) => p.id == 'prizma_visuals');
       final presetIcon = await getOrGeneratePresetPackIcon(preset);
 
       await tester.pumpWidget(
@@ -142,7 +142,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      final preset = kDefaultShaderPresets.firstWhere((p) => p.id == 'pink_atmosphere');
+      final preset = kDefaultShaderPresets.firstWhere((p) => p.id == 'prizma_visuals');
       final presetIcon = await getOrGeneratePresetPackIcon(preset);
 
       bool popped = false;

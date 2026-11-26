@@ -353,9 +353,6 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
       onOpenGallery: () {
         fastPushReplacement(context, _buildMyShadersScreen());
       },
-      onOpenSettings: () {
-        _scaffoldKey.currentState?.openDrawer();
-      },
     );
   }
 

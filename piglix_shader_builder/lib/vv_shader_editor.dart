@@ -1614,14 +1614,10 @@ class _RenameShaderDialogState extends State<_RenameShaderDialog> {
   void initState() {
     super.initState();
     _ctrl = TextEditingController(text: widget.initialName);
-    // Request focus after frame to ensure mobile keyboard opens immediately
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 120), () {
-        if (mounted) {
-          _focusNode.requestFocus();
-        }
-      });
-    });
+    _ctrl.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: _ctrl.text.length,
+    );
   }
 
   @override

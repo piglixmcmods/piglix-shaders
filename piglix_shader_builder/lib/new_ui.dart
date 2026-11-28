@@ -506,54 +506,45 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                 // Top App Bar: 3-line menu button on left + Piglix Studio title
                 _buildTopBar(palette),
 
-                // Static, properly-fitted content without scrolling
+                // Responsive content that maintains a stable widget tree and scrolls cleanly when keyboard opens
                 Expanded(
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final avail = constraints.maxHeight;
                       const baseContentHeight = 550.0;
 
-                      Widget buildStaticColumn({bool withSpacer = true}) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisSize: withSpacer
-                                ? MainAxisSize.max
-                                : MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              if (withSpacer) const Spacer(),
-                              _buildHeroTextSection(palette),
-                              const SizedBox(height: 10),
-                              _buildStartBuildingButton(),
-                              const SizedBox(height: 10),
-                              _buildQuickActionCards(palette),
-                              const SizedBox(height: 10),
-                              _buildShaderNameSection(palette),
-                              const SizedBox(height: 16),
-                              _buildUploadCards(palette),
-                              const SizedBox(height: 10),
-                            ],
+                      return SingleChildScrollView(
+                        physics: avail >= baseContentHeight
+                            ? const NeverScrollableScrollPhysics()
+                            : const BouncingScrollPhysics(),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
                           ),
-                        );
-                      }
-
-                      if (avail < baseContentHeight) {
-                        return Center(
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: Alignment.bottomCenter,
-                            child: SizedBox(
-                              width: constraints.maxWidth,
-                              height: baseContentHeight,
-                              child: buildStaticColumn(withSpacer: false),
+                          child: IntrinsicHeight(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  const Spacer(),
+                                  _buildHeroTextSection(palette),
+                                  const SizedBox(height: 10),
+                                  _buildStartBuildingButton(),
+                                  const SizedBox(height: 10),
+                                  _buildQuickActionCards(palette),
+                                  const SizedBox(height: 10),
+                                  _buildShaderNameSection(palette),
+                                  const SizedBox(height: 16),
+                                  _buildUploadCards(palette),
+                                  const SizedBox(height: 10),
+                                ],
+                              ),
                             ),
                           ),
-                        );
-                      }
-
-                      return buildStaticColumn(withSpacer: true);
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -610,42 +601,45 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Shader ',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        color: palette.textPrimary,
-                        letterSpacing: -0.3,
-                        shadows: const [
-                          Shadow(
-                            color: Colors.black87,
-                            blurRadius: 8,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Shader ',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: palette.textPrimary,
+                          letterSpacing: -0.3,
+                          shadows: const [
+                            Shadow(
+                              color: Colors.black87,
+                              blurRadius: 8,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const Text(
-                      'Generator',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF22C55E),
-                        letterSpacing: -0.3,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black87,
-                            blurRadius: 8,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
+                      const Text(
+                        'Generator',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF22C55E),
+                          letterSpacing: -0.3,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black87,
+                              blurRadius: 8,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 3),
                 const Text(
@@ -957,7 +951,9 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-                  _shaderNameFocusNode.requestFocus();
+                  if (!_shaderNameFocusNode.hasFocus) {
+                    _shaderNameFocusNode.requestFocus();
+                  }
                 },
                 child: CustomPaint(
                   painter: _PixelatedCardPainter(
@@ -979,14 +975,10 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                       padding: const EdgeInsets.symmetric(horizontal: 14),
                       child: Row(
                         children: [
-                          GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () => _shaderNameFocusNode.requestFocus(),
-                            child: const Icon(
-                              Icons.edit_rounded,
-                              color: Color(0xFF22C55E),
-                              size: 18,
-                            ),
+                          const Icon(
+                            Icons.edit_rounded,
+                            color: Color(0xFF22C55E),
+                            size: 18,
                           ),
                           const SizedBox(width: 10),
                           Expanded(
@@ -997,7 +989,6 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                               textInputAction: TextInputAction.done,
                               enableInteractiveSelection: true,
                               cursorColor: const Color(0xFF22C55E),
-                              onTap: () => _shaderNameFocusNode.requestFocus(),
                               style: TextStyle(
                                 color: palette.textPrimary,
                                 fontSize: 14.0,
@@ -1033,23 +1024,28 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                 onLongPress: () {
                   showModalBottomSheet(
                     context: context,
+                    isScrollControlled: true,
                     backgroundColor: Colors.transparent,
-                    builder: (ctx) => Container(
-                      decoration: BoxDecoration(
-                        color: palette.surface,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(20),
+                    builder: (ctx) => Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(ctx).viewInsets.bottom,
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: palette.surface,
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                          border: Border.all(color: palette.border),
                         ),
-                        border: Border.all(color: palette.border),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                        horizontal: 16,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 16,
+                          horizontal: 16,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
                           Center(
                             child: Container(
                               width: 36,
@@ -1159,7 +1155,8 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                         ],
                       ),
                     ),
-                  );
+                  ),
+                );
                 },
                 child: CustomPaint(
                   painter: _PixelatedCardPainter(
@@ -1231,8 +1228,8 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
             child: ClipPath(
               clipper: _PixelatedClipper(s),
               child: Container(
-                height: 48,
-                padding: const EdgeInsets.symmetric(horizontal: 14),
+                constraints: const BoxConstraints(minHeight: 48),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
                 child: Row(
                   children: [
                     Container(
@@ -1261,6 +1258,7 @@ class _PiglixHomeScreenState extends State<PiglixHomeScreen>
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

@@ -16,6 +16,39 @@ void main() {
     expect(find.text('PACK ICON'), findsOneWidget);
   });
 
+  testWidgets('HomeScreen shader name field gains focus and retains text when keyboard opens',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(const PiglixProApp());
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    final textFieldFinder = find.byType(TextField).first;
+    expect(textFieldFinder, findsOneWidget);
+
+    await tester.tap(textFieldFinder);
+    await tester.pump();
+
+    final textFieldWidget = tester.widget<TextField>(textFieldFinder);
+    expect(textFieldWidget.focusNode?.hasFocus, isTrue);
+
+    await tester.enterText(textFieldFinder, 'My Epic Ultra Shader');
+    await tester.pump();
+    expect(find.text('My Epic Ultra Shader'), findsOneWidget);
+
+    tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+    await tester.pump();
+
+    expect(textFieldWidget.focusNode?.hasFocus, isTrue);
+    expect(find.text('My Epic Ultra Shader'), findsOneWidget);
+
+    tester.view.resetViewInsets();
+  });
+
   group('ShaderEditorScreen VV rebuild tests', () {
     Future<void> pumpEditor(
       WidgetTester tester, {
